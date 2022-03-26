@@ -25,9 +25,9 @@ int main(){
 
     object* objs[4] = {
         new mage(3, 1, string("Maga")),
-        new goblin(8, 8, string("Goga")),
-        new goblin(8, 7, string("Pisos")),
-        new goblin(7, 3, string("Ugga Sukka"))
+        new golem(8, 8, string("Goga")),
+        new golem(8, 7, string("Pisos")),
+        new golem(7, 3, string("Ugga Sukka"))
     };
 
     drow_card(my_card, objs, 4);

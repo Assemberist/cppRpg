@@ -3,31 +3,9 @@
 #include <vector>
 #include <cstdint>
 #include <string>
+#include "object_defs.hpp"
 
 using namespace std;
-
-enum effect_t{
-    FLYING,
-    ELECTRIC_DAMAGE,
-    SHOCKED,
-    FIRE_DAMAGE,
-    FIRING,
-    DRY,
-    STUNNED,
-    FRIZED,
-    ICE_DAMAGE,
-    DEAD,
-    REGENERATION,
-    POISONED,
-    CRUSH_ATTACK,
-    SLASH_ATTACK,
-    COLUSH_ATTACK,
-};
-
-enum property_t{
-    HEALTH,
-    MANA
-};
 
 struct property{
     property_t property;

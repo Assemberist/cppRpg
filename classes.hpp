@@ -3,30 +3,35 @@
 
 class mage : public object{
 public:
-    mage(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){}
-    char get_type();
+    mage(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){
+        propertyes.push_back({HEALTH, 20});
+        propertyes.push_back({MANA, 50});
+    }
+    char get_type(){ return 'm'; }
 };
-
-char mage::get_type(){ return 'm'; }
 
 class warrior : public object{
 public:
-    char get_type();
+    warrior(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){}
+    char get_type(){ return 'w'; }
 };
-
-char warrior::get_type(){ return 'w'; }
 
 class goblin : public object{
 public:
     goblin(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){}
-    char get_type();
+    char get_type(){ return 'g'; }
 };
-
-char goblin::get_type(){ return 'g'; }
 
 class chair : public object{
 public:
-    char get_type();
+    chair(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){}
+    char get_type(){ return 'h'; }
 };
 
-char chair::get_type(){ return 'h'; }
+class golem : public object{
+public:
+    golem(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){
+        propertyes.push_back({HEALTH, 50});
+    }
+    char get_type(){ return 'G'; }
+};
