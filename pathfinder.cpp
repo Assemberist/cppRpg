@@ -43,71 +43,51 @@ void magnetic_search(char (*map)[12], object* from, object* to){
 }
 
 char move(char (*arr)[12], object* obj, char direction){
+    int8_t newX, newY;
     switch(direction){
         case 'q':
-            if(arr[obj->Y-1][obj->X-1] == ' '){
-                arr[obj->Y-1][obj->X-1] = obj->get_type();
-                arr[obj->Y][obj->X] = ' ';
-                obj->X--;
-                obj->Y--;
-            }
-            return 'q';
-        case 'e':
-            if(arr[obj->Y-1][obj->X+1] == ' '){
-                arr[obj->Y-1][obj->X+1] = obj->get_type();
-                arr[obj->Y][obj->X] = ' ';
-                obj->X++;
-                obj->Y--;
-            }
-            break;
-        case 'z':
-            if(arr[obj->Y+1][obj->X-1] == ' '){
-                arr[obj->Y+1][obj->X-1] = obj->get_type();
-                arr[obj->Y][obj->X] = ' ';
-                obj->X--;
-                obj->Y++;
-            }
-            break;
-        case 'x':
-            if(arr[obj->Y+1][obj->X] == ' '){
-                arr[obj->Y+1][obj->X] = obj->get_type();
-                arr[obj->Y][obj->X] = ' ';
-                obj->Y++;
-            }
-            break;
-        case 'c':
-            if(arr[obj->Y+1][obj->X+1] == ' '){
-                arr[obj->Y+1][obj->X+1] = obj->get_type();
-                arr[obj->Y][obj->X] = ' ';
-                obj->X++;
-                obj->Y++;
-            }
-            break;
-        case 'a':
-            if(arr[obj->Y][obj->X-1] == ' '){
-                arr[obj->Y][obj->X-1] = obj->get_type();
-                arr[obj->Y][obj->X] = ' ';
-                obj->X--;
-            }
-            break;
-        case 'd':
-            if(arr[obj->Y][obj->X+1] == ' '){
-                arr[obj->Y][obj->X+1] = obj->get_type();
-                arr[obj->Y][obj->X] = ' ';
-                obj->X++;
-            }
+            newX = obj->X-1;
+            newY = obj->Y-1;
             break;
         case 'w':
-            if(arr[obj->Y-1][obj->X] == ' '){
-                arr[obj->Y-1][obj->X] = obj->get_type();
-                arr[obj->Y][obj->X] = ' ';
-                obj->Y--;
-            }
+            newX = obj->X;
+            newY = obj->Y-1;
             break;
-        case 's':
+        case 'e':
+            newX = obj->X+1;
+            newY = obj->Y-1;
+            break;
+        case 'd':
+            newX = obj->X+1;
+            newY = obj->Y;
+            break;
+        case 'c':
+            newX = obj->X+1;
+            newY = obj->Y+1;
+            break;
+        case 'x':
+            newX = obj->X;
+            newY = obj->Y+1;
+            break;
+        case 'z':
+            newX = obj->X-1;
+            newY = obj->Y+1;
+            break;
+        case 'a':
+            newX = obj->X-1;
+            newY = obj->Y;
             break;
         default:
-            direction = '\0';
+            return '\0';
     }
+
+    if(arr[newY][newX] == ' '){
+        arr[newY][newX] = obj->get_type();
+        arr[obj->Y][obj->X] = ' ';
+        obj->X = newX;
+        obj->Y = newY;
+    }
+    else direction = '\0';
+
     return direction;
 }
