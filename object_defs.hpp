@@ -1,6 +1,14 @@
 #pragma once
 
 enum effect_t{
+    PHYSIC_IMMUNITY,
+    MAGIC_IMMUNITY,
+    POISON_IMMUNITY,
+    ACID_IMMUNITY,
+    UNFROZENABLE,
+    UNFLAMED,
+    DIELECTRIC,
+
     FLYING,
     CORROSION,
     SHOCKED,

@@ -7,8 +7,8 @@ void drow_card(char (*card)[12], object** objects, size_t obj_num){
             objects[obj_num]->get_type();
 }
 
-void update_card(char (*card)[12], size_t rows){
+void update_card(WINDOW* win, char (*card)[12], size_t rows){
     for(int i = 0; i<rows; i++)
-        printw(card[i]);
-    refresh();
+        wprintw(win, card[i]);
+    wrefresh(win);
 }

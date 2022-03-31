@@ -6,4 +6,4 @@
 
 void drow_card(char (*card)[12], object** objects, size_t obj_num);
 
-void update_card(char (*card)[12], size_t rows);
+void update_card(WINDOW* win, char (*card)[12], size_t rows);
