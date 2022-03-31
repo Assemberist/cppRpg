@@ -31,5 +31,10 @@ enum property_t{
     MANA
 };
 
+enum fraction{
+    HUMANITY,
+    MONSTER
+};
+
 #define MAX_HEALTH 2000
 #define MAX_MANA 200

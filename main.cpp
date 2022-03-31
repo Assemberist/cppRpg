@@ -2,6 +2,8 @@
 #include "classes.hpp"
 #include "pathfinder.hpp"
 
+#define abs(A, B) ((A) - (B) > 0 ? (A) - (B) : (B) - (A))
+
 #define ROWS 10
 #define COLS 10
 
@@ -38,7 +40,11 @@ int main(){
     do{
         clear();
         move(my_card, objs[0], temp);
-        for(int i=4; --i; magnetic_search(my_card, objs[i], objs[0]));
+        for(int i=4; --i;){
+            magnetic_search(my_card, objs[i], objs[0]);
+            if(abs(objs[i]->X, objs[0]->X) <= 1)
+                objs[0]->act({CRUSH_ATTACK, 10});
+        }
         update_card(my_card, ROWS);
         refresh();
     }

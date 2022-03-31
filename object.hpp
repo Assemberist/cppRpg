@@ -28,9 +28,12 @@ protected:
     vector<property> propertyes;
     vector<effect> effects;
     string name;
+
 public:
     uint8_t X;
     uint8_t Y;
+
+    fraction fract;
 
     void act(effect e);
     void calculate();

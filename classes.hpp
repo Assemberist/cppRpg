@@ -6,6 +6,7 @@ public:
     mage(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){
         propertyes.push_back({HEALTH, 20});
         propertyes.push_back({MANA, 50});
+        fract = HUMANITY;
     }
     char get_type(){ return 'm'; }
 };
@@ -32,6 +33,7 @@ class golem : public object{
 public:
     golem(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){
         propertyes.push_back({HEALTH, 50});
+        fract = MONSTER;
     }
     char get_type(){ return 'G'; }
 };
