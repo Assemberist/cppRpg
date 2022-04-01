@@ -39,6 +39,7 @@ public:
     void calculate();
 
     virtual char get_type() = 0;
+    const char* get_name();
 
     object(int8_t _X, int8_t _Y, string _name) : X(_X), Y(_Y), name(_name) {}
 };

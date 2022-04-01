@@ -12,6 +12,8 @@ void object::act(effect e){
     }
 }
 
+const char* object::get_name(){ return name.c_str(); }
+
 void object::calculate(){
 
 }

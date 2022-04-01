@@ -31,17 +31,22 @@ int main(){
         new mage(3, 1, string("Maga")),
         new golem(8, 8, string("Goga")),
         new golem(8, 7, string("Pisos")),
-        new golem(7, 3, string("Ugga Sukka"))
+        new golem(7, 3, string("Ugga Boogga"))
     };
 
-    /*WINDOW* win = newwin(10, 10, 0, 0);
-    WINDOW* log = newwin(10, 30, 0, 11);
+    WINDOW* win = newwin(10, 10, 0, 0);
+    WINDOW* _log = newwin(10, 40, 0, 11);
 
-    
     drow_card(my_card, objs, 4);
     wclear(win);
     update_card(win, my_card, ROWS);
     refresh();
+
+    log l;
+    l.reserve(10);
+    l.connect_to_win(_log);
+
+    char buffer[41];
 
     char temp = 0;
     do{
@@ -51,34 +56,14 @@ int main(){
             magnetic_search(my_card, objs[i], objs[0]);
             if(abs(objs[i]->X, objs[0]->X) <= 1 && abs(objs[i]->Y, objs[0]->Y) <= 1){
                 objs[0]->act({CRUSH_ATTACK, {1, 10}});
-                wprintw(log, "Golem attack the mage!\n");
-                wrefresh(log);
+                sprintf(buffer, "Golem %s attack the mage!\n", objs[i]->get_name());
+                l.newline(buffer);
+                l.print();
             }
         }
         update_card(win, my_card, ROWS);
     }
     while((temp = getch()) != ' ');
-
-    */
-
-    WINDOW* _log = newwin(10, 30, 0, 0);
-
-    log l;
-    l.reserve(10);
-    l.connect_to_win(_log);
-
-    short i = 1;
-    char sas[30];
-    char c;
-
-    while((c = getch()) != ' '){
-        sprintf(sas, "%4dth symbol is: %c\n", i, c);
-        l.newline(sas);
-        l.print();
-        i++;
-    }
-
-    delwin(_log);
 
     endwin();
     return 0;

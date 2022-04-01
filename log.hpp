@@ -4,6 +4,7 @@ class log{
     char** strings;
     short count;
     short current;
+    size_t row;
 
 public:
     WINDOW* win;
