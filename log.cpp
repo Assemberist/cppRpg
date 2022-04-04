@@ -15,6 +15,16 @@ void log::purge(){
     row = 0;
 }
 
+void log::putline(char* src){
+    if(strings[current])
+        delete[] strings[current];
+    
+    strings[current] = src;
+
+    current = current == count-1 ? 0 : current+1;
+    row++;
+}
+
 void log::clear(){
     current = 0;
     row = 0;
