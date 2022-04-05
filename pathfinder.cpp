@@ -91,3 +91,7 @@ char move(char (*arr)[12], object* obj, char direction){
 
     return direction;
 }
+
+void indirect_moving(char (*map)[12], object* from){
+    move(map, from, "qweasdzxc"[rand() % sizeof("qweasdzxc")]);
+}
