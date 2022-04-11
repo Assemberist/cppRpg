@@ -25,3 +25,21 @@ public:
 
     ~text_field();
 };
+
+
+class log : public text_field{
+public:
+    void print();
+    void newline(const char* src);
+};
+
+
+class menu : public text_field{
+public:
+    void print();
+    void newline(const char* src);
+
+    void up();
+    void down();
+    void select(size_t num);
+};

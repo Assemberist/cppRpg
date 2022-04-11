@@ -1,29 +1,26 @@
 #include "card.hpp"
 #include "classes.hpp"
-#include "pathfinder.hpp"
-#include "log.hpp"
-#include "menu.hpp"
+#include "text_field.hpp"
 
 #define abs(A, B) ((A) - (B) > 0 ? (A) - (B) : (B) - (A))
 
-#define ROWS 10
-#define COLS 10
+const char* test_card = "*************  *   **** **   ****      ****  *   **** ******* *      **        ** *      ***********";
+// Card 10x10
+// **********
+// ***  *   *
+// *** **   *
+// ***      *
+// ***  *   *
+// *** ******
+// * *      *
+// *        *
+// * *      *
+// **********
+
 
 log l;
 menu m;
-
-char my_card[10][12] = {
-    {'*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '\0'},
-    {'*', '*', '*', ' ', ' ', '*', ' ', ' ', ' ', '*', '\0'},
-    {'*', '*', '*', ' ', '*', '*', ' ', ' ', ' ', '*', '\0'},
-    {'*', '*', '*', ' ', ' ', ' ', ' ', ' ', ' ', '*', '\0'},
-    {'*', '*', '*', ' ', ' ', '*', ' ', ' ', ' ', '*', '\0'},
-    {'*', '*', '*', ' ', '*', '*', '*', '*', '*', '*', '\0'},
-    {'*', ' ', '*', ' ', ' ', ' ', ' ', ' ', ' ', '*', '\0'},
-    {'*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*', '\0'},
-    {'*', ' ', '*', ' ', ' ', ' ', ' ', ' ', ' ', '*', '\0'},
-    {'*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '\0'},
-};
+za_mapo<char[10][10]> z;
 
 int main(){
     initscr();
@@ -34,24 +31,26 @@ int main(){
 
     start_color();
 
-    object* objs[4] = {
+    object* objs[] = {
         new mage(3, 1, string("Maga")),
         new golem(8, 8, string("Goga")),
         new golem(8, 7, string("Pisos")),
-        new golem(7, 3, string("Ugga Boogga"))
+        new golem(7, 3, string("Ugga Boogga")),
+        NULL
     };
 
     WINDOW* win = newwin(10, 10, 0, 0);
     WINDOW* _log = newwin(10, 50, 0, 11);
     WINDOW* _menu = newwin(3, 50, 12, 0);
 
+    z.win = win;
+    strcpy((char*)z.mapa, test_card);
+    z.objects = objs;
+
     refresh();
 
-    //drow_card(my_card, objs, 4);
-    init_palitra();
-    update_card(win, my_card, ROWS, objs, 4);
-    wrefresh(win);
-    wrefresh(_log);
+    z.init_palitra();
+    z.update_card();
 
     l.reserve(10);
     l.connect_to_win(_log);
@@ -62,6 +61,9 @@ int main(){
     m.newline("first option\n");
     m.newline("second option\n");
     m.newline("thirst option\n");
+    m.select(0);
+
+    m.print();
 
     char buffer[41];
 
@@ -78,9 +80,9 @@ int main(){
                 break;
 
             default:
-                move(my_card, objs[0], temp);
-                for(int i=4; --i;){
-                    magnetic_search(my_card, objs[i], objs[0]);
+                z.move(objs[0], temp);
+                for(int i=1; objs[i]; i++){
+                    z.magnetic_search(objs[i], objs[0]);
                     if(objs[i]->is_alive() && abs(objs[i]->X, objs[0]->X) <= 1 && abs(objs[i]->Y, objs[0]->Y) <= 1){
                         sprintf(buffer, "Golem %s attack %s!\n", objs[i]->get_name(), objs[0]->get_name());
                         l.newline(buffer);
@@ -89,7 +91,7 @@ int main(){
                     }
                 }
         }
-        update_card(win, my_card, ROWS, objs, 4);
+        z.update_card();
         l.print();
         m.print();
     }
