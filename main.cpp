@@ -17,12 +17,10 @@ const char* test_card = "*************  *   **** **   ****      ****  *   **** *
 // * *      *
 // **********
 
-
 log* object::l;
 
-log* l;
 menu* m;
-za_mapo<char[10][10]>* z;
+za_mapo* z;
 
 int main(){
     initscr();
@@ -33,12 +31,9 @@ int main(){
 
     start_color();
 
-
-    l = new log(10, 50, 0, 11);
+    object::l = new log(10, 50, 0, 11);
     m = new menu(3, 50, 12, 0);
-    z = new za_mapo<char[10][10]>(0, 0);
-
-    object::l = l;
+    z = new za_mapo(10, 10, 0, 0);
 
     refresh();
 
