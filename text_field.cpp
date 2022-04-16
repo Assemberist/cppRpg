@@ -4,7 +4,11 @@
 //  Text field functions                                                                      //
 //____________________________________________________________________________________________//
 
-text_field::text_field() : strings(nullptr), count(0), current(0) {}
+text_field::text_field(size_t rows, size_t cols, size_t pos_y, size_t pos_x) {
+    win = newwin(rows, cols, pos_y, pos_x);
+    strings = nullptr;
+    reserve(rows);
+}
 
 void text_field::reserve(short amount){
     purge();
@@ -43,7 +47,10 @@ void text_field::purge(){
     count = 0;
 }
 
-text_field::~text_field(){ purge(); }
+text_field::~text_field(){
+    purge();
+    delwin(win);
+}
 
 //--------------------------------------------------------------------------------------------//
 //   Log functions                                                                            //

@@ -11,34 +11,34 @@ public:
     T mapa;
     object** objects;
 
-    //za_mapo (char* kard, WINDOW* _win) { strcpy((char*)mapa, kard); }
+    za_mapo(size_t pos_y, size_t pos_x){
+        win = newwin(sizeof(mapa), sizeof(mapa[0]), pos_y, pos_x);
+    }
 
     void init_palitra () {
         init_pair(1, COLOR_RED, COLOR_BLACK);
         init_pair(2, COLOR_GREEN, COLOR_BLACK);
-        init_pair(3, COLOR_WHITE, COLOR_BLACK);
+        init_pair(3, COLOR_BLACK, COLOR_RED);
+        init_pair(4, COLOR_BLACK, COLOR_BLACK);
     }
 
     void update_card () {
-        wattron(win, COLOR_PAIR(3));
         wprintw(win, (char*)mapa);
-        wattroff(win, 3);
 
         int color;
         for(int i = 0; objects[i]; i++){
-            (objects[i]->Y, objects[i]->X);
             switch(objects[i]->get_fraction()){
                 case HUMANITY:
                     color = 2; break;
                 case MONSTER:
                     color = 1; break;
                 default:
-                    color = 3; break;
+                    color = 0; break;
             }
             wattron(win, COLOR_PAIR(color));
             wmove(win, objects[i]->Y, objects[i]->X);
             waddch(win, objects[i]->get_type());
-            wattroff(win, color);
+            wattroff(win, COLOR_PAIR(color));
         }
         //refresh();
         wrefresh(win);
@@ -139,4 +139,6 @@ public:
     void indirect_moving(object* from){
         move(from, "qweasdzxc"[rand() % sizeof("qweasdzxc")]);
     }
+
+    ~za_mapo(){ delwin(win); }
 };

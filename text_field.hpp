@@ -12,7 +12,7 @@ protected:
 public:
     WINDOW* win;
 
-    text_field();
+    text_field(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
 
     void reserve(short amount);
     void connect_to_win(WINDOW* _win);
@@ -29,6 +29,7 @@ public:
 
 class log : public text_field{
 public:
+    log(size_t rows, size_t cols, size_t pos_y, size_t pos_x) : text_field(rows, cols, pos_y, pos_x){}
     void print();
     void newline(const char* src);
 };
@@ -36,6 +37,7 @@ public:
 
 class menu : public text_field{
 public:
+    menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x) : text_field(rows, cols, pos_y, pos_x){}
     void print();
     void newline(const char* src);
 

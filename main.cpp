@@ -18,9 +18,11 @@ const char* test_card = "*************  *   **** **   ****      ****  *   **** *
 // **********
 
 
-log l;
-menu m;
-za_mapo<char[10][10]> z;
+log* object::l;
+
+log* l;
+menu* m;
+za_mapo<char[10][10]>* z;
 
 int main(){
     initscr();
@@ -31,6 +33,15 @@ int main(){
 
     start_color();
 
+
+    l = new log(10, 50, 0, 11);
+    m = new menu(3, 50, 12, 0);
+    z = new za_mapo<char[10][10]>(0, 0);
+
+    object::l = l;
+
+    refresh();
+
     object* objs[] = {
         new mage(3, 1, string("Maga")),
         new golem(8, 8, string("Goga")),
@@ -39,61 +50,46 @@ int main(){
         NULL
     };
 
-    WINDOW* win = newwin(10, 10, 0, 0);
-    WINDOW* _log = newwin(10, 50, 0, 11);
-    WINDOW* _menu = newwin(3, 50, 12, 0);
+    strcpy((char*)z->mapa, test_card);
+    z->objects = objs;
 
-    z.win = win;
-    strcpy((char*)z.mapa, test_card);
-    z.objects = objs;
+    z->init_palitra();
+    z->update_card();
 
-    refresh();
-
-    z.init_palitra();
-    z.update_card();
-
-    l.reserve(10);
-    l.connect_to_win(_log);
-
-    m.reserve(3);
-    m.connect_to_win(_menu);
-
-    m.newline("first option\n");
-    m.newline("second option\n");
-    m.newline("thirst option\n");
-    m.select(0);
-
-    m.print();
+    m->newline("first option\n");
+    m->newline("second option\n");
+    m->newline("thirst option\n");
+    m->select(0);
 
     char buffer[41];
 
     char temp = 0;
     while((temp = getch()) != ' '){
-        wclear(win);
+        wclear(z->win);
         switch(temp){
             case ',':
-                m.up();
+                m->up();
                 break;
 
             case '.':
-                m.down();
+                m->down();
                 break;
 
             default:
-                z.move(objs[0], temp);
+                z->move(objs[0], temp);
                 for(int i=1; objs[i]; i++){
-                    z.magnetic_search(objs[i], objs[0]);
                     if(objs[i]->is_alive() && abs(objs[i]->X, objs[0]->X) <= 1 && abs(objs[i]->Y, objs[0]->Y) <= 1){
                         sprintf(buffer, "Golem %s attack %s!\n", objs[i]->get_name(), objs[0]->get_name());
-                        l.newline(buffer);
+                        l->newline(buffer);
                         objs[0]->act(CRUSH_ATTACK, {1, 10});
-                        l.print();
+                        l->print();
                     }
+                    else z->magnetic_search(objs[i], objs[0]);
                 }
         }
-        z.update_card();
-        l.print();
-        m.print();
+        z->update_card();
+        l->print();
+        m->print();
     }
 
     endwin();

@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include "object_defs.hpp"
+#include "text_field.hpp"
 
 using namespace std;
 
@@ -18,11 +19,13 @@ union effect{
 
 class object{
 protected:
+
     map<property_t, int32_t> propertyes;
     map<effect_t, effect> effects;
     string name;
 
 public:
+    static log* l;
     uint8_t X;
     uint8_t Y;
 
@@ -32,6 +35,7 @@ public:
     void calculate();
 
     virtual char get_type() = 0;
+    effect* get_effect(effect_t type);
     const char* get_name();
     bool is_alive();
     fraction get_fraction();

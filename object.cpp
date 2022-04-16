@@ -1,18 +1,16 @@
 #include "object.hpp"
 #include "text_field.hpp"
 
-extern log l;
-
 void object::act(effect_t type, effect e){
     switch(type){
         case CRUSH_ATTACK:{
             if(effects.find(DEAD) != effects.end()){
-                l.newline("Stop punch the dead body!\n");
+                object::l->newline("Stop punch the dead body!\n");
                 return;
             }
 
             if(effects.find(PHYSIC_IMMUNITY) != effects.end()){
-                l.newline("Physic attacks had no effect.\n");
+                object::l->newline("Physic attacks had no effect.\n");
                 return;
             }
 
@@ -20,22 +18,22 @@ void object::act(effect_t type, effect e){
             auto j = propertyes.find(HEALTH);
             
             if(i != effects.end()){
-                l.newline("Attacked object have physic resistance.\n");
+                object::l->newline("Attacked object have physic resistance.\n");
                 if(i->second.timed.amount > e.timed.amount){
-                    l.newline("The armory too strong to deal a damage.\n");
+                    object::l->newline("The armory too strong to deal a damage.\n");
                     return;
                 }
                 e.timed.amount -= i->second.timed.amount;
             }
             else if((i = effects.find(PHYSIC_WEAKNESS)) != effects.end()){
-                l.newline("Attacked object have physic weakness.\n");
+                object::l->newline("Attacked object have physic weakness.\n");
                 e.timed.amount += i->second.timed.amount;
             }
 
             if(j != propertyes.end()){
                 if((i = effects.find(FRIZED)) != effects.end()){
                     if(j->second < e.timed.amount / 2){
-                        l.newline("It was splitted open.\n");
+                        object::l->newline("It was splitted open.\n");
                         effects.insert({DEAD, {0, 0}});
                         return;
                     }
@@ -45,17 +43,17 @@ void object::act(effect_t type, effect e){
                     char buff[1024];
                     sprintf(buff, "%s got %4d damage.\n", name.c_str(), e.timed.amount);
                     j->second -= e.timed.amount;
-                    l.newline(buff);
+                    object::l->newline(buff);
                 }
                 else{
                     char buff[1024];
                     sprintf(buff, "%s was killed.\n", name.c_str());
-                    l.newline(buff);
+                    object::l->newline(buff);
                     effects.insert({DEAD, {0,0}});
                 }
             }
             else{
-                l.newline("It is can not be killed or broken.\n");
+                object::l->newline("It is can not be killed or broken.\n");
                 return;
             }
             break;
@@ -63,12 +61,12 @@ void object::act(effect_t type, effect e){
 
         case MAGIC_ATTACK:{
             if(effects.find(DEAD) != effects.end()){
-                l.newline("Attakc magic will not make he alive.\n");
+                object::l->newline("Attakc magic will not make he alive.\n");
                 return;
             }
 
             if(effects.find(MAGIC_IMMUNITY) != effects.end()){
-                l.newline("Magic attack was not effect.\n");
+                object::l->newline("Magic attack was not effect.\n");
                 return;
             }
 
@@ -76,15 +74,15 @@ void object::act(effect_t type, effect e){
             auto j = propertyes.find(HEALTH);
 
             if(i != effects.end()){
-                l.newline("Antimagic aura decrease power of the magic.\n");
+                object::l->newline("Antimagic aura decrease power of the magic.\n");
                 if(i->second.timed.amount >= e.timed.amount){
-                    l.newline("The magic was destroyed.\n");
+                    object::l->newline("The magic was destroyed.\n");
                     return;
                 }
                 e.timed.amount -= i->second.timed.amount;
             }
             else if((i = effects.find(MAGIC_WEAKNESS)) != effects.end()){
-                l.newline("Object have weakness before magic.\n");
+                object::l->newline("Object have weakness before magic.\n");
                 e.timed.amount += i->second.timed.amount;
             }
 
@@ -96,12 +94,17 @@ void object::act(effect_t type, effect e){
                 sprintf(buff, format, name.c_str(), e.timed.amount);
             }
             else{
-                l.newline("It can not be killed or broken.\n");
+                object::l->newline("It can not be killed or broken.\n");
                 return;
             }
             break;
         }
     }
+}
+
+effect* object::get_effect(effect_t type){
+    auto i = effects.find(type);
+    return (i != effects.end() ? &i->second : NULL);
 }
 
 const char* object::get_name(){ return name.c_str(); }
