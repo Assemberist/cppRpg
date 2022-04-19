@@ -37,12 +37,12 @@ int main(){
 
     refresh();
 
-    object* objs[] = {
-        new mage(3, 1, string("Maga")),
-        new golem(8, 8, string("Goga")),
-        new golem(8, 7, string("Pisos")),
-        new golem(7, 3, string("Ugga Boogga")),
-        NULL
+    blink_cfg objs[] = {
+        {new mage(3, 1, string("Maga")), {GREEN_ON}},
+        {new golem(8, 8, string("Goga")), {RED_STABILE}},
+        {new golem(8, 7, string("Pisos")), {RED_STABILE}},
+        {new golem(7, 3, string("Ugga Boogga")), {RED_STABILE}},
+        {NULL, {HIDE}}
     };
 
     strcpy((char*)z->mapa, test_card);
@@ -58,10 +58,15 @@ int main(){
 
     char buffer[41];
 
+    timeout(500);
+
     char temp = 0;
     while((temp = getch()) != ' '){
         wclear(z->win);
         switch(temp){
+            case -1:
+                break;
+
             case ',':
                 m->up();
                 break;
@@ -71,19 +76,20 @@ int main(){
                 break;
 
             default:
-                z->move(objs[0], temp);
-                for(int i=1; objs[i]; i++){
-                    if(objs[i]->is_alive() && abs(objs[i]->X, objs[0]->X) <= 1 && abs(objs[i]->Y, objs[0]->Y) <= 1){
-                        sprintf(buffer, "Golem %s attack %s!\n", objs[i]->get_name(), objs[0]->get_name());
-                        l->newline(buffer);
-                        objs[0]->act(CRUSH_ATTACK, {1, 10});
-                        l->print();
+                z->move(objs[0].o, temp);
+                for(int i=1; objs[i].o; i++){
+                    if(objs[i].o->is_alive() && abs(objs[i].o->X, objs[0].o->X) <= 1 && abs(objs[i].o->Y, objs[0].o->Y) <= 1){
+                        sprintf(buffer, "Golem %s attack %s!\n", objs[i].o->get_name(), objs[0].o->get_name());
+                        object::l->newline(buffer);
+                        objs[0].o->act(CRUSH_ATTACK, {1, 10});
+                        object::l->print();
                     }
-                    else z->magnetic_search(objs[i], objs[0]);
+                    else z->magnetic_search(objs[i].o, objs[0].o);
                 }
         }
+
+        object::l->print();
         z->update_card();
-        l->print();
         m->print();
     }
 

@@ -5,10 +5,33 @@
 #include <stdint.h>
 #include <string.h>
 
+enum blink_t{
+    HIDE,
+
+    RED_STABILE,
+    RED_ON,
+    RED_OFF,
+    RED_INVERT,
+    RED_NO_INVERT,
+
+    GREEN_STABILE,
+    GREEN_ON,
+    GREEN_OFF,
+    GREEN_INVERT,
+    GREEN_NO_INVERT
+};
+
+struct blink_cfg{
+    object* o;
+    struct{
+        blink_t is_hide:4;
+    } cfg;
+};
+
 class za_mapo{
 public:
     WINDOW* win;
-    object** objects;
+    blink_cfg* objects;
 
     char* mapa;
     size_t rows;
