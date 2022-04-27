@@ -99,6 +99,9 @@ void object::act(effect_t type, effect e){
             }
             break;
         }
+
+        default:
+            object::l->newline("!! Logic is not realised yet !!");
     }
 }
 

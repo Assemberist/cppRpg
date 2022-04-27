@@ -39,6 +39,7 @@ public:
     const char* get_name();
     bool is_alive();
     fraction get_fraction();
+    virtual void print_spells(menu* _menu) = 0;
 
     object(int8_t _X, int8_t _Y, string _name) : X(_X), Y(_Y), name(_name) {}
 };

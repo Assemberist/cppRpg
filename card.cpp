@@ -159,6 +159,8 @@ void za_mapo::indirect_moving(object* from){
     move(from, "qweasdzxc"[rand() % sizeof("qweasdzxc")]);
 }
 
+void za_mapo::clear(){ wclear(win); }
+
 za_mapo::~za_mapo(){ 
     delwin(win);
     delete[] mapa;

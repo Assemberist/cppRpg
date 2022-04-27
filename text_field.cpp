@@ -117,3 +117,5 @@ void menu::print(){
     }
     wrefresh(win);
 }
+
+const char* menu::get_selected(){ return strings[current]; }

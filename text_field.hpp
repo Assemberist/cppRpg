@@ -44,4 +44,6 @@ public:
     void up();
     void down();
     void select(size_t num);
+
+    const char* get_selected();
 };

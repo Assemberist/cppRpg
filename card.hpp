@@ -42,9 +42,16 @@ public:
 
     void init_palitra();
     void update_card();
+    void clear();
 
     void magnetic_search(object* from, object* to);
     void indirect_moving(object* from);
 
     char move(object* obj, char direction);
+};
+
+struct screen{
+    za_mapo* mapa;
+    log* common_log;
+    menu* common_menu;
 };
