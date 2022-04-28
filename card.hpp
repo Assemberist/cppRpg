@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <string.h>
 
+#define abs(A, B) ((A) - (B) > 0 ? (A) - (B) : (B) - (A))
+
 enum blink_t{
     HIDE,
 
@@ -48,6 +50,7 @@ public:
     void indirect_moving(object* from);
 
     char move(object* obj, char direction);
+    void point(object* target, char direction);
 };
 
 struct screen{

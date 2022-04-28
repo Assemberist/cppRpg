@@ -10,12 +10,12 @@ public:
     }
 
     void print_spells(menu* _menu){
-        _menu.clear();
-        _menu.newline("Fire ball");
-        _menu.newline("Lighting");
-        _menu.newline("Punch");
-        _menu.select(0);
-        _menu.print();
+        _menu->clear();
+        _menu->newline("Fire ball");
+        _menu->newline("Lighting");
+        _menu->newline("Punch");
+        _menu->select(0);
+        _menu->print();
     }
 
     char get_type(){ return 'm'; }
@@ -47,10 +47,10 @@ public:
     }
 
     void print_spells(menu* _menu){
-        _menu.clear();
-        _menu.newline("Punch");
-        _menu.select(0);
-        _menu.print();
+        _menu->clear();
+        _menu->newline("Punch");
+        _menu->select(0);
+        _menu->print();
     }
 
     char get_type(){ return 'G'; }

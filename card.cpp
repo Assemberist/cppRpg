@@ -66,17 +66,19 @@ void za_mapo::magnetic_search(object* from, object* to){
         if(from->X == to->X && move(from, 'x')) return; // just down
         if(from->X < to->X){ // down and right
             if(move(from, 'c')) return;
-            if(from->X - to->X > from->Y - to->Y)
+            if(from->X - to->X > from->Y - to->Y){
                 if(move(from, 'd') || move(from, 'x'))
                     return;
+            }
             else
                 if(move(from, 'x') || move(from, 'd'));
         }
         else if(from->X > to->X){ // down and left
             if(move(from, 'z')) return;
-            if(to->X - from->X > from->Y - to->Y)
+            if(to->X - from->X > from->Y - to->Y){
                 if(move(from, 'a') || move(from, 'x'))
                     return;
+            }
             else
                 if(move(from, 'x') || move(from, 'a'));
         }
@@ -85,17 +87,19 @@ void za_mapo::magnetic_search(object* from, object* to){
         if(from->X == to->X && move(from, 'w')) return; // just up
         if(from->X < to->X){ // up and right
             if(move(from, 'e')) return;
-            if(from->X - to->X > to->Y - from->Y)
+            if(from->X - to->X > to->Y - from->Y){
                 if(move(from, 'd') || move(from, 'w'))
                     return;
+            }
             else
                 if(move(from, 'w') || move(from, 'd'));
         }
         else if(from->X > to->X){ // up and left
             if(move(from, 'q')) return;
-            if(to->X - from->X > to->Y - from->Y)
+            if(to->X - from->X > to->Y - from->Y){
                 if(move(from, 'a') || move(from, 'w'))
                     return;
+            }
             else
                 if(move(from, 'w') || move(from, 'a'));
         }
@@ -164,4 +168,49 @@ void za_mapo::clear(){ wclear(win); }
 za_mapo::~za_mapo(){ 
     delwin(win);
     delete[] mapa;
+}
+
+void za_mapo::point(object* obj, char direction){
+    int8_t newX, newY;
+    switch(direction){
+        case 'q':
+            newX = obj->X-1;
+            newY = obj->Y-1;
+            break;
+        case 'w':
+            newX = obj->X;
+            newY = obj->Y-1;
+            break;
+        case 'e':
+            newX = obj->X+1;
+            newY = obj->Y-1;
+            break;
+        case 'd':
+            newX = obj->X+1;
+            newY = obj->Y;
+            break;
+        case 'c':
+            newX = obj->X+1;
+            newY = obj->Y+1;
+            break;
+        case 'x':
+            newX = obj->X;
+            newY = obj->Y+1;
+            break;
+        case 'z':
+            newX = obj->X-1;
+            newY = obj->Y+1;
+            break;
+        case 'a':
+            newX = obj->X-1;
+            newY = obj->Y;
+            break;
+        default:
+            return;
+    }
+
+    if( newX >= 0 && newX < length &&
+        newY >= 0 && newY < length){
+            obj->X = newX;
+            obj->Y = newY;}
 }

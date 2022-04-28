@@ -2,8 +2,6 @@
 #include "classes.hpp"
 #include "text_field.hpp"
 
-#define abs(A, B) ((A) - (B) > 0 ? (A) - (B) : (B) - (A))
-
 const char* test_card = "*************  *   **** **   ****      ****  *   **** ******* *      **        ** *      ***********";
 // Card 10x10
 // **********
