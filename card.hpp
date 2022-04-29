@@ -44,13 +44,14 @@ public:
 
     void init_palitra();
     void update_card();
+    void draw_range(object* target, int8_t range);
     void clear();
 
     void magnetic_search(object* from, object* to);
     void indirect_moving(object* from);
 
     char move(object* obj, char direction);
-    void point(object* target, char direction);
+    void free_move(object* target, char direction);
 };
 
 struct screen{

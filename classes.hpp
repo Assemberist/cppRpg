@@ -1,6 +1,13 @@
 #pragma once
 #include "object.hpp"
 
+class target : public object{
+public:
+    target(int8_t _X, int8_t _Y) : object(_X, _Y, string("")) {}
+    void print_spells(menu* _menu) {}
+    char get_type(){ return 'x'; }
+};
+
 class mage : public object{
 public:
     mage(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){

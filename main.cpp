@@ -1,6 +1,7 @@
 #include "card.hpp"
 #include "classes.hpp"
 #include "text_field.hpp"
+#include "user_ifc.hpp"
 
 const char* test_card = "*************  *   **** **   ****      ****  *   **** ******* *      **        ** *      ***********";
 // Card 10x10
@@ -54,11 +55,18 @@ int main(){
     m->newline("thirst option\n");
     m->select(0);
 
+    screen s;
+    s.common_log = object::l;
+    s.common_menu = m;
+    s.mapa = z;
+
     char buffer[41];
 
     timeout(500);
 
-    char temp = 0;
+    while(user_turn(objs, s));
+
+/*    char temp = 0;
     while((temp = getch()) != ' '){
         wclear(z->win);
         switch(temp){
@@ -90,7 +98,7 @@ int main(){
         z->update_card();
         m->print();
     }
-
+*/
     endwin();
     return 0;
 }
