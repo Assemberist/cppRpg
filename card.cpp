@@ -15,7 +15,47 @@ void za_mapo::init_palitra () {
     init_pair(5, COLOR_BLACK, COLOR_GREEN);
 }
 
-void za_mapo::update_card () {
+char new_direction(int8_t* newX, int8_t* newY, char direction, object* obj){
+        switch(direction){
+        case 'q':
+            *newX = obj->X-1;
+            *newY = obj->Y-1;
+            break;
+        case 'w':
+            *newX = obj->X;
+            *newY = obj->Y-1;
+            break;
+        case 'e':
+            *newX = obj->X+1;
+            *newY = obj->Y-1;
+            break;
+        case 'd':
+            *newX = obj->X+1;
+            *newY = obj->Y;
+            break;
+        case 'c':
+            *newX = obj->X+1;
+            *newY = obj->Y+1;
+            break;
+        case 'x':
+            *newX = obj->X;
+            *newY = obj->Y+1;
+            break;
+        case 'z':
+            *newX = obj->X-1;
+            *newY = obj->Y+1;
+            break;
+        case 'a':
+            *newX = obj->X-1;
+            *newY = obj->Y;
+            break;
+        default:
+            return '\0';
+    }
+    return direction;
+}
+
+void za_mapo::redraw(){
     wprintw(win, (char*)mapa);
 
     int color;
@@ -58,6 +98,10 @@ void za_mapo::update_card () {
         waddch(win, objects[i].o->get_type());
         wattroff(win, COLOR_PAIR(color));
     }
+}
+
+void za_mapo::update_card () {
+    redraw();
     wrefresh(win);
 }
 
@@ -109,42 +153,8 @@ void za_mapo::magnetic_search(object* from, object* to){
 
 char za_mapo::move(object* obj, char direction){
     int8_t newX, newY;
-    switch(direction){
-        case 'q':
-            newX = obj->X-1;
-            newY = obj->Y-1;
-            break;
-        case 'w':
-            newX = obj->X;
-            newY = obj->Y-1;
-            break;
-        case 'e':
-            newX = obj->X+1;
-            newY = obj->Y-1;
-            break;
-        case 'd':
-            newX = obj->X+1;
-            newY = obj->Y;
-            break;
-        case 'c':
-            newX = obj->X+1;
-            newY = obj->Y+1;
-            break;
-        case 'x':
-            newX = obj->X;
-            newY = obj->Y+1;
-            break;
-        case 'z':
-            newX = obj->X-1;
-            newY = obj->Y+1;
-            break;
-        case 'a':
-            newX = obj->X-1;
-            newY = obj->Y;
-            break;
-        default:
-            return '\0';
-    }
+
+    if(!new_direction(&newX, &newY, direction, obj)) return '\0';
 
     char (*ptr)[length] = (char(*)[length])mapa;
 
@@ -172,42 +182,8 @@ za_mapo::~za_mapo(){
 
 void za_mapo::free_move(object* obj, char direction){
     int8_t newX, newY;
-    switch(direction){
-        case 'q':
-            newX = obj->X-1;
-            newY = obj->Y-1;
-            break;
-        case 'w':
-            newX = obj->X;
-            newY = obj->Y-1;
-            break;
-        case 'e':
-            newX = obj->X+1;
-            newY = obj->Y-1;
-            break;
-        case 'd':
-            newX = obj->X+1;
-            newY = obj->Y;
-            break;
-        case 'c':
-            newX = obj->X+1;
-            newY = obj->Y+1;
-            break;
-        case 'x':
-            newX = obj->X;
-            newY = obj->Y+1;
-            break;
-        case 'z':
-            newX = obj->X-1;
-            newY = obj->Y+1;
-            break;
-        case 'a':
-            newX = obj->X-1;
-            newY = obj->Y;
-            break;
-        default:
-            return;
-    }
+
+    if(!new_direction(&newX, &newY, direction, obj)) return;
 
     if( newX >= 0 && newX < length &&
         newY >= 0 && newY < length){
@@ -215,55 +191,13 @@ void za_mapo::free_move(object* obj, char direction){
             obj->Y = newY;}
 }
 
-
 void za_mapo::draw_range(object* target, int8_t range){
-    wprintw(win, (char*)mapa);
-
-    int color;
-    for(int i = 0; objects[i].o; i++){
-        switch(objects[i].cfg.is_hide){
-            case HIDE:
-                continue;
-
-            case GREEN_ON:
-                color = 4;
-                objects[i].cfg.is_hide = GREEN_OFF;
-                break;
-
-            case GREEN_OFF:
-                color = 2;
-                objects[i].cfg.is_hide = GREEN_ON;
-                break;
-
-            case RED_ON:
-                color = 4;
-                objects[i].cfg.is_hide = RED_OFF;
-                break;
-
-            case RED_OFF:
-                color = 1;
-                objects[i].cfg.is_hide = RED_ON;
-                break;
-            
-            case GREEN_STABILE:
-                color = 2;
-                break;
-
-            case RED_STABILE:
-                color = 1;
-                break;
-        }
-
-        wattron(win, COLOR_PAIR(color));
-        wmove(win, objects[i].o->Y, objects[i].o->X);
-        waddch(win, objects[i].o->get_type());
-        wattroff(win, COLOR_PAIR(color));
-    }
+    redraw();
 
     int8_t fromX = target->X - range < 0 ? 0 : target->X - range;
     int8_t fromY = target->Y - range < 0 ? 0 : target->Y - range;
-    int8_t toX = target->X + range > length ? length-1 : target->X + range;
-    int8_t toY = target->Y + range > rows ? rows-1 : target->Y + range;
+    int8_t toX = target->X + range > length ? length-1 : target->X + range-1;
+    int8_t toY = target->Y + range > rows ? rows-1 : target->Y + range-1;
 
     wattron(win, COLOR_PAIR(3));
     for(int i = fromY; i < toY; i++){
@@ -272,10 +206,10 @@ void za_mapo::draw_range(object* target, int8_t range){
             waddch(win, ((char(*)[length])mapa)[i][j]); }
 
     for(int i = 0; objects[i].o; i++){
-        if( objects[i].o->X >= fromX && objects[i].o->X <= toX &&
-            objects[i].o->Y >= fromY && objects[i].o->Y <= toY ){
-                wmove(win, objects[i].o->X, objects[i].o->Y);
-                waddch(win, ((char(*)[length])mapa)[objects[i].o->Y][objects[i].o->X]); }}
+        if( objects[i].o->X >= fromX && objects[i].o->X < toX &&
+            objects[i].o->Y >= fromY && objects[i].o->Y < toY ){
+                wmove(win, objects[i].o->Y, objects[i].o->X);
+                waddch(win, objects[i].o->get_type()); }}
 
     wattroff(win, COLOR_PAIR(3));
 

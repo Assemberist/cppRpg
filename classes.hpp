@@ -18,9 +18,9 @@ public:
 
     void print_spells(menu* _menu){
         _menu->clear();
-        _menu->newline("Fire ball");
-        _menu->newline("Lighting");
-        _menu->newline("Punch");
+        _menu->newline("Fire ball\n");
+        _menu->newline("Lighting\n");
+        _menu->newline("Punch\n");
         _menu->select(0);
         _menu->print();
     }
@@ -55,7 +55,7 @@ public:
 
     void print_spells(menu* _menu){
         _menu->clear();
-        _menu->newline("Punch");
+        _menu->newline("Punch\n");
         _menu->select(0);
         _menu->print();
     }

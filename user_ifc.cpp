@@ -61,9 +61,8 @@ bool user_turn(blink_cfg* u, screen s){
     target* tar = nullptr;
     blink_cfg* single_target = nullptr;
 
-    char temp = 0;
+    char temp;
     while((temp = getch()) != ' '){
-
         switch(stat){
             // moving and choosing of spell are allowed
             case STAY:
@@ -123,17 +122,21 @@ bool user_turn(blink_cfg* u, screen s){
 
                     case 'q':
                         stat = STAY;
+                        s.common_menu->clear();
+                        s.common_menu->hide();
                         break;
 
                     case 'w':
                         s.common_menu->down();
                         s.common_menu->print();
+                        break;
 
                     case 's':
                         s.common_menu->up();
                         s.common_menu->print();
                 }
             }
+            break;
 
             case CHOOSE_TARGET:
                 switch(choosed_spell){
@@ -208,6 +211,7 @@ done:
     if(tar) delete tar;
 
     u->cfg.is_hide = GREEN_STABILE;
+    s.mapa->update_card();
     search_targets(nullptr, s, 0);
 
     return (temp == ' ' ? false : true);

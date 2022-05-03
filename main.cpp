@@ -50,11 +50,6 @@ int main(){
     z->init_palitra();
     z->update_card();
 
-    m->newline("first option\n");
-    m->newline("second option\n");
-    m->newline("thirst option\n");
-    m->select(0);
-
     screen s;
     s.common_log = object::l;
     s.common_menu = m;

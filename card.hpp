@@ -44,6 +44,7 @@ public:
 
     void init_palitra();
     void update_card();
+    void redraw();
     void draw_range(object* target, int8_t range);
     void clear();
 

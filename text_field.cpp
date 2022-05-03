@@ -31,10 +31,17 @@ void text_field::putline(char* src){
     current = current == count-1 ? 0 : current+1;
 }
 
+void text_field::hide(){
+    wclear(win);
+    wrefresh(win);
+}
+
 void text_field::clear(){
     current = 0;
-    for(int i=0; i<count; i++)
+    for(int i=0; i<count; i++){
         delete[] strings[i];
+        strings[i] = nullptr;
+    }
 }
 
 void text_field::purge(){
@@ -113,7 +120,8 @@ void menu::print(){
     wclear(win);
     for(int i = 0; i<count; i++){
         waddch(win, i == current ? '*' : ' ');
-        wprintw(win, strings[i]);
+        if(strings[i])
+            wprintw(win, strings[i]);
     }
     wrefresh(win);
 }

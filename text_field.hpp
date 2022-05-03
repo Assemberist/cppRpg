@@ -18,6 +18,7 @@ public:
     void connect_to_win(WINDOW* _win);
     void putline(char* src);
     void clear();
+    void hide();
     void purge();
 
     virtual void print() = 0;
