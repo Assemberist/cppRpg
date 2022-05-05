@@ -88,10 +88,18 @@ void object::act(effect_t type, effect e){
 
             if(j != propertyes.end()){
                 char buff[1024];
-                const char* format = j->second <= e.timed.amount ?
-                    "This attack was letal for the %s.\n" :
-                    "%s received %d damage.\n";
+                const char* format;
+                if(j->second <= e.timed.amount){
+                    format = "This attack was letal for the %s.\n";
+                    j->second = 0;
+                    effects.insert({DEAD, {0,0}});
+                }
+                else{
+                    format = "%s received %d damage.\n";
+                    j->second -= e.timed.amount;
+                }
                 sprintf(buff, format, name.c_str(), e.timed.amount);
+                object::l->newline(buff);
             }
             else{
                 object::l->newline("It can not be killed or broken.\n");
@@ -101,7 +109,7 @@ void object::act(effect_t type, effect e){
         }
 
         default:
-            object::l->newline("!! Logic is not realised yet !!");
+            object::l->newline("!! Logic is not realised yet !!\n");
     }
 }
 

@@ -24,9 +24,9 @@ void clear_blinking(blink_cfg* objs){
 }
 
 spell_t string_to_spell(const char* src){
-    if(!strcmp(src, "Fire ball")) return FIREBALL;
-    if(!strcmp(src, "Punch")) return PUNCH;
-    //if(!strcmp(src, "Lighting")); 
+    if(!strcmp(src, "Fire ball\n")) return FIREBALL;
+    if(!strcmp(src, "Punch\n")) return PUNCH;
+    //if(!strcmp(src, "Lighting\n")); 
     return LIGHTING;
 }
 
@@ -58,7 +58,7 @@ bool user_turn(blink_cfg* u, screen s){
 
     object_state stat = STAY;
     spell_t choosed_spell;
-    target* tar = nullptr;
+    blink_cfg* tar = nullptr;
     blink_cfg* single_target = nullptr;
 
     char temp;
@@ -103,10 +103,11 @@ bool user_turn(blink_cfg* u, screen s){
                         clear_blinking(s.mapa->objects);
                         switch (choosed_spell) {
                             case FIREBALL:
-                                tar = new target(u->o->X, u->o->Y);
+                                tar = new blink_cfg;
+                                *tar = (blink_cfg){.o = new target(u->o->X, u->o->Y), .cfg = {HIDE}};
                                 s.mapa->clear();
-                                s.mapa->free_move(tar, temp);
-                                s.mapa->draw_range(tar, 3);
+                                s.mapa->free_move(tar->o, 's');
+                                s.mapa->draw_range(tar->o, 3);
                                 break;
 
                             case PUNCH:
@@ -153,17 +154,21 @@ bool user_turn(blink_cfg* u, screen s){
                             case 'x':
                             case 'c':
                                 s.mapa->clear();
-                                s.mapa->free_move(tar, temp);
-                                s.mapa->draw_range(tar, 3);
+                                s.mapa->free_move(tar->o, temp);
+                                s.mapa->draw_range(tar->o, 3);
                                 break;
 
                             case 'f':
-                                for(int i=0; s.mapa->objects[i].o; i++)
-                                    if( s.mapa->objects[i].cfg.is_hide == RED_INVERT ||
-                                        s.mapa->objects[i].cfg.is_hide == GREEN_INVERT ){
-                                            s.mapa->objects[i].o->act(FIRE_DAMAGE, {0, 25});
-                                            s.mapa->objects[i].o->act(MAGIC_ATTACK, {0, 5}); }
-                                break;
+                                search_targets(nullptr, s, 0);
+                                while(single_target = search_targets(tar, s, 3)){
+                                    single_target->o->act(FIRE_DAMAGE, {0, 25});
+                                    single_target->o->act(MAGIC_ATTACK, {0, 5});
+                                }
+
+                                s.common_log->print();
+                                s.common_menu->clear();
+                                s.common_menu->hide();
+                                goto done;
 
                             default:
                                 continue;
@@ -211,6 +216,7 @@ done:
     if(tar) delete tar;
 
     u->cfg.is_hide = GREEN_STABILE;
+    s.mapa->clear();
     s.mapa->update_card();
     search_targets(nullptr, s, 0);
 

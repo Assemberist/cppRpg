@@ -59,38 +59,44 @@ void za_mapo::redraw(){
     wprintw(win, (char*)mapa);
 
     int color;
+
     for(int i = 0; objects[i].o; i++){
-        switch(objects[i].cfg.is_hide){
-            case HIDE:
-                continue;
+        if(objects[i].o->get_effect(DEAD))
+            color = 0;
 
-            case GREEN_ON:
-                color = 4;
-                objects[i].cfg.is_hide = GREEN_OFF;
-                break;
+        else{
+            switch(objects[i].cfg.is_hide){
+                case HIDE:
+                    continue;
 
-            case GREEN_OFF:
-                color = 2;
-                objects[i].cfg.is_hide = GREEN_ON;
-                break;
+                case GREEN_ON:
+                    color = 4;
+                    objects[i].cfg.is_hide = GREEN_OFF;
+                    break;
 
-            case RED_ON:
-                color = 4;
-                objects[i].cfg.is_hide = RED_OFF;
-                break;
+                case GREEN_OFF:
+                    color = 2;
+                    objects[i].cfg.is_hide = GREEN_ON;
+                    break;
 
-            case RED_OFF:
-                color = 1;
-                objects[i].cfg.is_hide = RED_ON;
-                break;
-            
-            case GREEN_STABILE:
-                color = 2;
-                break;
+                case RED_ON:
+                    color = 4;
+                    objects[i].cfg.is_hide = RED_OFF;
+                    break;
 
-            case RED_STABILE:
-                color = 1;
-                break;
+                case RED_OFF:
+                    color = 1;
+                    objects[i].cfg.is_hide = RED_ON;
+                    break;
+                
+                case GREEN_STABILE:
+                    color = 2;
+                    break;
+
+                case RED_STABILE:
+                    color = 1;
+                    break;
+            }
         }
 
         wattron(win, COLOR_PAIR(color));
