@@ -25,7 +25,8 @@ void object::act(effect_t type, effect e){
                 }
                 e.timed.amount -= i->second.timed.amount;
             }
-            else if((i = effects.find(PHYSIC_WEAKNESS)) != effects.end()){
+            
+            if((i = effects.find(PHYSIC_WEAKNESS)) != effects.end()){
                 object::l->newline("Attacked object have physic weakness.\n");
                 e.timed.amount += i->second.timed.amount;
             }
@@ -41,7 +42,7 @@ void object::act(effect_t type, effect e){
                 
                 if(j->second > e.timed.amount){
                     char buff[1024];
-                    sprintf(buff, "%s got %4d damage.\n", name.c_str(), e.timed.amount);
+                    sprintf(buff, "%s got %4d of physic damage.\n", name.c_str(), e.timed.amount);
                     j->second -= e.timed.amount;
                     object::l->newline(buff);
                 }
@@ -81,7 +82,8 @@ void object::act(effect_t type, effect e){
                 }
                 e.timed.amount -= i->second.timed.amount;
             }
-            else if((i = effects.find(MAGIC_WEAKNESS)) != effects.end()){
+
+            if((i = effects.find(MAGIC_WEAKNESS)) != effects.end()){
                 object::l->newline("Object have weakness before magic.\n");
                 e.timed.amount += i->second.timed.amount;
             }
@@ -95,7 +97,7 @@ void object::act(effect_t type, effect e){
                     effects.insert({DEAD, {0,0}});
                 }
                 else{
-                    format = "%s received %d damage.\n";
+                    format = "%s received %d of magic damage.\n";
                     j->second -= e.timed.amount;
                 }
                 sprintf(buff, format, name.c_str(), e.timed.amount);
@@ -103,6 +105,117 @@ void object::act(effect_t type, effect e){
             }
             else{
                 object::l->newline("It can not be killed or broken.\n");
+                return;
+            }
+            break;
+        }
+
+        case ELECTRIC_DAMAGE:{
+            if(effects.find(DEAD) != effects.end()){
+                object::l->newline("Defibrilation had not effect.\n");
+                return;
+            }
+
+            if(effects.find(DIELECTRIC) != effects.end()){
+                object::l->newline("It is dielectric.\n");
+                return;
+            }
+
+            auto i = effects.find(ELECTRIC_PROTECT);
+            auto j = propertyes.find(HEALTH);
+
+            if(i != effects.end()){
+                object::l->newline("Smh dielectric decreased damage.\n");
+                if(i->second.timed.amount >= e.timed.amount){
+                    object::l->newline("Dielectric neutralise all damage.\n");
+                    return;
+                }
+                e.timed.amount -= i->second.timed.amount;
+            }
+
+            if((i = effects.find(ELECTRIC_WEAKNESS)) != effects.end()){
+                object::l->newline("Object have weakness before electric.\n");
+                e.timed.amount += i->second.timed.amount;
+            }
+
+            if((i = effects.find(WET)) != effects.end()){
+                object::l->newline("Wet objects have weakeness before electric.\n");
+                e.timed.amount *= 1.5;
+            }
+
+            if(j != propertyes.end()){
+                char buff[1024];
+                const char* format;
+                if(j->second <= e.timed.amount){
+                    format = "This attack was letal for the %s.\n";
+                    j->second = 0;
+                    effects.insert({DEAD, {0,0}});
+                }
+                else{
+                    format = "%s received %d of electric damage.\n";
+                    j->second -= e.timed.amount;
+                }
+                sprintf(buff, format, name.c_str(), e.timed.amount);
+                object::l->newline(buff);
+            }
+            else{
+                object::l->newline("It can not be killed or broken.\n");
+                return;
+            }
+            break;
+        }
+
+        case FIRE_DAMAGE:{
+            if(effects.find(DEAD) != effects.end()){
+                object::l->newline("Defibrilation had not effect.\n");
+                return;
+            }
+
+            if(effects.find(UNFLAMED) != effects.end()){
+                object::l->newline("It can not burns.\n");
+                return;
+            }
+
+            auto i = effects.find(FIRE_PROTECT);
+            auto j = propertyes.find(HEALTH);
+
+            if(i != effects.end()){
+                object::l->newline("Fire goes weaker.\n");
+                if(i->second.timed.amount >= e.timed.amount){
+                    object::l->newline("Fire disappired.\n");
+                    return;
+                }
+                e.timed.amount -= i->second.timed.amount;
+            }
+
+            if((i = effects.find(WET)) != effects.end()){
+                object::l->newline("Wet objects whorse fireing.\n");
+                e.timed.amount /= 2;
+            }
+            
+            if((i = effects.find(FIRE_WEAKNESS)) != effects.end()){
+                object::l->newline("Object is burning very good.\n");
+                e.timed.amount += i->second.timed.amount;
+            }
+
+
+            if(j != propertyes.end()){
+                char buff[1024];
+                const char* format;
+                if(j->second <= e.timed.amount){
+                    format = "The %s was burned.\n";
+                    j->second = 0;
+                    effects.insert({DEAD, {0,0}});
+                }
+                else{
+                    format = "%s received %d of fire damage.\n";
+                    j->second -= e.timed.amount;
+                }
+                sprintf(buff, format, name.c_str(), e.timed.amount);
+                object::l->newline(buff);
+            }
+            else{
+                object::l->newline("It can not be burned.\n");
                 return;
             }
             break;

@@ -35,7 +35,7 @@ enum effect_t{
     CORROSION,
     SHOCKED,
     FIRING,
-    DRY,
+    WET,
     STUNNED,
     FRIZED,
     SPLITTED_OPEN,
