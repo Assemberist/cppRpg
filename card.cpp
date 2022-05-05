@@ -61,7 +61,7 @@ void za_mapo::redraw(){
     int color;
 
     for(int i = 0; objects[i].o; i++){
-        if(objects[i].o->get_effect(DEAD))
+        if(objects[i].o->get_effect(DEAD) && objects[i].cfg.is_hide != RED_INVERT)
             color = 0;
 
         else{
@@ -95,6 +95,14 @@ void za_mapo::redraw(){
 
                 case RED_STABILE:
                     color = 1;
+                    break;
+
+                case RED_INVERT:
+                    color = 3;
+                    break;
+
+                case GREEN_INVERT:
+                    color = 5;
                     break;
             }
         }
@@ -200,10 +208,10 @@ void za_mapo::free_move(object* obj, char direction){
 void za_mapo::draw_range(object* target, int8_t range){
     redraw();
 
-    int8_t fromX = target->X - range < 0 ? 0 : target->X - range;
-    int8_t fromY = target->Y - range < 0 ? 0 : target->Y - range;
-    int8_t toX = target->X + range > length ? length-1 : target->X + range-1;
-    int8_t toY = target->Y + range > rows ? rows-1 : target->Y + range-1;
+    int8_t fromX = target->X - range < 0 ? 0 : target->X - range+1;
+    int8_t fromY = target->Y - range < 0 ? 0 : target->Y - range+1;
+    int8_t toX = target->X + range > length ? length-1 : target->X + range;
+    int8_t toY = target->Y + range > rows ? rows-1 : target->Y + range;
 
     wattron(win, COLOR_PAIR(3));
     for(int i = fromY; i < toY; i++){

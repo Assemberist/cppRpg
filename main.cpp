@@ -61,39 +61,6 @@ int main(){
 
     while(user_turn(objs, s));
 
-/*    char temp = 0;
-    while((temp = getch()) != ' '){
-        wclear(z->win);
-        switch(temp){
-            case -1:
-                break;
-
-            case ',':
-                m->up();
-                break;
-
-            case '.':
-                m->down();
-                break;
-
-            default:
-                z->move(objs[0].o, temp);
-                for(int i=1; objs[i].o; i++){
-                    if(objs[i].o->is_alive() && abs(objs[i].o->X, objs[0].o->X) <= 1 && abs(objs[i].o->Y, objs[0].o->Y) <= 1){
-                        sprintf(buffer, "Golem %s attack %s!\n", objs[i].o->get_name(), objs[0].o->get_name());
-                        object::l->newline(buffer);
-                        objs[0].o->act(CRUSH_ATTACK, {1, 10});
-                        object::l->print();
-                    }
-                    else z->magnetic_search(objs[i].o, objs[0].o);
-                }
-        }
-
-        object::l->print();
-        z->update_card();
-        m->print();
-    }
-*/
     endwin();
     return 0;
 }

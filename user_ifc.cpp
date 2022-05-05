@@ -60,6 +60,7 @@ bool user_turn(blink_cfg* u, screen s){
     spell_t choosed_spell;
     blink_cfg* tar = nullptr;
     blink_cfg* single_target = nullptr;
+    blink_t last_color;
 
     char temp;
     while((temp = getch()) != ' '){
@@ -101,23 +102,32 @@ bool user_turn(blink_cfg* u, screen s){
                     case 'f':
                         choosed_spell = string_to_spell(s.common_menu->get_selected());
                         clear_blinking(s.mapa->objects);
+                        u->cfg.is_hide = GREEN_STABILE;
+                        s.mapa->clear();
                         switch (choosed_spell) {
                             case FIREBALL:
                                 tar = new blink_cfg;
                                 *tar = (blink_cfg){.o = new target(u->o->X, u->o->Y), .cfg = {HIDE}};
-                                s.mapa->clear();
                                 s.mapa->free_move(tar->o, 's');
                                 s.mapa->draw_range(tar->o, 3);
                                 break;
 
                             case PUNCH:
                                 single_target = search_targets(u, s, 1);
+                                last_color = single_target->cfg.is_hide;
+                                single_target->cfg.is_hide = RED_INVERT;
+                                s.mapa->update_card();
                                 break;
 
                             case LIGHTING:
                                 single_target = search_targets(u, s, 5);
+                                last_color = single_target->cfg.is_hide;
+                                single_target->cfg.is_hide = RED_INVERT;
+                                s.mapa->update_card();
                                 break;
                         }
+                        s.common_menu->clear();
+                        s.common_menu->hide();
                         stat = CHOOSE_TARGET;
                         break;
 
@@ -143,7 +153,6 @@ bool user_turn(blink_cfg* u, screen s){
                 switch(choosed_spell){
                     case FIREBALL:{
                         switch(temp){
-
                             case 'q':
                             case 'w':
                             case 'e':
@@ -160,7 +169,7 @@ bool user_turn(blink_cfg* u, screen s){
 
                             case 'f':
                                 search_targets(nullptr, s, 0);
-                                while(single_target = search_targets(tar, s, 3)){
+                                while(single_target = search_targets(tar, s, 2)){
                                     single_target->o->act(FIRE_DAMAGE, {0, 25});
                                     single_target->o->act(MAGIC_ATTACK, {0, 5});
                                 }
@@ -170,42 +179,82 @@ bool user_turn(blink_cfg* u, screen s){
                                 s.common_menu->hide();
                                 goto done;
 
+                            case 'r':
+                                stat = CHOOSE_SPELL;
+                                s.mapa->clear();
+                                u->cfg.is_hide = GREEN_ON;
+                                u->o->print_spells(s.common_menu);
+                                s.mapa->update_card();
+                                break;
+
                             default:
                                 continue;
                         }
                         break;
                     }
+                    break;
 
-/*                    case PUNCH:
+                    case PUNCH:
                         switch(temp){
                             case 's':
                                 s.mapa->clear();
-                                if(single_target->cfg.is_hide == GREEN_INVERT)
-                                    single_target->cfg.is_hide = GREEN_STABILE;
-                                else single_target->cfg.is_hide = RED_STABILE;
-
+                                single_target->cfg.is_hide = last_color;
                                 while(!(single_target = search_targets(u, s, 1)));
-
+                                last_color = single_target->cfg.is_hide;
+                                single_target->cfg.is_hide = RED_INVERT;
                                 s.mapa->update_card();
                                 break;
 
                             case 'f':
                                 single_target->o->act(CRUSH_ATTACK, {0, 25});
-                                
-                                break;
+                                single_target->cfg.is_hide = last_color;
+                                s.common_log->print();
+                                goto done;
 
                             case 'q':
                                 stat = CHOOSE_SPELL;
+                                s.mapa->clear();
+                                u->cfg.is_hide = GREEN_ON;
+                                u->o->print_spells(s.common_menu);
+                                s.mapa->update_card();
+                                break;
 
                             default:
                                 continue;
                         break;
                     }
+                    break;
 
                     case LIGHTING:
-                        // copy from punch
+                        switch(temp){
+                            case 's':
+                                s.mapa->clear();
+                                single_target->cfg.is_hide = last_color;
+                                while(!(single_target = search_targets(u, s, 5)));
+                                last_color = single_target->cfg.is_hide;
+                                single_target->cfg.is_hide = RED_INVERT;
+                                s.mapa->update_card();
+                                break;
+
+                            case 'f':
+                                single_target->o->act(ELECTRIC_DAMAGE, {0, 40});
+                                single_target->o->act(MAGIC_ATTACK, {0, 10});
+                                single_target->cfg.is_hide = last_color;
+                                s.common_log->print();
+                                goto done;
+
+                            case 'q':
+                                stat = CHOOSE_SPELL;
+                                s.mapa->clear();
+                                u->cfg.is_hide = GREEN_ON;
+                                u->o->print_spells(s.common_menu);
+                                s.mapa->update_card();
+                                break;
+
+                            default:
+                                continue;
                         break;
-                        */
+                    }
                 }
                 break;
         }
