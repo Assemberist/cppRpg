@@ -56,7 +56,7 @@ char new_direction(int8_t* newX, int8_t* newY, char direction, object* obj){
 }
 
 void za_mapo::redraw(){
-    wprintw(win, (char*)mapa);
+    wprintw(win, mapa);
 
     int color;
 

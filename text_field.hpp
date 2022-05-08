@@ -17,9 +17,10 @@ public:
     void reserve(short amount);
     void connect_to_win(WINDOW* _win);
     void putline(char* src);
-    void clear();
     void hide();
     void purge();
+
+    virtual void clear();
 
     virtual void print() = 0;
     virtual void newline(const char* src) = 0;
@@ -41,6 +42,7 @@ public:
     menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x) : text_field(rows, cols, pos_y, pos_x){}
     void print();
     void newline(const char* src);
+    void clear();
 
     void up();
     void down();

@@ -23,8 +23,8 @@ void text_field::reserve(short amount){
 void text_field::connect_to_win(WINDOW* _win){ win = _win; }
 
 void text_field::putline(char* src){
-    if(strings[current])
-        delete[] strings[current];
+    // if(strings[current])
+    //     delete[] strings[current];
     
     strings[current] = src;
 
@@ -124,6 +124,12 @@ void menu::print(){
             wprintw(win, strings[i]);
     }
     wrefresh(win);
+}
+
+void menu::clear(){
+    current = 0;
+    for(int i=0; i<count; i++)
+        strings[i] = nullptr;
 }
 
 const char* menu::get_selected(){ return strings[current]; }

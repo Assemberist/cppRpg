@@ -37,7 +37,7 @@ int main(){
     refresh();
 
     blink_cfg objs[] = {
-        {new mage(3, 1, string("Maga")), {GREEN_ON}},
+        {new mage(3, 1, string("Maga")), {GREEN_STABILE}},
         {new golem(8, 8, string("Goga")), {RED_STABILE}},
         {new golem(8, 7, string("Pisos")), {RED_STABILE}},
         {new golem(7, 3, string("Ugga Boogga")), {RED_STABILE}},
@@ -59,8 +59,12 @@ int main(){
 
     timeout(500);
 
-    while(user_turn(objs, s));
+    while(1)
+        for(int i=0; i < sizeof(objs) / sizeof(blink_cfg) - 1; i++)
+            if(!user_turn(objs+i, s))
+                goto sos;
 
+sos:
     endwin();
     return 0;
 }

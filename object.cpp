@@ -167,7 +167,7 @@ void object::act(effect_t type, effect e){
 
         case FIRE_DAMAGE:{
             if(effects.find(DEAD) != effects.end()){
-                object::l->newline("Defibrilation had not effect.\n");
+                object::l->newline("The fire will clean this object. Or not.\n");
                 return;
             }
 
