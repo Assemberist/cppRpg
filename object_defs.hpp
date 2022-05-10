@@ -1,11 +1,5 @@
 #pragma once
 
-enum spell_t{
-    FIREBALL,
-    PUNCH,
-    LIGHTING
-};
-
 enum effect_t{
     PHYSIC_IMMUNITY,
     MAGIC_IMMUNITY,

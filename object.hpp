@@ -19,9 +19,9 @@ union effect{
 
 class object{
 protected:
-
     map<property_t, int32_t> propertyes;
     map<effect_t, effect> effects;
+    vector<spell*> spells;
     string name;
 
 public:

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "spell.hpp"
 #include <ncurses.h>
 #include <string.h>
 
@@ -49,4 +50,13 @@ public:
     void select(size_t num);
 
     const char* get_selected();
+};
+
+
+class spell_menu : public menu{
+    spell** spells;
+
+public:
+    void input_spells(spell** _spells);
+    spell_t get_current_spell();
 };

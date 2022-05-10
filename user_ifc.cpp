@@ -2,6 +2,7 @@
 #include "card.hpp"
 #include "object.hpp"
 #include <cstdint>
+#include "spell.hpp"
 
 void clear_blinking(blink_cfg* objs){
     for(int i=0; objs[i].o; i++){
@@ -89,6 +90,8 @@ bool user_turn(blink_cfg* u, screen s){
     blink_cfg* tar = nullptr;
     blink_cfg* single_target = nullptr;
     blink_t last_color;
+    u->o->print_spells(s.common_menu);
+    s.common_menu->hide();
 
     char temp;
     while((temp = getch()) != ' '){
@@ -98,7 +101,7 @@ bool user_turn(blink_cfg* u, screen s){
                 s.mapa->clear();
                 switch(temp){
                     case 'f':
-                        u->o->print_spells(s.common_menu);
+                        s.common_menu->print();
                         stat = CHOOSE_SPELL;
                         break;
 
@@ -192,7 +195,7 @@ bool user_turn(blink_cfg* u, screen s){
                                 stat = CHOOSE_SPELL;
                                 s.mapa->clear();
                                 u->cfg.is_hide = GREEN_ON;
-                                u->o->print_spells(s.common_menu);
+                                s.common_menu->print();
                                 search_targets(nullptr, s, 0);
                                 s.mapa->update_card();
                                 break;
@@ -240,7 +243,7 @@ bool user_turn(blink_cfg* u, screen s){
                                 stat = CHOOSE_SPELL;
                                 s.mapa->clear();
                                 u->cfg.is_hide = GREEN_ON;
-                                u->o->print_spells(s.common_menu);
+                                s.common_menu->print();
                                 s.mapa->update_card();
                                 search_targets(nullptr, s, 0);
                                 break;

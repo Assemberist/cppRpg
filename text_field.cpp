@@ -133,3 +133,11 @@ void menu::clear(){
 }
 
 const char* menu::get_selected(){ return strings[current]; }
+
+//--------------------------------------------------------------------------------------------//
+//   Menu functions                                                                           //
+//____________________________________________________________________________________________//
+
+void spell_menu::input_spells(spell** _spells){ spells = _spells; }
+
+spell_t spell_menu::get_current_spell(){ return (*spells)[current].type; }
