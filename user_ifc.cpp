@@ -4,6 +4,12 @@
 #include <cstdint>
 #include "spell.hpp"
 
+enum object_state{
+    STAY,
+    CHOOSE_SPELL,
+    CHOOSE_TARGET
+};
+
 void clear_blinking(blink_cfg* objs){
     for(int i=0; objs[i].o; i++){
         switch (objs[i].cfg.is_hide) {
