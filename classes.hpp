@@ -1,5 +1,6 @@
 #pragma once
 #include "object.hpp"
+#include "spell.hpp"
 
 class target : public object{
 public:
@@ -16,16 +17,11 @@ public:
 
         effects.insert({MANA_RESTORE, {0, 2}});
 
-        fract = HUMANITY;
-    }
+        spells.push_back(_SPELL_FIREBALL);
+        spells.push_back(_SPELL_PUNCH);
+        spells.push_back(_SPELL_LIGTHING);
 
-    void print_spells(menu* _menu){
-        _menu->clear();
-        _menu->putline("Fire ball\n");
-        _menu->putline("Lighting\n");
-        _menu->putline("Punch\n");
-        _menu->select(0);
-        _menu->print();
+        fract = HUMANITY;
     }
 
     char get_type(){ return 'm'; }
@@ -58,14 +54,9 @@ public:
         effects.insert({ELECTRIC_WEAKNESS, {0, 10}});
         effects.insert({UNFLAMED, {0, 0}});
         
-        fract = MONSTER;
-    }
+        spells.push_back(_SPELL_PUNCH);
 
-    void print_spells(menu* _menu){
-        _menu->clear();
-        _menu->putline("Punch\n");
-        _menu->select(0);
-        _menu->print();
+        fract = MONSTER;
     }
 
     char get_type(){ return 'G'; }

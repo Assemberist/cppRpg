@@ -55,8 +55,11 @@ public:
 
 class spell_menu : public menu{
     spell** spells;
+    size_t spell_count;
 
 public:
-    void input_spells(spell** _spells);
+    spell_menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x) : menu(rows, cols, pos_y, pos_x) {}
+    void input_spells(spell** _spells, size_t _spell_count);
     spell_t get_current_spell();
+    void print();
 };

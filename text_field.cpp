@@ -138,6 +138,24 @@ const char* menu::get_selected(){ return strings[current]; }
 //   Menu functions                                                                           //
 //____________________________________________________________________________________________//
 
-void spell_menu::input_spells(spell** _spells){ spells = _spells; }
+void spell_menu::input_spells(spell** _spells, size_t _spell_count){
+    spells = _spells;
+    spell_count = _spell_count;
+
+    for(auto i = 0; i < _spell_count; i++)
+        strings[i] = (char*)(spells[i]->name);
+}
 
 spell_t spell_menu::get_current_spell(){ return (*spells)[current].type; }
+
+void spell_menu::print(){
+    wclear(win);
+
+    for(int i = 0; i<count; i++){
+        waddch(win, i == current ? '*' : ' ');
+        if(strings[i])
+            wprintw(win, strings[i]);
+    }
+
+    wrefresh(win);
+}

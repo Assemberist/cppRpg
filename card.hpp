@@ -58,5 +58,5 @@ public:
 struct screen{
     za_mapo* mapa;
     log* common_log;
-    menu* common_menu;
+    spell_menu* common_menu;
 };

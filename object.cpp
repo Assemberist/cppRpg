@@ -235,6 +235,20 @@ const char* object::get_name(){ return name.c_str(); }
 fraction object::get_fraction(){ return fract; }
 bool object::is_alive(){ return effects.find(DEAD) == effects.end(); }
 
+void object::put_spell (spell* sp) { spells.push_back(sp); }
+
+void object::remove_spell(spell* sp){
+    for(auto i = spells.begin(); i != spells.end(); i++)
+        if(*i == sp)
+            spells.erase(i);
+}
+
+void object::print_spells(spell_menu* _menu){
+    _menu->clear();
+    _menu->input_spells(&spells[0], spells.size());
+    _menu->print();
+}
+
 void object::calculate(){
 
 }

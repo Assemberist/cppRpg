@@ -1,4 +1,4 @@
-OBJS=obj/text_field.o obj/object.o obj/card.o obj/main.o obj/user_ifc.o
+OBJS=obj/text_field.o obj/object.o obj/card.o obj/spell.o obj/user_ifc.o obj/main.o
 
 debug: DBG :=-g
 debug: $(OBJS)
@@ -22,6 +22,11 @@ obj/user_ifc.o: user_ifc.cpp user_ifc.hpp card.hpp classes.hpp object_defs.hpp
 
 obj/main.o: main.cpp card.hpp classes.hpp text_field.hpp user_ifc.hpp
 	g++ -c main.cpp -o obj/main.o $(DBG)
+
+obj/spell.o: spell.cpp spell.hpp
+	g++ -c spell.cpp -o obj/spell.o $(DBG)
+
+classes.hpp: spell.hpp
 
 clean:
 	rm obj/*

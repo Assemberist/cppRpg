@@ -18,7 +18,7 @@ const char* test_card = "*************  *   **** **   ****      ****  *   **** *
 
 log* object::l;
 
-menu* m;
+spell_menu* m;
 za_mapo* z;
 
 int main(){
@@ -31,7 +31,7 @@ int main(){
     start_color();
 
     object::l = new log(10, 50, 0, 11);
-    m = new menu(3, 50, 12, 0);
+    m = new spell_menu(3, 50, 12, 0);
     z = new za_mapo(10, 10, 0, 0);
 
     refresh();

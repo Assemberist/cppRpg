@@ -39,7 +39,10 @@ public:
     const char* get_name();
     bool is_alive();
     fraction get_fraction();
-    virtual void print_spells(menu* _menu) = 0;
+    void print_spells(spell_menu* _menu);
+
+    void put_spell(spell* sp);
+    void remove_spell(spell* sp);
 
     object(int8_t _X, int8_t _Y, string _name) : X(_X), Y(_Y), name(_name) {}
 };
