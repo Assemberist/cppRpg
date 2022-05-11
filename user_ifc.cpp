@@ -27,13 +27,6 @@ void clear_blinking(blink_cfg* objs){
     }
 }
 
-spell_t string_to_spell(const char* src){
-    if(!strcmp(src, "Fire ball\n")) return FIREBALL;
-    if(!strcmp(src, "Punch\n")) return PUNCH;
-    //if(!strcmp(src, "Lighting\n")); 
-    return LIGHTING;
-}
-
 bool is_move_char(char direction){
     switch(direction){
         case 'q':
@@ -91,7 +84,6 @@ bool user_turn(blink_cfg* u, screen s){
     blink_cfg* single_target = nullptr;
     blink_t last_color;
     u->o->print_spells(s.common_menu);
-    s.common_menu->hide();
 
     char temp;
     while((temp = getch()) != ' '){
@@ -123,7 +115,7 @@ bool user_turn(blink_cfg* u, screen s){
                         break;
 
                     case 'f':
-                        choosed_spell = string_to_spell(s.common_menu->get_selected());
+                        choosed_spell = s.common_menu->get_current_spell();
                         clear_blinking(s.mapa->objects);
                         u->cfg.is_hide = GREEN_STABILE;
                         s.mapa->clear();
@@ -149,14 +141,12 @@ bool user_turn(blink_cfg* u, screen s){
                                 s.mapa->update_card();
                                 break;
                         }
-                        s.common_menu->clear();
                         s.common_menu->hide();
                         stat = CHOOSE_TARGET;
                         break;
 
                     case 'q':
                         stat = STAY;
-                        s.common_menu->clear();
                         s.common_menu->hide();
                         break;
 
@@ -187,7 +177,6 @@ bool user_turn(blink_cfg* u, screen s){
                                 }
 
                                 s.common_log->print();
-                                s.common_menu->clear();
                                 s.common_menu->hide();
                                 goto done;
 
@@ -265,6 +254,8 @@ done:
     u->cfg.is_hide = original_color;
     s.mapa->clear();
     s.mapa->update_card();
+    s.common_menu->clear();
+    s.common_menu->hide();
     search_targets(nullptr, s, 0);
 
     return (temp == ' ' ? false : true);

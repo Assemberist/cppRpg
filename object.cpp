@@ -244,9 +244,7 @@ void object::remove_spell(spell* sp){
 }
 
 void object::print_spells(spell_menu* _menu){
-    _menu->clear();
     _menu->input_spells(&spells[0], spells.size());
-    _menu->print();
 }
 
 void object::calculate(){
