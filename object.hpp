@@ -22,6 +22,8 @@ protected:
     map<property_t, int32_t> propertyes;
     map<effect_t, effect> effects;
     vector<spell*> spells;
+
+    behavior_t behavior;
     string name;
 
 public:
@@ -44,5 +46,7 @@ public:
     void put_spell(spell* sp);
     void remove_spell(spell* sp);
 
-    object(int8_t _X, int8_t _Y, string _name) : X(_X), Y(_Y), name(_name) {}
+    virtual action_t turn() = 0;
+
+    object(int8_t _X, int8_t _Y, string _name) : X(_X), Y(_Y), name(_name), behavior(BHV_CHILL) {}
 };

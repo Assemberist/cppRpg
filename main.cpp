@@ -1,7 +1,6 @@
-#include "card.hpp"
 #include "classes.hpp"
 #include "text_field.hpp"
-#include "user_ifc.hpp"
+#include "scene.hpp"
 
 const char* test_card = "*************  *   **** **   ****      ****  *   **** ******* *      **        ** *      ***********";
 // Card 10x10
@@ -52,12 +51,8 @@ int main(){
 
     timeout(500);
 
-    while(1)
-        for(int i=0; i < sizeof(objs) / sizeof(blink_cfg) - 1; i++)
-            if(!user_turn(objs+i, s))
-                goto sos;
+    game_loop(objs, objs, s);
 
-sos:
     endwin();
     return 0;
 }

@@ -4,60 +4,42 @@
 
 class target : public object{
 public:
-    target(int8_t _X, int8_t _Y) : object(_X, _Y, string("")) {}
-    void print_spells(menu* _menu) {}
+    target(int8_t _X, int8_t _Y);
     char get_type(){ return 'x'; }
+    action_t turn();
 };
 
 class mage : public object{
 public:
-    mage(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){
-        propertyes.insert({HEALTH, 20});
-        propertyes.insert({MANA, 50});
-
-        effects.insert({MANA_RESTORE, {0, 2}});
-
-        spells.push_back(_SPELL_FIREBALL);
-        spells.push_back(_SPELL_PUNCH);
-        spells.push_back(_SPELL_LIGTHING);
-
-        fract = HUMANITY;
-    }
-
+    mage(int8_t _X, int8_t _Y, string _name);
     char get_type(){ return 'm'; }
+    action_t turn();
 };
 
 class warrior : public object{
 public:
-    warrior(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){}
+    warrior(int8_t _X, int8_t _Y, string _name);
     char get_type(){ return 'w'; }
+    action_t turn();
 };
 
 class goblin : public object{
 public:
-    goblin(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){}
+    goblin(int8_t _X, int8_t _Y, string _name);
     char get_type(){ return 'g'; }
+    action_t turn();
 };
 
 class chair : public object{
 public:
-    chair(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){}
+    chair(int8_t _X, int8_t _Y, string _name);
     char get_type(){ return 'h'; }
+    action_t turn();
 };
 
 class golem : public object{
 public:
-    golem(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){
-        propertyes.insert({HEALTH, 50});
-
-        effects.insert({PHYSIC_PROTECT, {0, 30}});
-        effects.insert({ELECTRIC_WEAKNESS, {0, 10}});
-        effects.insert({UNFLAMED, {0, 0}});
-        
-        spells.push_back(_SPELL_PUNCH);
-
-        fract = MONSTER;
-    }
-
+    golem(int8_t _X, int8_t _Y, string _name);
     char get_type(){ return 'G'; }
+    action_t turn();
 };

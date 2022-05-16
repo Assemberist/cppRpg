@@ -1,5 +1,23 @@
 #pragma once
 
+enum behavior_t{
+    BHV_CHILL,
+    BHV_WORRIED,
+    BHV_ATTACK,
+    BHV_PANIC,
+    BHV_STUNNED,
+    BHV_REST
+};
+
+enum action_t{
+    ACT_ATTACK,
+    ACT_SEARCH_ENEMY,
+    ACT_STAND,
+    ACT_WALK,
+    ACT_RUN_AVAY,
+    ACT_REST
+};
+
 enum effect_t{
     PHYSIC_IMMUNITY,
     MAGIC_IMMUNITY,
