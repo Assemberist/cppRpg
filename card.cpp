@@ -229,3 +229,22 @@ void za_mapo::draw_range(object* target, int8_t range){
 
     wrefresh(win);
 }
+
+blink_cfg* search_targets(blink_cfg* obj, screen s, size_t range){
+    static blink_cfg* last_target = NULL;
+
+    if(!last_target) last_target = s.mapa->objects;
+
+    if(obj){
+        while(last_target->o){
+            if(abs(last_target->o->X, obj->o->X) <= range)
+                if(abs(last_target->o->Y, obj->o->Y) <= range){
+                    last_target++;
+                    return last_target-1;
+                }
+
+            last_target++;
+        }
+    }
+    return last_target = NULL;
+}

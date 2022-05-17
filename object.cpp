@@ -1,6 +1,10 @@
 #include "object.hpp"
 #include "text_field.hpp"
 
+bool in_range(object* user, object* target, size_t range){
+    return (abs(user->X, target->X) <= range && abs(user->Y, target->Y) <= range ? true : false);
+}
+
 void object::act(effect_t type, effect e){
     switch(type){
         case CRUSH_ATTACK:{
@@ -234,7 +238,7 @@ effect* object::get_effect(effect_t type){
 const char* object::get_name(){ return name.c_str(); }
 fraction object::get_fraction(){ return fract; }
 bool object::is_alive(){ return effects.find(DEAD) == effects.end(); }
-
+void object::set_behavior(behavior_t bhv){ behavior = bhv; }
 void object::put_spell (spell* sp) { spells.push_back(sp); }
 
 void object::remove_spell(spell* sp){
@@ -247,6 +251,68 @@ void object::print_spells(spell_menu* _menu){
     _menu->input_spells(&spells[0], spells.size());
 }
 
+bool object::check_enemy(object* target){
+    switch(fract){
+        case HUMANITY:
+            switch(target->get_fraction()){
+                case MONSTER:
+                    return true;
+                
+                default:
+                    return false;
+            }
+
+        case MONSTER:
+            switch(target->get_fraction()){
+                case MONSTER:
+                    return false;
+                
+                default:
+                    return true;
+            }
+    }
+}
+
+bool object::use_attack_spells(object* target){
+    for(auto i=spells.begin(); i != spells.end(); i++){
+        switch((*i)->type){
+            case FIREBALL:
+                if(in_range(this, target, 5))
+                    act_fireball(target);
+                return true;
+
+            case PUNCH:
+                if(in_range(this, target, 1))
+                    act_punch(target);
+                return true;
+
+            case LIGHTING:
+                if(in_range(this, target, 5))
+                    act_lighting(target);
+                return true;
+
+            default:
+                break;
+        }
+    }
+
+    return false;
+}
+
 void object::calculate(){
 
+}
+
+void act_punch(object* obj){
+    obj->act(CRUSH_ATTACK, {0, 25});
+}
+
+void act_lighting(object* obj){
+    obj->act(ELECTRIC_DAMAGE, {0, 40});
+    obj->act(MAGIC_ATTACK, {0, 10});
+}
+
+// todo
+void act_fireball(object* target){
+    
 }

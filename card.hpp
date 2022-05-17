@@ -5,8 +5,6 @@
 #include <stdint.h>
 #include <string.h>
 
-#define abs(A, B) ((A) - (B) > 0 ? (A) - (B) : (B) - (A))
-
 enum blink_t{
     HIDE,
 
@@ -60,3 +58,5 @@ struct screen{
     log* common_log;
     spell_menu* common_menu;
 };
+
+blink_cfg* search_targets(blink_cfg* obj, screen s, size_t range);

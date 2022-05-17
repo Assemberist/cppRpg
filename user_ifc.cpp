@@ -51,34 +51,6 @@ bool is_move_char(char direction){
     }
 }
 
-void act_punch(object* obj){
-    obj->act(CRUSH_ATTACK, {0, 25});
-}
-
-void act_lighting(object* obj){
-    obj->act(ELECTRIC_DAMAGE, {0, 40});
-    obj->act(MAGIC_ATTACK, {0, 10});
-}
-
-blink_cfg* search_targets(blink_cfg* obj, screen s, size_t range){
-    static blink_cfg* last_target = NULL;
-
-    if(!last_target) last_target = s.mapa->objects;
-
-    if(obj){
-        while(last_target->o){
-            if(abs(last_target->o->X, obj->o->X) <= range)
-                if(abs(last_target->o->Y, obj->o->Y) <= range){
-                    last_target++;
-                    return last_target-1;
-                }
-
-            last_target++;
-        }
-    }
-    return last_target = NULL;
-}
-
 bool user_turn(blink_cfg* u, screen s){
     blink_t original_color = u->cfg.is_hide;
 

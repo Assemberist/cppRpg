@@ -7,6 +7,8 @@
 #include "object_defs.hpp"
 #include "text_field.hpp"
 
+#define abs(A, B) ((A) - (B) > 0 ? (A) - (B) : (B) - (A))
+
 using namespace std;
 
 union effect{
@@ -46,7 +48,17 @@ public:
     void put_spell(spell* sp);
     void remove_spell(spell* sp);
 
+    bool use_attack_spells(object* target);
+
     virtual action_t turn() = 0;
 
-    object(int8_t _X, int8_t _Y, string _name) : X(_X), Y(_Y), name(_name), behavior(BHV_CHILL) {}
+    void set_behavior(behavior_t bhv);
+    bool check_enemy(object* target);
+
+    object(int8_t _X, int8_t _Y, string _name) : X(_X), Y(_Y), name(_name), behavior(BHV_ATTACK) {}
 };
+
+void act_punch(object* obj);
+void act_lighting(object* obj);
+// todo
+void act_fireball(object* target);
