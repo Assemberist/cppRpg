@@ -1,6 +1,4 @@
 #include "scene.hpp"
-#include "user_ifc.hpp"
-#include <stdlib.h>
 
 struct npc_state{
     action_t last_action;

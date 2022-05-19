@@ -1,5 +1,4 @@
 #include "object.hpp"
-#include "text_field.hpp"
 
 bool in_range(object* user, object* target, size_t range){
     return (abs(user->X, target->X) <= range && abs(user->Y, target->Y) <= range ? true : false);

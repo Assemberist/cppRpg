@@ -1,9 +1,6 @@
 #pragma once
 
 #include "object.hpp"
-#include <ncurses.h>
-#include <stdint.h>
-#include <string.h>
 
 enum blink_t{
     HIDE,

@@ -1,8 +1,4 @@
 #include "user_ifc.hpp"
-#include "card.hpp"
-#include "object.hpp"
-#include <cstdint>
-#include "spell.hpp"
 
 enum object_state{
     STAY,
