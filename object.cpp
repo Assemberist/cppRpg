@@ -276,19 +276,25 @@ bool object::use_attack_spells(object* target){
     for(auto i=spells.begin(); i != spells.end(); i++){
         switch((*i)->type){
             case FIREBALL:
-                if(in_range(this, target, 5))
+                if(in_range(this, target, 5)){
                     act_fireball(target);
-                return true;
+                    return true;
+                }
+                break;
 
             case PUNCH:
-                if(in_range(this, target, 1))
+                if(in_range(this, target, 1)){
                     act_punch(target);
-                return true;
+                    return true;
+                }
+                break;
 
             case LIGHTING:
-                if(in_range(this, target, 5))
+                if(in_range(this, target, 5)){
                     act_lighting(target);
-                return true;
+                    return true;
+                }
+                break;
 
             default:
                 break;

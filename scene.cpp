@@ -23,6 +23,12 @@ void (*do_list[])(blink_cfg*, screen, npc_state*, size_t) = {
     do_rest
 };
 
+size_t range(object* obj1, object* obj2){
+    size_t x = abs(obj1->X, obj2->X);
+    size_t y = abs(obj1->Y, obj2->Y);
+    return x*x + y*y;
+}
+
 void game_loop(blink_cfg* objs, blink_cfg* gamer, screen s){
     size_t obj_count = 0;
     while(objs[obj_count].o) obj_count++;
@@ -85,7 +91,21 @@ void do_attack(blink_cfg* objs, screen s, npc_state* stats, size_t num){
 }
 
 void do_attack_nearlest_enemy(blink_cfg* objs, screen s, npc_state* stats, size_t num){
+    int i;
+    if(stats[num].target == NULL){
+        for(i=0; objs[i].o; i++)
+            if(objs[i].o->is_alive())
+                if(objs[num].o->check_enemy(objs[i].o)){
+                    stats[num].target = objs + i;
+                    break;
+                }
+    }
 
+    while(objs[i].o)
+        if( objs[i].o->is_alive() &&
+            objs[num].o->check_enemy(objs[i].o) &&
+            range(objs[num].o, stats[num].target->o) < range(objs[num].o, objs[i].o))
+                stats[num].target = objs+i;
 }
 
 void do_search_enemy(blink_cfg* objs, screen s, npc_state* stats, size_t num){
