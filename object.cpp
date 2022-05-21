@@ -234,6 +234,11 @@ effect* object::get_effect(effect_t type){
     return (i != effects.end() ? &i->second : NULL);
 }
 
+int32_t* object::get_property(property_t type){
+    auto i = propertyes.find(type);
+    return (i != propertyes.end() ? &i->second : NULL);
+}
+
 const char* object::get_name(){ return name.c_str(); }
 fraction object::get_fraction(){ return fract; }
 bool object::is_alive(){ return effects.find(DEAD) == effects.end(); }

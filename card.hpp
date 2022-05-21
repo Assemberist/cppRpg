@@ -44,6 +44,7 @@ public:
     void clear();
 
     void magnetic_search(object* from, object* to);
+    void magnetic_search_neg(object* from, object* to);
     void indirect_moving(object* from);
 
     char move(object* obj, char direction);

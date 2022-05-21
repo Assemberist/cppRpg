@@ -48,8 +48,10 @@ void game_loop(blink_cfg* objs, blink_cfg* gamer, screen s){
             }
             else{
                 objs[i].o->calculate();
-                size_t fun = (size_t)objs[i].o->turn();
-                do_list[fun](objs, s, stats, i);
+                if(objs[i].o->is_alive()){
+                    size_t fun = (size_t)objs[i].o->turn();
+                    do_list[fun](objs, s, stats, i);
+                }
             }
         }
 }
@@ -109,7 +111,7 @@ void do_attack_nearlest_enemy(blink_cfg* objs, screen s, npc_state* stats, size_
 }
 
 void do_search_enemy(blink_cfg* objs, screen s, npc_state* stats, size_t num){
-
+    // todo
 }
 
 void do_walk(blink_cfg* objs, screen s, npc_state* stats, size_t num){
@@ -117,9 +119,9 @@ void do_walk(blink_cfg* objs, screen s, npc_state* stats, size_t num){
 }
 
 void do_run_avay(blink_cfg* objs, screen s, npc_state* stats, size_t num){
-
+    s.mapa->magnetic_search_neg(objs[num].o, stats[num].target->o);
 }
 
 void do_rest(blink_cfg* objs, screen s, npc_state* stats, size_t num){
-
+    // todo
 }

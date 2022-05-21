@@ -40,6 +40,7 @@ public:
 
     virtual char get_type() = 0;
     effect* get_effect(effect_t type);
+    int32_t* get_property(property_t type);
     const char* get_name();
     bool is_alive();
     fraction get_fraction();

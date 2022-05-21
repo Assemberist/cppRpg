@@ -119,6 +119,52 @@ void za_mapo::update_card () {
     wrefresh(win);
 }
 
+void za_mapo::magnetic_search_neg(object* from, object* to){
+    if(from->Y < to->Y){ // down
+        if(from->X == to->X && move(from, 'w')) return; // just down
+        if(from->X < to->X){ // down and right
+            if(move(from, 'q')) return;
+            if(from->X - to->X > from->Y - to->Y){
+                if(move(from, 'a') || move(from, 'w'))
+                    return;
+            }
+            else
+                if(move(from, 'w') || move(from, 'a'));
+        }
+        else if(from->X > to->X){ // down and left
+            if(move(from, 'e')) return;
+            if(to->X - from->X > from->Y - to->Y){
+                if(move(from, 'd') || move(from, 'w'))
+                    return;
+            }
+            else
+                if(move(from, 'w') || move(from, 'd'));
+        }
+    }
+    else if(from->Y > to->Y){ // up
+        if(from->X == to->X && move(from, 'w')) return; // just up
+        if(from->X < to->X){ // up and right
+            if(move(from, 'z')) return;
+            if(from->X - to->X > to->Y - from->Y){
+                if(move(from, 'a') || move(from, 'x'))
+                    return;
+            }
+            else
+                if(move(from, 'x') || move(from, 'a'));
+        }
+        else if(from->X > to->X){ // up and left
+            if(move(from, 'c')) return;
+            if(to->X - from->X > to->Y - from->Y){
+                if(move(from, 'd') || move(from, 'x'))
+                    return;
+            }
+            else
+                if(move(from, 'x') || move(from, 'd'));
+        }
+    }
+    else move(from, from->X < to->X ? 'a' : 'd');
+}
+
 void za_mapo::magnetic_search(object* from, object* to){
     if(from->Y < to->Y){ // down
         if(from->X == to->X && move(from, 'x')) return; // just down
