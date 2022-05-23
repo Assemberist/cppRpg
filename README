@@ -1,0 +1,68 @@
+Description:
+    CppRpg is just small turn-based rpg for console (or it should be).
+    Battle mode development is first thing that was released but it also in progress yet.
+
+Build:
+    Directory "obj" should be created in the repo before building the project.
+    To build the programm you shoud use make:
+        > make
+    If you wish to get debug-version of the program or
+        > make build
+    To compile project with -O2 option and without debugs.
+    
+How to use:
+    Build program and start "test".
+
+    After program start game map is displayed. Here blinking 'm' is mage, your character.
+    Also there is 3 'G' golems that will be attack you. They are can feel you everywhere
+    but they are too stupid to avoid walls or other obstacles.
+    
+    You can move you character to other cell, or use any spell.
+    Every new turn is started in moving mode.
+    
+    There is 3 mode:
+        moving <=> choose spell <=> choose of target
+    
+Moving mode:
+    To move your character you can type one buttons from belove:
+    
+    q w e
+    a   d
+    z x c
+    
+    All other buttons except space and 'f' will ends your turn.
+    
+    Note! Attemption of moving ends your turn as successful moving. Be carefull and
+    don't hit yourself to walls: enemyes will not waiting for you get serious.
+    
+    'f' button will switch "moving mode" to "spell choose mode".
+    
+Spell choose mode:
+    Menu of spells should appeare when you entry in this mode. It shows spells allowed
+    for your character.
+    Button behavior here:
+        'w' - move cursor up
+        's' - move cursor down
+        'q' - do not use a spell. It will return you into moving mode.
+        'f' - choose marked spell. It will turns tou into target choose mode.
+
+    Note! Your character can use spells on himself. But it is funny when your mage died
+    because he punched or cursed himself.
+    
+Target choose mode:
+    Here you can choose target for applying your spell. Spells can directed/indirected.
+   
+    For indirected spells (as punch or ligthing)
+        'f' - apply the spell for target/s. Turn will be ended after that.
+        's' - choose other target
+        'q' - choose other spell. It will return you into spell chose mode.
+        
+    For directed spells (as fireball) use moving buttons (as in moving mode) to move red
+    frame (all inside will be target for spell) and press 'f' to apply spell on targets.
+    To return to choose of spell type 'r'.
+    
+End of game:
+    Game have one end - death of your character. 
+    Press space button if you want to exit from the game.
+    
+Instruction is written at 23 may 2022.
