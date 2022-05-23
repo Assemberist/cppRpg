@@ -251,6 +251,19 @@ void object::remove_spell(spell* sp){
             spells.erase(i);
 }
 
+bool object::request_property(property_t prop, size_t value){
+    auto i = propertyes.find(prop);
+    if(i == propertyes.end())
+        return false;
+
+    if(i->second >= value){
+        i->second -= value;
+        return true;
+    }
+
+    return false;
+}
+
 void object::print_spells(spell_menu* _menu){
     _menu->input_spells(&spells[0], spells.size());
 }
@@ -314,12 +327,26 @@ void object::calculate(){
 }
 
 void act_punch(object* obj){
-    obj->act(CRUSH_ATTACK, {0, 25});
+    auto* value = obj->get_property(STRENGTH);
+    if(value){
+        obj->act(CRUSH_ATTACK, {0, *value});
+        return;
+    }
+    else{
+        char arr[50];
+        sprintf(arr, "%s can't punch.\n", obj->get_name());
+        object::l->newline(arr);
+    }
 }
 
 void act_lighting(object* obj){
-    obj->act(ELECTRIC_DAMAGE, {0, 40});
-    obj->act(MAGIC_ATTACK, {0, 10});
+    if(obj->request_property(MANA, 10)){
+        obj->act(ELECTRIC_DAMAGE, {0, 40});
+        obj->act(MAGIC_ATTACK, {0, 10});
+    }
+    else{
+        object::l->newline("Not enough mana.\n");
+    }
 }
 
 // todo

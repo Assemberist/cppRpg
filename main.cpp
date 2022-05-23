@@ -51,7 +51,12 @@ int main(){
 
     timeout(500);
 
-    game_loop(objs, objs, s);
+    if(!game_loop(objs, objs, s)){
+        timeout(-1);
+        s.common_log->newline("Game ower\n");
+        s.common_log->print();
+        getch();
+    }
 
     endwin();
     return 0;

@@ -29,14 +29,17 @@ size_t range(object* obj1, object* obj2){
     return x*x + y*y;
 }
 
-void game_loop(blink_cfg* objs, blink_cfg* gamer, screen s){
+bool game_loop(blink_cfg* objs, blink_cfg* gamer, screen s){
     size_t obj_count = 0;
     while(objs[obj_count].o) obj_count++;
 
     npc_state stats[obj_count];
     memset(stats, 0, obj_count * sizeof(npc_state));
 
-    while(1)
+    while(1){
+        if(!(gamer->o->is_alive()))
+            return false;
+
         for(size_t i=0; i < obj_count; i++){
             s.mapa->clear();
             s.mapa->update_card();
@@ -44,7 +47,7 @@ void game_loop(blink_cfg* objs, blink_cfg* gamer, screen s){
 
             if(objs + i == gamer){
                 if(!user_turn(objs+i, s))
-                    return;
+                    return true;
             }
             else{
                 objs[i].o->calculate();
@@ -54,6 +57,7 @@ void game_loop(blink_cfg* objs, blink_cfg* gamer, screen s){
                 }
             }
         }
+    }
 }
 
 void do_stand(blink_cfg* objs, screen s, npc_state* stats, size_t num){}

@@ -28,6 +28,13 @@ enum effect_t{
     UNFLAMED,
     DIELECTRIC,
 
+    MAGIC_ABSORBTION,
+    POISON_ABSORBTION,
+    ACID_ABSORBTION,
+    ICE_ABSORBTION,
+    FIRE_ABSORBTION,
+    ELECTRIC_ABSORBTION,
+
     PHYSIC_PROTECT,
     MAGIC_PROTECT,
     POISON_PROTECT,
@@ -73,7 +80,8 @@ enum effect_t{
 
 enum property_t{
     HEALTH,
-    MANA
+    MANA,
+    STRENGTH
 };
 
 enum fraction{

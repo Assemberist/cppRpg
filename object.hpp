@@ -35,28 +35,30 @@ public:
 
     fraction fract;
 
-    void act(effect_t type, effect e);
-    void calculate();
+    object(int8_t _X, int8_t _Y, string _name) : X(_X), Y(_Y), name(_name), behavior(BHV_ATTACK) {}
 
     virtual char get_type() = 0;
+    const char* get_name();
+    void print_spells(spell_menu* _menu);
+
+    void act(effect_t type, effect e);
+    virtual action_t turn() = 0;
+    void calculate();
+
     effect* get_effect(effect_t type);
     int32_t* get_property(property_t type);
-    const char* get_name();
-    bool is_alive();
-    fraction get_fraction();
-    void print_spells(spell_menu* _menu);
+    bool request_property(property_t prop, size_t value);
 
     void put_spell(spell* sp);
     void remove_spell(spell* sp);
 
-    bool use_attack_spells(object* target);
-
-    virtual action_t turn() = 0;
+    fraction get_fraction();
 
     void set_behavior(behavior_t bhv);
-    bool check_enemy(object* target);
 
-    object(int8_t _X, int8_t _Y, string _name) : X(_X), Y(_Y), name(_name), behavior(BHV_ATTACK) {}
+    bool is_alive();
+    bool check_enemy(object* target);
+    bool use_attack_spells(object* target);
 };
 
 void act_punch(object* obj);
