@@ -1,65 +1,53 @@
 #pragma once
 
-#include "spell.hpp"
 #include <ncurses.h>
 #include <string.h>
 
 class text_field{
 protected:
-    char** strings;
     short count;
     short current;
-
-public:
     WINDOW* win;
 
+public:
     text_field(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
 
-    void reserve(short amount);
-    void connect_to_win(WINDOW* _win);
-    void putline(char* src);
     void hide();
-    void purge();
-
-    virtual void clear();
-
     virtual void print() = 0;
-    virtual void newline(const char* src) = 0;
 
     ~text_field();
 };
 
 
 class log : public text_field{
-public:
-    log(size_t rows, size_t cols, size_t pos_y, size_t pos_x) : text_field(rows, cols, pos_y, pos_x){}
-    void print();
-    void newline(const char* src);
-};
+    char** strings;
 
-
-class menu : public text_field{
 public:
-    menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x) : text_field(rows, cols, pos_y, pos_x){}
+    log(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
+
     void print();
     void newline(const char* src);
     void clear();
 
-    void up();
-    void down();
-    void select(size_t num);
-
-    const char* get_selected();
+    ~log();
 };
 
+struct menu_element{
+    const char* name;
+    void* element;
+};
 
-class spell_menu : public menu{
-    spell** spells;
-    size_t spell_count;
+class menu : public text_field{
+    menu_element** elements;
 
 public:
-    spell_menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x) : menu(rows, cols, pos_y, pos_x) {}
-    void input_spells(spell** _spells, size_t _spell_count);
-    spell_t get_current_spell();
+    menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
+
     void print();
+
+    void up();
+    void down();
+
+    void set_content(menu_element** elements, size_t size);
+    void* get_selected();
 };

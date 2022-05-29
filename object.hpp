@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <string>
 #include <map>
+
+#include "spell.hpp"
 #include "object_defs.hpp"
 #include "text_field.hpp"
 
@@ -39,7 +41,7 @@ public:
 
     virtual char get_type() = 0;
     const char* get_name();
-    void print_spells(spell_menu* _menu);
+    void print_spells(menu* _menu);
 
     void act(effect_t type, effect e);
     virtual action_t turn() = 0;

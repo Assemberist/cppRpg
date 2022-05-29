@@ -264,8 +264,8 @@ bool object::request_property(property_t prop, size_t value){
     return false;
 }
 
-void object::print_spells(spell_menu* _menu){
-    _menu->input_spells(&spells[0], spells.size());
+void object::print_spells(menu* _menu){
+    _menu->set_content((menu_element**)(&spells[0]), spells.size());
 }
 
 bool object::check_enemy(object* target){

@@ -54,7 +54,7 @@ public:
 struct screen{
     za_mapo* mapa;
     log* common_log;
-    spell_menu* common_menu;
+    menu* common_menu;
 };
 
 blink_cfg* search_targets(blink_cfg* obj, screen s, size_t range);

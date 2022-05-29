@@ -6,29 +6,8 @@
 
 text_field::text_field(size_t rows, size_t cols, size_t pos_y, size_t pos_x) {
     win = newwin(rows, cols, pos_y, pos_x);
-    strings = nullptr;
-    reserve(rows);
-}
-
-void text_field::reserve(short amount){
-    purge();
-
-    strings = new char*[amount];
-    count = amount;
+    count = rows;
     current = 0;
-    while(amount--)
-        strings[amount] = nullptr;
-}
-
-void text_field::connect_to_win(WINDOW* _win){ win = _win; }
-
-void text_field::putline(char* src){
-    // if(strings[current])
-    //     delete[] strings[current];
-    
-    strings[current] = src;
-
-    current = current == count-1 ? 0 : current+1;
 }
 
 void text_field::hide(){
@@ -36,32 +15,25 @@ void text_field::hide(){
     wrefresh(win);
 }
 
-void text_field::clear(){
-    current = 0;
-    for(int i=0; i<count; i++){
-        delete[] strings[i];
-        strings[i] = nullptr;
-    }
-}
-
-void text_field::purge(){
-    if(!strings)
-        return;
-
-    this->clear();
-    delete[] strings;
-    strings = nullptr;
-    count = 0;
-}
-
-text_field::~text_field(){
-    purge();
-    delwin(win);
-}
+text_field::~text_field(){ delwin(win); }
 
 //--------------------------------------------------------------------------------------------//
 //   Log functions                                                                            //
 //____________________________________________________________________________________________//
+
+log::log(size_t rows, size_t cols, size_t pos_y, size_t pos_x) : text_field(rows, cols, pos_y, pos_x){
+    strings = new char*[rows];
+    while(rows--)
+        strings[rows] = NULL;
+}
+
+void log::clear(){
+    for(size_t i=0; i<count; i++){
+        if(strings[i]) delete[] strings[i];
+        strings[i] = NULL;
+    }
+    current = 0;
+}
 
 void log::print(){
     wclear(win);
@@ -88,17 +60,19 @@ void log::newline(const char* src){
     current++;
 }
 
+log::~log(){
+    clear();
+    if(strings) delete[] strings;
+    strings = NULL;
+}
+
 //--------------------------------------------------------------------------------------------//
 //   Menu functions                                                                           //
 //____________________________________________________________________________________________//
 
-void menu::newline(const char* src){
-    if(strings[current])
-        delete strings[current];
-
-    strings[current] = new char[strlen(src)+1];
-    strcpy(strings[current], src);
-    current++;
+menu::menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x) : text_field(rows, cols, pos_y, pos_x){
+    current = 0;
+    count = 0;
 }
 
 void menu::up(){
@@ -111,51 +85,19 @@ void menu::down(){
         current--;
 }
 
-void menu::select(size_t num){
-    if(num < count)
-        current = num;
-}
-
 void menu::print(){
     wclear(win);
     for(int i = 0; i<count; i++){
         waddch(win, i == current ? '*' : ' ');
-        if(strings[i])
-            wprintw(win, strings[i]);
+        wprintw(win, elements[i]->name);
     }
     wrefresh(win);
 }
 
-void menu::clear(){
+void menu::set_content(menu_element** elements, size_t size){
+    this->elements = elements;
+    count = size;
     current = 0;
-    for(int i=0; i<count; i++)
-        strings[i] = nullptr;
 }
 
-const char* menu::get_selected(){ return strings[current]; }
-
-//--------------------------------------------------------------------------------------------//
-//   Menu functions                                                                           //
-//____________________________________________________________________________________________//
-
-void spell_menu::input_spells(spell** _spells, size_t _spell_count){
-    spells = _spells;
-    spell_count = _spell_count;
-
-    for(auto i = 0; i < _spell_count; i++)
-        strings[i] = (char*)(spells[i]->name);
-}
-
-spell_t spell_menu::get_current_spell(){ return (*spells)[current].type; }
-
-void spell_menu::print(){
-    wclear(win);
-
-    for(int i = 0; i<count; i++){
-        waddch(win, i == current ? '*' : ' ');
-        if(strings[i])
-            wprintw(win, strings[i]);
-    }
-
-    wrefresh(win);
-}
+void* menu::get_selected(){ return elements[current]->element; }

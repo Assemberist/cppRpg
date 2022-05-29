@@ -1,4 +1,5 @@
 #include "user_ifc.hpp"
+#include "spell.hpp"
 
 enum object_state{
     STAY,
@@ -89,7 +90,7 @@ bool user_turn(blink_cfg* u, screen s){
                         break;
 
                     case 'f':
-                        choosed_spell = s.common_menu->get_current_spell();
+                        choosed_spell = (spell_t)reinterpret_cast<long>(s.common_menu->get_selected());
                         clear_blinking(s.mapa->objects);
                         u->cfg.is_hide = GREEN_STABILE;
                         s.mapa->clear();
@@ -151,7 +152,6 @@ bool user_turn(blink_cfg* u, screen s){
                                 }
 
                                 s.common_log->print();
-                                s.common_menu->hide();
                                 goto done;
 
                             case 'r':
@@ -228,7 +228,6 @@ done:
     u->cfg.is_hide = original_color;
     s.mapa->clear();
     s.mapa->update_card();
-    s.common_menu->clear();
     s.common_menu->hide();
     search_targets(nullptr, s, 0);
 

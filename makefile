@@ -12,10 +12,10 @@ build: $(OBJS)
 obj/spell.o: spell.cpp spell.hpp
 	g++ -c spell.cpp -o obj/spell.o $(DBG)
 
-obj/text_field.o: text_field.cpp text_field.hpp obj/spell.o
+obj/text_field.o: text_field.cpp text_field.hpp
 	g++ -c text_field.cpp -o obj/text_field.o $(DBG)
 
-obj/object.o: object.cpp object.hpp object_defs.hpp obj/text_field.o
+obj/object.o: object.cpp object.hpp object_defs.hpp obj/text_field.o obj/spell.o
 	g++ -c object.cpp -o obj/object.o $(DBG)
 
 obj/card.o: object.hpp card.cpp card.hpp obj/object.o
