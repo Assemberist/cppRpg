@@ -89,5 +89,21 @@ enum fraction{
     MONSTER
 };
 
+enum blink_t{
+    HIDE,
+
+    RED_STABILE,
+    RED_ON,
+    RED_OFF,
+    RED_INVERT,
+    RED_NO_INVERT,
+
+    GREEN_STABILE,
+    GREEN_ON,
+    GREEN_OFF,
+    GREEN_INVERT,
+    GREEN_NO_INVERT
+};
+
 #define MAX_HEALTH 2000
 #define MAX_MANA 200

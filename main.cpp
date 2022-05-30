@@ -1,4 +1,6 @@
 #include "classes.hpp"
+#include "object.hpp"
+#include "object_defs.hpp"
 #include "text_field.hpp"
 #include "scene.hpp"
 
@@ -35,13 +37,16 @@ int main(){
 
     refresh();
 
-    blink_cfg objs[] = {
-        {new mage(3, 1, string("Maga")), {GREEN_STABILE}},
-        {new golem(8, 8, string("Goga")), {RED_STABILE}},
-        {new golem(8, 7, string("Pisos")), {RED_STABILE}},
-        {new golem(7, 3, string("Ugga Boogga")), {RED_STABILE}},
-        {NULL, {HIDE}}
+    object* objs[] = {
+        new mage(3, 1, string("Maga")),
+        new golem(8, 8, string("Goga")),
+        new golem(8, 7, string("Pisos")),
+        new golem(7, 3, string("Ugga Boogga")),
+        NULL
     };
+
+    for(object** i = objs+1; *i; i++)
+        (*i)->graph_state = RED_STABILE;
 
     strcpy((char*)s.mapa->mapa, test_card);
     s.mapa->objects = objs;
@@ -51,7 +56,7 @@ int main(){
 
     timeout(500);
 
-    if(!game_loop(objs, objs, s)){
+    if(!game_loop(objs, *objs, s)){
         timeout(-1);
         s.common_log->newline("Game ower\n");
         s.common_log->print();

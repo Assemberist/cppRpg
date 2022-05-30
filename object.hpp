@@ -27,15 +27,17 @@ protected:
     map<effect_t, effect> effects;
     vector<spell*> spells;
 
-    behavior_t behavior;
     string name;
+    behavior_t behavior;
+
+    fraction fract;
 
 public:
     static log* l;
     uint8_t X;
     uint8_t Y;
 
-    fraction fract;
+    blink_t graph_state:4;
 
     object(int8_t _X, int8_t _Y, string _name) : X(_X), Y(_Y), name(_name), behavior(BHV_ATTACK) {}
 

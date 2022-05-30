@@ -5,4 +5,4 @@
 
 // to do 1: object target among all objects
 
-bool user_turn(blink_cfg* u, screen s);
+bool user_turn(object* u, screen s);

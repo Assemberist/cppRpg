@@ -2,18 +2,18 @@
 
 struct npc_state{
     action_t last_action;
-    blink_cfg* target;
+    object* target;
 };
 
-void do_stand(blink_cfg* objs, screen s, npc_state* stats, size_t num);
-void do_attack(blink_cfg* objs, screen s, npc_state* stats, size_t num);
-void do_attack_nearlest_enemy(blink_cfg* objs, screen s, npc_state* stats, size_t num);
-void do_search_enemy(blink_cfg* objs, screen s, npc_state* stats, size_t num);
-void do_walk(blink_cfg* objs, screen s, npc_state* stats, size_t num);
-void do_run_avay(blink_cfg* objs, screen s, npc_state* stats, size_t num);
-void do_rest(blink_cfg* objs, screen s, npc_state* stats, size_t num);
+void do_stand(object** objs, screen s, npc_state* stats, size_t num);
+void do_attack(object** objs, screen s, npc_state* stats, size_t num);
+void do_attack_nearlest_enemy(object** objs, screen s, npc_state* stats, size_t num);
+void do_search_enemy(object** objs, screen s, npc_state* stats, size_t num);
+void do_walk(object** objs, screen s, npc_state* stats, size_t num);
+void do_run_avay(object** objs, screen s, npc_state* stats, size_t num);
+void do_rest(object** objs, screen s, npc_state* stats, size_t num);
 
-void (*do_list[])(blink_cfg*, screen, npc_state*, size_t) = {
+void (*do_list[])(object**, screen, npc_state*, size_t) = {
     do_stand,
     do_attack,
     do_attack_nearlest_enemy,
@@ -29,15 +29,15 @@ size_t range(object* obj1, object* obj2){
     return x*x + y*y;
 }
 
-bool game_loop(blink_cfg* objs, blink_cfg* gamer, screen s){
+bool game_loop(object** objs, object* gamer, screen s){
     size_t obj_count = 0;
-    while(objs[obj_count].o) obj_count++;
+    while(objs[obj_count]) obj_count++;
 
     npc_state stats[obj_count];
     memset(stats, 0, obj_count * sizeof(npc_state));
 
     while(1){
-        if(!(gamer->o->is_alive()))
+        if(!(gamer->is_alive()))
             return false;
 
         for(size_t i=0; i < obj_count; i++){
@@ -45,14 +45,14 @@ bool game_loop(blink_cfg* objs, blink_cfg* gamer, screen s){
             s.mapa->update_card();
             s.common_log->print();
 
-            if(objs + i == gamer){
-                if(!user_turn(objs+i, s))
+            if(objs[i] == gamer){
+                if(!user_turn(objs[i], s))
                     return true;
             }
             else{
-                objs[i].o->calculate();
-                if(objs[i].o->is_alive()){
-                    size_t fun = (size_t)objs[i].o->turn();
+                objs[i]->calculate();
+                if(objs[i]->is_alive()){
+                    size_t fun = (size_t)objs[i]->turn();
                     do_list[fun](objs, s, stats, i);
                 }
             }
@@ -60,72 +60,72 @@ bool game_loop(blink_cfg* objs, blink_cfg* gamer, screen s){
     }
 }
 
-void do_stand(blink_cfg* objs, screen s, npc_state* stats, size_t num){}
+void do_stand(object** objs, screen s, npc_state* stats, size_t num){}
 
-void do_attack(blink_cfg* objs, screen s, npc_state* stats, size_t num){
+void do_attack(object** objs, screen s, npc_state* stats, size_t num){
     size_t i;
     if(stats[num].target == NULL){
         for(i=0; i<num; i++)
-            if(objs[i].o->is_alive())
-                if(objs[num].o->check_enemy(objs[i].o)){
-                    stats[num].target = objs + i;
+            if(objs[i]->is_alive())
+                if(objs[num]->check_enemy(objs[i])){
+                    stats[num].target = objs[i];
                     break;
                 }
     }
 
     if(stats[num].target == NULL){
-        for(i = num+1; objs[i].o; i++)
-            if(objs[i].o->is_alive())
-                if(objs[num].o->check_enemy(objs[i].o)){
-                    stats[num].target = objs + i;
+        for(i = num+1; objs[i]; i++)
+            if(objs[i]->is_alive())
+                if(objs[num]->check_enemy(objs[i])){
+                    stats[num].target = objs[i];
                     break;
                 }
     }
 
     if(stats[num].target == NULL){
-        objs[num].o->set_behavior(BHV_CHILL);
+        objs[num]->set_behavior(BHV_CHILL);
         return;
     }
 
-    if(stats[num].target->o->is_alive() == false){
+    if(stats[num].target->is_alive() == false){
         stats[num].target = NULL;
         return;
     }
 
-    if(objs[num].o->use_attack_spells(stats[num].target->o) == false)
-        s.mapa->magnetic_search(objs[num].o, stats[num].target->o);
+    if(objs[num]->use_attack_spells(stats[num].target) == false)
+        s.mapa->magnetic_search(objs[num], stats[num].target);
 }
 
-void do_attack_nearlest_enemy(blink_cfg* objs, screen s, npc_state* stats, size_t num){
+void do_attack_nearlest_enemy(object** objs, screen s, npc_state* stats, size_t num){
     int i;
     if(stats[num].target == NULL){
-        for(i=0; objs[i].o; i++)
-            if(objs[i].o->is_alive())
-                if(objs[num].o->check_enemy(objs[i].o)){
-                    stats[num].target = objs + i;
+        for(i=0; objs[i]; i++)
+            if(objs[i]->is_alive())
+                if(objs[num]->check_enemy(objs[i])){
+                    stats[num].target = objs[i];
                     break;
                 }
     }
 
-    while(objs[i].o)
-        if( objs[i].o->is_alive() &&
-            objs[num].o->check_enemy(objs[i].o) &&
-            range(objs[num].o, stats[num].target->o) < range(objs[num].o, objs[i].o))
-                stats[num].target = objs+i;
+    while(objs[i])
+        if( objs[i]->is_alive() &&
+            objs[num]->check_enemy(objs[i]) &&
+            range(objs[num], stats[num].target) < range(objs[num], objs[i]))
+                stats[num].target = objs[i];
 }
 
-void do_search_enemy(blink_cfg* objs, screen s, npc_state* stats, size_t num){
+void do_search_enemy(object** objs, screen s, npc_state* stats, size_t num){
     // todo
 }
 
-void do_walk(blink_cfg* objs, screen s, npc_state* stats, size_t num){
-    s.mapa->indirect_moving(objs[num].o);
+void do_walk(object** objs, screen s, npc_state* stats, size_t num){
+    s.mapa->indirect_moving(objs[num]);
 }
 
-void do_run_avay(blink_cfg* objs, screen s, npc_state* stats, size_t num){
-    s.mapa->magnetic_search_neg(objs[num].o, stats[num].target->o);
+void do_run_avay(object** objs, screen s, npc_state* stats, size_t num){
+    s.mapa->magnetic_search_neg(objs[num], stats[num].target);
 }
 
-void do_rest(blink_cfg* objs, screen s, npc_state* stats, size_t num){
+void do_rest(object** objs, screen s, npc_state* stats, size_t num){
     // todo
 }

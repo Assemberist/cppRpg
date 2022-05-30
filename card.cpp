@@ -1,4 +1,5 @@
 #include "card.hpp"
+#include <cstddef>
 
 za_mapo::za_mapo (size_t _rows, size_t _length, size_t pos_y, size_t pos_x) {
     mapa = new char[_rows * _length + 1];
@@ -60,33 +61,33 @@ void za_mapo::redraw(){
 
     int color;
 
-    for(int i = 0; objects[i].o; i++){
-        if(objects[i].o->get_effect(DEAD) && objects[i].cfg.is_hide != RED_INVERT)
+    for(int i = 0; objects[i]; i++){
+        if(objects[i]->get_effect(DEAD) && objects[i]->graph_state != RED_INVERT)
             color = 0;
 
         else{
-            switch(objects[i].cfg.is_hide){
+            switch(objects[i]->graph_state){
                 case HIDE:
                     continue;
 
                 case GREEN_ON:
                     color = 4;
-                    objects[i].cfg.is_hide = GREEN_OFF;
+                    objects[i]->graph_state = GREEN_OFF;
                     break;
 
                 case GREEN_OFF:
                     color = 2;
-                    objects[i].cfg.is_hide = GREEN_ON;
+                    objects[i]->graph_state = GREEN_ON;
                     break;
 
                 case RED_ON:
                     color = 4;
-                    objects[i].cfg.is_hide = RED_OFF;
+                    objects[i]->graph_state = RED_OFF;
                     break;
 
                 case RED_OFF:
                     color = 1;
-                    objects[i].cfg.is_hide = RED_ON;
+                    objects[i]->graph_state = RED_ON;
                     break;
                 
                 case GREEN_STABILE:
@@ -104,12 +105,15 @@ void za_mapo::redraw(){
                 case GREEN_INVERT:
                     color = 5;
                     break;
+ 
+                default:
+                    break;
             }
         }
 
         wattron(win, COLOR_PAIR(color));
-        wmove(win, objects[i].o->Y, objects[i].o->X);
-        waddch(win, objects[i].o->get_type());
+        wmove(win, objects[i]->Y, objects[i]->X);
+        waddch(win, objects[i]->get_type());
         wattroff(win, COLOR_PAIR(color));
     }
 }
@@ -265,32 +269,34 @@ void za_mapo::draw_range(object* target, int8_t range){
         for(int j = fromX; j < toX; j++)
             waddch(win, ((char(*)[length])mapa)[i][j]); }
 
-    for(int i = 0; objects[i].o; i++){
-        if( objects[i].o->X >= fromX && objects[i].o->X < toX &&
-            objects[i].o->Y >= fromY && objects[i].o->Y < toY ){
-                wmove(win, objects[i].o->Y, objects[i].o->X);
-                waddch(win, objects[i].o->get_type()); }}
+    for(int i = 0; objects[i]; i++){
+        if( objects[i]->X >= fromX && objects[i]->X < toX &&
+            objects[i]->Y >= fromY && objects[i]->Y < toY ){
+                wmove(win, objects[i]->Y, objects[i]->X);
+                waddch(win, objects[i]->get_type()); }}
 
     wattroff(win, COLOR_PAIR(3));
 
     wrefresh(win);
 }
 
-blink_cfg* search_targets(blink_cfg* obj, screen s, size_t range){
-    static blink_cfg* last_target = NULL;
+object* search_targets(object* obj, screen s, size_t range){
+    static object** last_target = NULL;
 
     if(!last_target) last_target = s.mapa->objects;
 
     if(obj){
-        while(last_target->o){
-            if(abs(last_target->o->X, obj->o->X) <= range)
-                if(abs(last_target->o->Y, obj->o->Y) <= range){
+        while(*last_target){
+            if(abs((*last_target)->X, obj->X) <= range)
+                if(abs((*last_target)->Y, obj->Y) <= range){
                     last_target++;
-                    return last_target-1;
+                    return *(last_target-1);
                 }
 
             last_target++;
         }
     }
-    return last_target = NULL;
+
+    last_target = NULL;
+    return NULL;
 }

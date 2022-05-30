@@ -2,33 +2,10 @@
 
 #include "object.hpp"
 
-enum blink_t{
-    HIDE,
-
-    RED_STABILE,
-    RED_ON,
-    RED_OFF,
-    RED_INVERT,
-    RED_NO_INVERT,
-
-    GREEN_STABILE,
-    GREEN_ON,
-    GREEN_OFF,
-    GREEN_INVERT,
-    GREEN_NO_INVERT
-};
-
-struct blink_cfg{
-    object* o;
-    struct{
-        blink_t is_hide:4;
-    } cfg;
-};
-
 class za_mapo{
 public:
     WINDOW* win;
-    blink_cfg* objects;
+    object** objects;
 
     char* mapa;
     size_t rows;
@@ -57,4 +34,4 @@ struct screen{
     menu* common_menu;
 };
 
-blink_cfg* search_targets(blink_cfg* obj, screen s, size_t range);
+object* search_targets(object* obj, screen s, size_t range);
