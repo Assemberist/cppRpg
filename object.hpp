@@ -51,7 +51,7 @@ public:
 
     effect* get_effect(effect_t type);
     int32_t* get_property(property_t type);
-    bool request_property(property_t prop, size_t value);
+    bool buy_property(property_t prop, size_t value);
 
     void put_spell(spell* sp);
     void remove_spell(spell* sp);
@@ -65,7 +65,7 @@ public:
     bool use_attack_spells(object* target);
 };
 
-void act_punch(object* obj);
-void act_lighting(object* obj);
+void act_punch(object* obj, object* target);
+void act_lighting(object* obj, object* target);
 // todo
-void act_fireball(object* target);
+void act_fireball(object* obj, object* target);
