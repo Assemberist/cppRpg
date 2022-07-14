@@ -1,0 +1,5 @@
+
+        default:
+            object::l->newline("!! Logic is not realised yet !!\n");
+    }
+}

@@ -1,0 +1,27 @@
+DEAD
+    exit :Stop punch the dead body!
+
+PHYSIC_IMMUNITY
+    exit :Physic attacks had no effect.
+
+'HEALTH'
+    ??? -> exit :It is can not be killed or broken.
+
+PHYSIC_PROTECT
+    ? >= :The armory too strong to deal a damage.
+    -- :Attacked object have physic resistance.
+
+PHYSIC_WEAKNESS
+    ++ :Attacked object have physic weakness.
+
+FRIZED
+    ? 'HEALTH' << 2 ->
+        DEAD(0, 0) :It was splitted open.
+        exit
+
+_NO_EFFECT
+    'HEALTH' > ->
+        'HEALTH'-- :%name got %value of physic damage.\n
+    else ->
+        'HEALTH' =0
+        DEAD(0, 0) :%name was killed.\n
