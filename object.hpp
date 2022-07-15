@@ -62,10 +62,5 @@ public:
 
     bool is_alive();
     bool check_enemy(object* target);
-    bool use_attack_spells(object* target);
+    spell_t choose_attack_spells(object* target);
 };
-
-void act_punch(object* obj);
-void act_lighting(object* obj);
-// todo
-void act_fireball(object* target);

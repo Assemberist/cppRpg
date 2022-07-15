@@ -1,5 +1,5 @@
 OBJS=obj/spell.o obj/text_field.o obj/object.o obj/classes.o \
-obj/card.o obj/user_ifc.o obj/scene.o obj/main.o
+obj/actions.o obj/card.o obj/user_ifc.o obj/scene.o obj/main.o
 
 debug: DBG :=-g
 debug: $(OBJS)
@@ -20,6 +20,9 @@ obj/object.o: object.cpp object.hpp object_defs.hpp obj/text_field.o obj/spell.o
 
 obj/card.o: object.hpp card.cpp card.hpp obj/object.o
 	g++ -c card.cpp -o obj/card.o $(DBG)
+
+obj/actions.o: actions.cpp actions.hpp obj/object.o
+	g++ -c actions.cpp -o obj/actions.o $(DBG)
 
 obj/classes.o: classes.hpp classes.cpp obj/object.o
 	g++ -c classes.cpp -o obj/classes.o $(DBG)

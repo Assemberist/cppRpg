@@ -288,27 +288,24 @@ bool object::check_enemy(object* target){
     }
 }
 
-bool object::use_attack_spells(object* target){
+spell_t object::choose_attack_spells(object* target){
     for(auto i=spells.begin(); i != spells.end(); i++){
         switch((*i)->type){
             case FIREBALL:
                 if(in_range(this, target, 5)){
-                    act_fireball(target);
-                    return true;
+                    return FIREBALL;
                 }
                 break;
 
             case PUNCH:
                 if(in_range(this, target, 1)){
-                    act_punch(target);
-                    return true;
+                    return PUNCH;
                 }
                 break;
 
             case LIGHTING:
                 if(in_range(this, target, 5)){
-                    act_lighting(target);
-                    return true;
+                    return LIGHTING;
                 }
                 break;
 
@@ -317,37 +314,9 @@ bool object::use_attack_spells(object* target){
         }
     }
 
-    return false;
+    return NOTHING;
 }
 
 void object::calculate(){
 
-}
-
-void act_punch(object* obj){
-    auto* value = obj->get_property(STRENGTH);
-    if(value){
-        obj->act(CRUSH_ATTACK, {0, *value});
-        return;
-    }
-    else{
-        char arr[50];
-        sprintf(arr, "%s can't punch.\n", obj->get_name());
-        object::l->newline(arr);
-    }
-}
-
-void act_lighting(object* obj){
-    if(obj->request_property(MANA, 10)){
-        obj->act(ELECTRIC_DAMAGE, {0, 40});
-        obj->act(MAGIC_ATTACK, {0, 10});
-    }
-    else{
-        object::l->newline("Not enough mana.\n");
-    }
-}
-
-// todo
-void act_fireball(object* target){
-    
 }

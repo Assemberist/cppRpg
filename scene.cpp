@@ -92,8 +92,13 @@ void do_attack(object** objs, screen s, npc_state* stats, size_t num){
         return;
     }
 
-    if(objs[num]->use_attack_spells(stats[num].target) == false)
+    spell_t sp = objs[num]->choose_attack_spells(stats[num].target);
+
+    if(sp == NOTHING)
         s.mapa->magnetic_search(objs[num], stats[num].target);
+    else
+        do_action(objs[num], stats[num].target, sp);
+
 }
 
 void do_attack_nearlest_enemy(object** objs, screen s, npc_state* stats, size_t num){

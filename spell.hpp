@@ -3,7 +3,8 @@
 enum spell_t{
     FIREBALL,
     PUNCH,
-    LIGHTING
+    LIGHTING,
+    NOTHING
 };
 
 struct spell{
@@ -16,3 +17,4 @@ extern spell __spell_def[];
 #define _SPELL_FIREBALL (__spell_def + 0)
 #define _SPELL_PUNCH    (__spell_def + 1)
 #define _SPELL_LIGTHING (__spell_def + 2)
+#define _SPELL_NOTHING  (__spell_def + 3)
