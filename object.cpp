@@ -241,6 +241,8 @@ int32_t* object::get_property(property_t type){
 
 const char* object::get_name(){ return name.c_str(); }
 fraction object::get_fraction(){ return fract; }
+vector<spell*>& object::get_spells(){ return spells; }
+
 bool object::is_alive(){ return effects.find(DEAD) == effects.end(); }
 void object::set_behavior(behavior_t bhv){ behavior = bhv; }
 void object::put_spell (spell* sp) { spells.push_back(sp); }
@@ -262,10 +264,6 @@ bool object::request_property(property_t prop, size_t value){
     }
 
     return false;
-}
-
-void object::print_spells(menu* _menu){
-    _menu->set_content((menu_element**)(&spells[0]), spells.size());
 }
 
 bool object::check_enemy(object* target){

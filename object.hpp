@@ -43,7 +43,7 @@ public:
 
     virtual char get_type() = 0;
     const char* get_name();
-    void print_spells(menu* _menu);
+    vector<spell*>& get_spells();
 
     void act(effect_t type, effect e);
     virtual action_t turn() = 0;

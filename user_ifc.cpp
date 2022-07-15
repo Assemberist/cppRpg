@@ -58,7 +58,9 @@ bool user_turn(object* u, screen s){
     object* tar = nullptr;
     object* single_target = nullptr;
     blink_t last_color;
-    u->print_spells(s.common_menu);
+
+    auto sp = u->get_spells();
+    s.common_menu->set_content((menu_element**)(&sp[0]), sp.size());
 
     char temp;
     while((temp = getch()) != ' '){
