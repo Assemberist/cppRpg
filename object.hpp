@@ -45,7 +45,7 @@ public:
     const char* get_name();
     vector<spell*>& get_spells();
 
-    void act(effect_t type, effect e);
+    friend const char** act(object* obj, effect_t type, effect e);
     virtual action_t turn() = 0;
     void calculate();
 

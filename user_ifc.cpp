@@ -149,8 +149,8 @@ bool user_turn(object* u, screen s){
                             case 'f':
                                 search_targets(nullptr, s, 0);
                                 while(single_target = search_targets(tar, s, 2)){
-                                    single_target->act(FIRE_DAMAGE, {0, 25});
-                                    single_target->act(MAGIC_ATTACK, {0, 5});
+                                    act(single_target, FIRE_DAMAGE, {0, 25});
+                                    act(single_target, MAGIC_ATTACK, {0, 5});
                                 }
 
                                 s.common_log->print();
