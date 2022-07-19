@@ -26,7 +26,6 @@ void state::act(effect_t type, effect e){
                 state::l->newline("Attacked object have physic resistance.\n");
                 if(i->second.timed.amount > e.timed.amount){
                     state::l->newline("The armory too strong to deal a damage.\n");
-                    
                     return;
                 }
                 e.timed.amount -= i->second.timed.amount;
@@ -42,7 +41,6 @@ void state::act(effect_t type, effect e){
                     if(j->second < e.timed.amount / 2){
                         state::l->newline("It was splitted open.\n");
                         effects.insert({DEAD, {0, 0}});
-                        
                         return;
                     }
                 }
@@ -60,7 +58,6 @@ void state::act(effect_t type, effect e){
             }
             else{
                 state::l->newline("It is can not be killed or broken.\n");
-                
                 return;
             }
             break;
@@ -69,13 +66,11 @@ void state::act(effect_t type, effect e){
         case MAGIC_ATTACK:{
             if(effects.find(DEAD) != effects.end()){
                 state::l->newline("Attakc magic will not make he alive.\n");
-                
                 return;
             }
 
             if(effects.find(MAGIC_IMMUNITY) != effects.end()){
                 state::l->newline("Magic attack was not effect.\n");
-                
                 return;
             }
 
@@ -86,7 +81,6 @@ void state::act(effect_t type, effect e){
                 state::l->newline("Antimagic aura decrease power of the magic.\n");
                 if(i->second.timed.amount >= e.timed.amount){
                     state::l->newline("The magic was destroyed.\n");
-                    
                     return;
                 }
                 e.timed.amount -= i->second.timed.amount;
@@ -114,7 +108,6 @@ void state::act(effect_t type, effect e){
             }
             else{
                 state::l->newline("It can not be killed or broken.\n");
-                
                 return;
             }
             break;
@@ -123,13 +116,11 @@ void state::act(effect_t type, effect e){
         case ELECTRIC_DAMAGE:{
             if(effects.find(DEAD) != effects.end()){
                 state::l->newline("Defibrilation had not effect.\n");
-                
                 return;
             }
 
             if(effects.find(DIELECTRIC) != effects.end()){
                 state::l->newline("It is dielectric.\n");
-                
                 return;
             }
 
@@ -140,7 +131,6 @@ void state::act(effect_t type, effect e){
                 state::l->newline("Smh dielectric decreased damage.\n");
                 if(i->second.timed.amount >= e.timed.amount){
                     state::l->newline("Dielectric neutralise all damage.\n");
-                    
                     return;
                 }
                 e.timed.amount -= i->second.timed.amount;
@@ -173,7 +163,6 @@ void state::act(effect_t type, effect e){
             }
             else{
                 state::l->newline("It can not be killed or broken.\n");
-                
                 return;
             }
             break;
@@ -182,13 +171,11 @@ void state::act(effect_t type, effect e){
         case FIRE_DAMAGE:{
             if(effects.find(DEAD) != effects.end()){
                 state::l->newline("The fire will clean this object. Or not.\n");
-                
                 return;
             }
 
             if(effects.find(UNFLAMED) != effects.end()){
                 state::l->newline("It can not burns.\n");
-                
                 return;
             }
 
@@ -199,7 +186,6 @@ void state::act(effect_t type, effect e){
                 state::l->newline("Fire goes weaker.\n");
                 if(i->second.timed.amount >= e.timed.amount){
                     state::l->newline("Fire disappired.\n");
-                    
                     return;
                 }
                 e.timed.amount -= i->second.timed.amount;
@@ -233,7 +219,6 @@ void state::act(effect_t type, effect e){
             }
             else{
                 state::l->newline("It can not be burned.\n");
-                
                 return;
             }
             break;
@@ -241,7 +226,6 @@ void state::act(effect_t type, effect e){
 
         default:
             state::l->newline("!! Logic is not realised yet !!\n");
-            
             return;
     }
 }
