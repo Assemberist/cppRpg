@@ -1,4 +1,4 @@
-OBJS=obj/spell.o obj/text_field.o obj/object.o obj/classes.o \
+OBJS=obj/spell.o obj/text_field.o obj/state.o obj/object.o obj/classes.o \
 obj/actions.o obj/effect_calc.o obj/card.o obj/user_ifc.o obj/scene.o obj/main.o
 
 debug: DBG :=-g
@@ -15,13 +15,16 @@ obj/spell.o: spell.cpp spell.hpp
 obj/text_field.o: text_field.cpp text_field.hpp
 	g++ -c text_field.cpp -o obj/text_field.o $(DBG)
 
-obj/object.o: object.cpp object.hpp object_defs.hpp obj/text_field.o obj/spell.o
+obj/state.o: state.cpp state.hpp object_defs.hpp obj/spell.o
+	g++ -c state.cpp -o obj/state.o $(DBG)
+
+obj/object.o: object.cpp object.hpp obj/text_field.o obj/state.o
 	g++ -c object.cpp -o obj/object.o $(DBG)
 
 obj/card.o: object.hpp card.cpp card.hpp obj/object.o
 	g++ -c card.cpp -o obj/card.o $(DBG)
 
-obj/effect_calc.o: effect_calc.cpp effect_calc.hpp obj/object.o
+obj/effect_calc.o: effect_calc.cpp obj/object.o
 	g++ -c effect_calc.cpp -o obj/effect_calc.o $(DBG)
 
 obj/actions.o: actions.cpp actions.hpp obj/object.o

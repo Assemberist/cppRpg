@@ -18,6 +18,7 @@ const char* test_card = "*************  *   **** **   ****      ****  *   **** *
 // **********
 
 log* object::l;
+log* state::l;
 
 int main(){
     initscr();
@@ -32,6 +33,7 @@ int main(){
 
     screen s;
     s.common_log = object::l;
+    state::l = object::l;
     s.common_menu = new menu(3, 50, 12, 0);
     s.mapa = new za_mapo(10, 10, 0, 0);
 

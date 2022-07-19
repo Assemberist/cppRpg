@@ -4,21 +4,11 @@ bool in_range(object* user, object* target, size_t range){
     return (abs(user->X, target->X) <= range && abs(user->Y, target->Y) <= range ? true : false);
 }
 
-effect* object::get_effect(effect_t type){
-    auto i = effects.find(type);
-    return (i != effects.end() ? &i->second : NULL);
-}
-
-int32_t* object::get_property(property_t type){
-    auto i = propertyes.find(type);
-    return (i != propertyes.end() ? &i->second : NULL);
-}
-
 const char* object::get_name(){ return name.c_str(); }
 fraction object::get_fraction(){ return fract; }
 vector<spell*>& object::get_spells(){ return spells; }
 
-bool object::is_alive(){ return effects.find(DEAD) == effects.end(); }
+bool object::is_alive(){ return !stat.there_is_effect(DEAD); }
 void object::set_behavior(behavior_t bhv){ behavior = bhv; }
 void object::put_spell (spell* sp) { spells.push_back(sp); }
 
@@ -26,19 +16,6 @@ void object::remove_spell(spell* sp){
     for(auto i = spells.begin(); i != spells.end(); i++)
         if(*i == sp)
             spells.erase(i);
-}
-
-bool object::request_property(property_t prop, size_t value){
-    auto i = propertyes.find(prop);
-    if(i == propertyes.end())
-        return false;
-
-    if(i->second >= value){
-        i->second -= value;
-        return true;
-    }
-
-    return false;
 }
 
 bool object::check_enemy(object* target){
@@ -90,8 +67,4 @@ spell_t object::choose_attack_spells(object* target){
     }
 
     return NOTHING;
-}
-
-void object::calculate(){
-
 }

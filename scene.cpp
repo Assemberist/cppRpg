@@ -50,7 +50,7 @@ bool game_loop(object** objs, object* gamer, screen s){
                     return true;
             }
             else{
-                objs[i]->calculate();
+                objs[i]->stat.calculate();
                 if(objs[i]->is_alive()){
                     size_t fun = (size_t)objs[i]->turn();
                     do_list[fun](objs, s, stats, i);

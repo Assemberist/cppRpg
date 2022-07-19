@@ -16,9 +16,9 @@ void do_action(object* obj, object* target, spell_t sp){
 void do_nothing(object*, object*){}
 
 void act_punch(object* obj, object* tartget){
-    auto* value = obj->get_property(STRENGTH);
+    auto* value = obj->stat.get_property(STRENGTH);
     if(value){
-        act(obj, CRUSH_ATTACK, {0, *value});
+        obj->stat.act(CRUSH_ATTACK, {0, *value});
         return;
     }
     else{
@@ -29,9 +29,9 @@ void act_punch(object* obj, object* tartget){
 }
 
 void act_lighting(object* obj, object* tartget){
-    if(obj->request_property(MANA, 10)){
-        act(obj, ELECTRIC_DAMAGE, {0, 40});
-        act(obj, MAGIC_ATTACK, {0, 10});
+    if(obj->stat.request_property(MANA, 10)){
+        obj->stat.act(ELECTRIC_DAMAGE, {0, 40});
+        obj->stat.act(MAGIC_ATTACK, {0, 10});
     }
     else{
         object::l->newline("Not enough mana.\n");

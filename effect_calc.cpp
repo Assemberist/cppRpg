@@ -1,251 +1,247 @@
-#include "object.hpp"
+#include "state.hpp"
 
 #define MAX_LINES 10
 
 static const char* lines[10];
 
-const char** act(object* obj, effect_t type, effect e){
+void state::act(effect_t type, effect e){
     size_t num = 0;
 
     switch(type){
         case CRUSH_ATTACK:{
-            if(obj->effects.find(DEAD) != obj->effects.end()){
-                lines[num++] = "Stop punch the dead body!\n";
-                lines[num] = NULL;
-                return lines;
+            if(effects.find(DEAD) != effects.end()){
+                state::l->newline("Stop punch the dead body!\n");
+                return;
             }
 
-            if(obj->effects.find(PHYSIC_IMMUNITY) != obj->effects.end()){
-                lines[num++] = "Physic attacks had no effect.\n";
-                lines[num] = NULL;
-                return lines;
+            if(effects.find(PHYSIC_IMMUNITY) != effects.end()){
+                state::l->newline("Physic attacks had no effect.\n");
+                return;
             }
 
-            auto i = obj->effects.find(PHYSIC_PROTECT);
-            auto j = obj->propertyes.find(HEALTH);
+            auto i = effects.find(PHYSIC_PROTECT);
+            auto j = propertyes.find(HEALTH);
             
-            if(i != obj->effects.end()){
-                lines[num++] = "Attacked object have physic resistance.\n";
+            if(i != effects.end()){
+                state::l->newline("Attacked object have physic resistance.\n");
                 if(i->second.timed.amount > e.timed.amount){
-                    lines[num++] = "The armory too strong to deal a damage.\n";
-                    lines[num] = NULL;
-                    return lines;
+                    state::l->newline("The armory too strong to deal a damage.\n");
+                    
+                    return;
                 }
                 e.timed.amount -= i->second.timed.amount;
             }
             
-            if((i = obj->effects.find(PHYSIC_WEAKNESS)) != obj->effects.end()){
-                lines[num++] = "Attacked object have physic weakness.\n";
+            if((i = effects.find(PHYSIC_WEAKNESS)) != effects.end()){
+                state::l->newline("Attacked object have physic weakness.\n");
                 e.timed.amount += i->second.timed.amount;
             }
 
-            if(j != obj->propertyes.end()){
-                if((i = obj->effects.find(FRIZED)) != obj->effects.end()){
+            if(j != propertyes.end()){
+                if((i = effects.find(FRIZED)) != effects.end()){
                     if(j->second < e.timed.amount / 2){
-                        lines[num++] = "It was splitted open.\n";
-                        obj->effects.insert({DEAD, {0, 0}});
-                        lines[num] = NULL;
-                        return lines;
+                        state::l->newline("It was splitted open.\n");
+                        effects.insert({DEAD, {0, 0}});
+                        
+                        return;
                     }
                 }
                 
                 if(j->second > e.timed.amount){
                     char buff[1024];
-                    sprintf(buff, "%s got %4d of physic damage.\n", name.c_str(), e.timed.amount);
+                    sprintf(buff, "Received %4d of physic damage.\n", e.timed.amount);
                     j->second -= e.timed.amount;
-                    lines[num++] = buff;
+                    state::l->newline(buff);
                 }
                 else{
-                    char buff[1024];
-                    sprintf(buff, "%s was killed.\n", name.c_str());
-                    lines[num++] = buff;
-                    obj->effects.insert({DEAD, {0,0}});
+                    state::l->newline("It is killed.\n");
+                    effects.insert({DEAD, {0,0}});
                 }
             }
             else{
-                lines[num++] = "It is can not be killed or broken.\n";
-                lines[num] = NULL;
-                return lines;
+                state::l->newline("It is can not be killed or broken.\n");
+                
+                return;
             }
             break;
         }
 
         case MAGIC_ATTACK:{
-            if(obj->effects.find(DEAD) != obj->effects.end()){
-                lines[num++] = "Attakc magic will not make he alive.\n";
-                lines[num] = NULL;
-                return lines;
+            if(effects.find(DEAD) != effects.end()){
+                state::l->newline("Attakc magic will not make he alive.\n");
+                
+                return;
             }
 
-            if(obj->effects.find(MAGIC_IMMUNITY) != obj->effects.end()){
-                lines[num++] = "Magic attack was not effect.\n";
-                lines[num] = NULL;
-                return lines;
+            if(effects.find(MAGIC_IMMUNITY) != effects.end()){
+                state::l->newline("Magic attack was not effect.\n");
+                
+                return;
             }
 
-            auto i = obj->effects.find(MAGIC_PROTECT);
-            auto j = obj->propertyes.find(HEALTH);
+            auto i = effects.find(MAGIC_PROTECT);
+            auto j = propertyes.find(HEALTH);
 
-            if(i != obj->effects.end()){
-                lines[num++] = "Antimagic aura decrease power of the magic.\n";
+            if(i != effects.end()){
+                state::l->newline("Antimagic aura decrease power of the magic.\n");
                 if(i->second.timed.amount >= e.timed.amount){
-                    lines[num++] = "The magic was destroyed.\n";
-                    lines[num] = NULL;
-                    return lines;
+                    state::l->newline("The magic was destroyed.\n");
+                    
+                    return;
                 }
                 e.timed.amount -= i->second.timed.amount;
             }
 
-            if((i = obj->effects.find(MAGIC_WEAKNESS)) != obj->effects.end()){
-                lines[num++] = "Object have weakness before magic.\n";
+            if((i = effects.find(MAGIC_WEAKNESS)) != effects.end()){
+                state::l->newline("Object have weakness before magic.\n");
                 e.timed.amount += i->second.timed.amount;
             }
 
-            if(j != obj->propertyes.end()){
+            if(j != propertyes.end()){
                 char buff[1024];
                 const char* format;
                 if(j->second <= e.timed.amount){
-                    format = "This attack was letal for the %s.\n";
+                    format = "This attack was letal.\n";
                     j->second = 0;
-                    obj->effects.insert({DEAD, {0,0}});
+                    effects.insert({DEAD, {0,0}});
                 }
                 else{
-                    format = "%s received %d of magic damage.\n";
+                    format = "Received %d of magic damage.\n";
                     j->second -= e.timed.amount;
                 }
-                sprintf(buff, format, name.c_str(), e.timed.amount);
-                lines[num++] = buff;
+                sprintf(buff, format, e.timed.amount);
+                state::l->newline(buff);
             }
             else{
-                lines[num++] = "It can not be killed or broken.\n";
-                lines[num] = NULL;
-                return lines;
+                state::l->newline("It can not be killed or broken.\n");
+                
+                return;
             }
             break;
         }
 
         case ELECTRIC_DAMAGE:{
-            if(obj->effects.find(DEAD) != obj->effects.end()){
-                lines[num++] = "Defibrilation had not effect.\n";
-                lines[num] = NULL;
-                return lines;
+            if(effects.find(DEAD) != effects.end()){
+                state::l->newline("Defibrilation had not effect.\n");
+                
+                return;
             }
 
-            if(obj->effects.find(DIELECTRIC) != obj->effects.end()){
-                lines[num++] = "It is dielectric.\n";
-                lines[num] = NULL;
-                return lines;
+            if(effects.find(DIELECTRIC) != effects.end()){
+                state::l->newline("It is dielectric.\n");
+                
+                return;
             }
 
-            auto i = obj->effects.find(ELECTRIC_PROTECT);
-            auto j = obj->propertyes.find(HEALTH);
+            auto i = effects.find(ELECTRIC_PROTECT);
+            auto j = propertyes.find(HEALTH);
 
-            if(i != obj->effects.end()){
-                lines[num++] = "Smh dielectric decreased damage.\n";
+            if(i != effects.end()){
+                state::l->newline("Smh dielectric decreased damage.\n");
                 if(i->second.timed.amount >= e.timed.amount){
-                    lines[num++] = "Dielectric neutralise all damage.\n";
-                    lines[num] = NULL;
-                    return lines;
+                    state::l->newline("Dielectric neutralise all damage.\n");
+                    
+                    return;
                 }
                 e.timed.amount -= i->second.timed.amount;
             }
 
-            if((i = obj->effects.find(ELECTRIC_WEAKNESS)) != obj->effects.end()){
-                lines[num++] = "Object have weakness before electric.\n";
+            if((i = effects.find(ELECTRIC_WEAKNESS)) != effects.end()){
+                state::l->newline("Object have weakness before electric.\n");
                 e.timed.amount += i->second.timed.amount;
             }
 
-            if((i = obj->effects.find(WET)) != obj->effects.end()){
-                lines[num++] = "Wet objects have weakeness before electric.\n";
+            if((i = effects.find(WET)) != effects.end()){
+                state::l->newline("Wet objects have weakeness before electric.\n");
                 e.timed.amount *= 1.5;
             }
 
-            if(j != obj->propertyes.end()){
+            if(j != propertyes.end()){
                 char buff[1024];
                 const char* format;
                 if(j->second <= e.timed.amount){
-                    format = "This attack was letal for the %s.\n";
+                    format = "This attack was letal.\n";
                     j->second = 0;
-                    obj->effects.insert({DEAD, {0,0}});
+                    effects.insert({DEAD, {0,0}});
                 }
                 else{
-                    format = "%s received %d of electric damage.\n";
+                    format = "Received %d of electric damage.\n";
                     j->second -= e.timed.amount;
                 }
-                sprintf(buff, format, name.c_str(), e.timed.amount);
-                lines[num++] = buff;
+                sprintf(buff, format, e.timed.amount);
+                state::l->newline(buff);
             }
             else{
-                lines[num++] = "It can not be killed or broken.\n";
-                lines[num] = NULL;
-                return lines;
+                state::l->newline("It can not be killed or broken.\n");
+                
+                return;
             }
             break;
         }
 
         case FIRE_DAMAGE:{
-            if(obj->effects.find(DEAD) != obj->effects.end()){
-                lines[num++] = "The fire will clean this object. Or not.\n";
-                lines[num] = NULL;
-                return lines;
+            if(effects.find(DEAD) != effects.end()){
+                state::l->newline("The fire will clean this object. Or not.\n");
+                
+                return;
             }
 
-            if(obj->effects.find(UNFLAMED) != obj->effects.end()){
-                lines[num++] = "It can not burns.\n";
-                lines[num] = NULL;
-                return lines;
+            if(effects.find(UNFLAMED) != effects.end()){
+                state::l->newline("It can not burns.\n");
+                
+                return;
             }
 
-            auto i = obj->effects.find(FIRE_PROTECT);
-            auto j = obj->propertyes.find(HEALTH);
+            auto i = effects.find(FIRE_PROTECT);
+            auto j = propertyes.find(HEALTH);
 
-            if(i != obj->effects.end()){
-                lines[num++] = "Fire goes weaker.\n";
+            if(i != effects.end()){
+                state::l->newline("Fire goes weaker.\n");
                 if(i->second.timed.amount >= e.timed.amount){
-                    lines[num++] = "Fire disappired.\n";
-                    lines[num] = NULL;
-                    return lines;
+                    state::l->newline("Fire disappired.\n");
+                    
+                    return;
                 }
                 e.timed.amount -= i->second.timed.amount;
             }
 
-            if((i = obj->effects.find(WET)) != obj->effects.end()){
-                lines[num++] = "Wet objects whorse fireing.\n";
+            if((i = effects.find(WET)) != effects.end()){
+                state::l->newline("Wet objects whorse fireing.\n");
                 e.timed.amount /= 2;
             }
             
-            if((i = obj->effects.find(FIRE_WEAKNESS)) != obj->effects.end()){
-                lines[num++] = "Object is burning very good.\n";
+            if((i = effects.find(FIRE_WEAKNESS)) != effects.end()){
+                state::l->newline("Object is burning very good.\n");
                 e.timed.amount += i->second.timed.amount;
             }
 
 
-            if(j != obj->propertyes.end()){
+            if(j != propertyes.end()){
                 char buff[1024];
                 const char* format;
                 if(j->second <= e.timed.amount){
-                    format = "The %s was burned.\n";
+                    format = "It was burned.\n";
                     j->second = 0;
-                    obj->effects.insert({DEAD, {0,0}});
+                    effects.insert({DEAD, {0,0}});
                 }
                 else{
-                    format = "%s received %d of fire damage.\n";
+                    format = "Received %d of fire damage.\n";
                     j->second -= e.timed.amount;
                 }
-                sprintf(buff, format, name.c_str(), e.timed.amount);
-                lines[num++] = buff;
+                sprintf(buff, format, e.timed.amount);
+                state::l->newline(buff);
             }
             else{
-                lines[num++] = "It can not be burned.\n";
-                lines[num] = NULL;
-                return lines;
+                state::l->newline("It can not be burned.\n");
+                
+                return;
             }
             break;
         }
 
         default:
-            lines[num++] = "!! Logic is not realised yet !!\n";
-            lines[num] = NULL;
-            return lines;
+            state::l->newline("!! Logic is not realised yet !!\n");
+            
+            return;
     }
 }
