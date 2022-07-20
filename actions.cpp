@@ -1,5 +1,11 @@
 #include "actions.hpp"
 
+#ifdef DONT_LOG_ACTIONS
+    #define log_msg(A, B)
+#else
+    #define log_msg(A, B) if((A)){(A)->newline(B);}
+#endif
+
 void do_action(object* obj, object* target, spell_t sp){
     void (*fun)(object*, object*);
 
@@ -24,7 +30,7 @@ void act_punch(object* obj, object* target){
     else{
         char arr[50];
         sprintf(arr, "%s can't punch.\n", obj->get_name());
-        object::l->newline(arr);
+        log_msg(object::l, arr);
     }
 }
 
@@ -34,7 +40,7 @@ void act_lighting(object* obj, object* target){
         target->stat.act(MAGIC_ATTACK, {0, 10});
     }
     else{
-        object::l->newline("Not enough mana.\n");
+        log_msg(object::l, "Not enough mana.\n");
     }
 }
 
