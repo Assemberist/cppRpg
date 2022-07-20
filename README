@@ -9,6 +9,8 @@ Build:
     If you wish to get debug-version of the program or
         > make build
     To compile project with -O2 option and without debugs.
+
+    Additional options described in file build_opt.desc
     
 How to use:
     Build program and start "test".

@@ -24,14 +24,14 @@ obj/object.o: object.cpp object.hpp obj/text_field.o obj/state.o
 obj/card.o: object.hpp card.cpp card.hpp obj/object.o
 	g++ -c card.cpp -o obj/card.o $(DBG)
 
-obj/effect_calc.o: effect_calc.cpp obj/object.o
-	g++ -c effect_calc.cpp -o obj/effect_calc.o $(DBG)
+obj/effect_calc.o: effect_calc.cpp obj/state.o
+	g++ -c effect_calc.cpp -o obj/effect_calc.o $(DBG) $(trace2)
 
 obj/actions.o: actions.cpp actions.hpp obj/object.o
-	g++ -c actions.cpp -o obj/actions.o $(DBG)
+	g++ -c actions.cpp -o obj/actions.o $(DBG) $(trace1)
 
 obj/classes.o: classes.hpp classes.cpp obj/object.o
-	g++ -c classes.cpp -o obj/classes.o $(DBG)
+	g++ -c classes.cpp -o obj/classes.o $(DBG) 
 
 obj/user_ifc.o: user_ifc.cpp user_ifc.hpp obj/card.o obj/classes.o obj/actions.o
 	g++ -c user_ifc.cpp -o obj/user_ifc.o $(DBG)
