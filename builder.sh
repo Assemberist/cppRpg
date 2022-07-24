@@ -1,13 +1,12 @@
 #!/bin/bash
 
-ask(){
-    echo "$1? [y\n]"
+function ask(){
     read str
-    if [[ str == "y" ]]
+    if [[ $str == "y" ]]
     then
-        return 1
+        echo "1"
     else
-        return 0
+        echo "0"
     fi
 }
 
@@ -34,12 +33,14 @@ do
     esac
 done
 
-if ( ask "Turn off action logs" )
+echo "Turn off action logs?"
+if [[ $(ask) == "1" ]]
 then
     TraceAct='trace1="-D DONT_LOG_ACTIONS"'
 fi
 
-if ( ask "Turn off state calculation logs" )
+echo "Turn off state calculation logs"
+if [[ $(ask) == "1" ]]
 then
     TraceState='trace2="-D DONT_LOG_STATE"'
 fi
