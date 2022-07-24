@@ -7,7 +7,19 @@
 
 #include "spell.hpp"
 #include "object_defs.hpp"
+
+
+#ifndef DONT_LOG_ACTIONS
+
 #include "text_field.hpp"
+
+#else
+#ifdef DONT_LOG_STATE
+
+#include "text_field.hpp"
+
+#endif
+#endif
 
 using namespace std;
 
@@ -23,7 +35,9 @@ struct state{
     map<property_t, int32_t> propertyes;
     map<effect_t, effect> effects;
 
+#ifndef DONT_LOG_STATE
     static log* l;
+#endif
 
     void act(effect_t type, effect e);
     void calculate();

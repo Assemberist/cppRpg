@@ -16,7 +16,10 @@ protected:
 public:
     state stat;
 
+#ifndef DONT_LOG_ACTIONS
     static log* l;
+#endif
+    
     uint8_t X;
     uint8_t Y;
 

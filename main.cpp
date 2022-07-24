@@ -17,8 +17,13 @@ const char* test_card = "*************  *   **** **   ****      ****  *   **** *
 // * *      *
 // **********
 
+#ifndef DONT_LOG_ACTIONS
 log* object::l;
+#endif
+
+#ifndef DONT_LOG_STATE
 log* state::l;
+#endif
 
 int main(){
     initscr();
@@ -29,11 +34,24 @@ int main(){
 
     start_color();
 
-    object::l = new log(10, 50, 0, 11);
-
     screen s;
-    s.common_log = object::l;
-    state::l = object::l;
+
+#ifndef DONT_LOG_ACTIONS
+    s.common_log = new log(10, 50, 0, 11);
+#else
+#ifndef DONT_LOG_STATE
+    s.common_log = new log(10, 50, 0, 11);
+#endif
+#endif
+
+#ifndef DONT_LOG_ACTIONS
+    object::l = s.common_log;
+#endif
+
+#ifndef DONT_LOG_STATE
+    state::l = s.common_log;
+#endif
+
     s.common_menu = new menu(3, 50, 12, 0);
     s.mapa = new za_mapo(10, 10, 0, 0);
 
@@ -60,8 +78,14 @@ int main(){
 
     if(!game_loop(objs, *objs, s)){
         timeout(-1);
+
+    #ifndef DONT_LOG_ACTIONS
+    #ifndef DONT_LOG_STATE
         s.common_log->newline("Game ower\n");
         s.common_log->print();
+    #endif
+    #endif
+
         getch();
     }
 
