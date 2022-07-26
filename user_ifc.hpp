@@ -2,6 +2,7 @@
 
 #include "card.hpp"
 #include "classes.hpp"
+#include "actions.hpp"
 
 // to do 1: object target among all objects
 

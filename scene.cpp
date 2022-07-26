@@ -43,14 +43,21 @@ bool game_loop(object** objs, object* gamer, screen s){
         for(size_t i=0; i < obj_count; i++){
             s.mapa->clear();
             s.mapa->update_card();
+
+        #ifndef DONT_LOG_ACTIONS
             s.common_log->print();
+        #else
+        #ifndef DONT_LOG_STATE
+            s.common_log->print();
+        #endif
+        #endif
 
             if(objs[i] == gamer){
                 if(!user_turn(objs[i], s))
                     return true;
             }
             else{
-                objs[i]->calculate();
+                objs[i]->stat.calculate();
                 if(objs[i]->is_alive()){
                     size_t fun = (size_t)objs[i]->turn();
                     do_list[fun](objs, s, stats, i);
@@ -92,8 +99,13 @@ void do_attack(object** objs, screen s, npc_state* stats, size_t num){
         return;
     }
 
-    if(objs[num]->use_attack_spells(stats[num].target) == false)
+    spell_t sp = objs[num]->choose_attack_spells(stats[num].target);
+
+    if(sp == NOTHING)
         s.mapa->magnetic_search(objs[num], stats[num].target);
+    else
+        do_action(objs[num], stats[num].target, sp);
+
 }
 
 void do_attack_nearlest_enemy(object** objs, screen s, npc_state* stats, size_t num){

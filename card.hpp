@@ -30,8 +30,16 @@ public:
 
 struct screen{
     za_mapo* mapa;
-    log* common_log;
     menu* common_menu;
+
+    // we can remove log only if all debug level are disabled
+    #ifndef DONT_LOG_ACTIONS
+    #ifndef DONT_LOG_STATE
+
+    log* common_log;
+
+    #endif
+    #endif
 };
 
 object* search_targets(object* obj, screen s, size_t range);
