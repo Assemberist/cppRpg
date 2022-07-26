@@ -139,7 +139,7 @@ bool user_turn(object* u, screen s){
 
             case CHOOSE_TARGET:{
                 int8_t ranger;
-                void(*action)(object*, object*);
+                void(*action)(object*);
 
                 switch(choosed_spell){
                     case FIREBALL:{
@@ -197,7 +197,7 @@ bool user_turn(object* u, screen s){
                                 break;
 
                             case 'f':
-                                action(u, single_target);
+                                action(single_target);
                                 single_target->graph_state = last_color;
                                 s.common_log->print();
                                 goto done;
