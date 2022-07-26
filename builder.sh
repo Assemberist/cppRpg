@@ -17,15 +17,16 @@ function ask(){
 echo "1 - release, 2 - debug?"
 
 Opts=("1" "2")
+Build=()
 
 select opt in "${Opts[@]}"
 do
     case $opt in
         "1")
-            Build=build 
+            Build+=('build')
             break ;;
         "2")
-            Build=debug
+            Build+=('debug')
             break ;;
         *)
             echo "wrong type"
@@ -36,13 +37,13 @@ done
 echo "Turn off action logs?"
 if [[ $(ask) == "1" ]]
 then
-    TraceAct='trace1="-D DONT_LOG_ACTIONS"'
+    Build+=('trace1="-D DONT_LOG_ACTIONS"')
 fi
 
 echo "Turn off state calculation logs"
 if [[ $(ask) == "1" ]]
 then
-    TraceState='trace2="-D DONT_LOG_STATE"'
+    Build+=('trace2="-D DONT_LOG_STATE"')
 fi
 
-make "$Build" "$TraceAct" "$TraceState"
+make "${Build[@]}"
