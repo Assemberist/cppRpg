@@ -4,17 +4,28 @@
 
 #define abs(A, B) ((A) - (B) > 0 ? (A) - (B) : (B) - (A))
 
+struct expirience{
+    size_t full;
+    size_t avail;
+
+    void add(size_t amount);
+    bool request(size_t amount);
+};
+
 class object{
 protected:
-    vector<spell*> spells;
+    map<spell_t, spell> spells;
 
     string name;
+
     behavior_t behavior;
 
     fraction fract;
 
 public:
     state stat;
+
+    expirience exp;
 
 #ifndef DONT_LOG_ACTIONS
     static log* l;
@@ -29,13 +40,13 @@ public:
 
     virtual char get_type() = 0;
     const char* get_name();
-    vector<spell*>& get_spells();
+    map<spell_t, spell>& get_spells();
     fraction get_fraction();
 
     virtual action_t turn() = 0;
 
-    void put_spell(spell* sp);
-    void remove_spell(spell* sp);
+    void put_spell(spell_t type, spell spell);
+    void remove_spell(spell_t type);
 
     void set_behavior(behavior_t bhv);
 

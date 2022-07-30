@@ -6,17 +6,13 @@ bool in_range(object* user, object* target, size_t range){
 
 const char* object::get_name(){ return name.c_str(); }
 fraction object::get_fraction(){ return fract; }
-vector<spell*>& object::get_spells(){ return spells; }
+map<spell_t, spell>& object::get_spells(){ return spells; }
 
 bool object::is_alive(){ return !stat.there_is_effect(DEAD); }
 void object::set_behavior(behavior_t bhv){ behavior = bhv; }
-void object::put_spell (spell* sp) { spells.push_back(sp); }
 
-void object::remove_spell(spell* sp){
-    for(auto i = spells.begin(); i != spells.end(); i++)
-        if(*i == sp)
-            spells.erase(i);
-}
+void object::put_spell (spell_t type, spell sp) { spells.insert({type, sp}); }
+void object::remove_spell(spell_t type){ spells.erase(type); }
 
 bool object::check_enemy(object* target){
     switch(fract){
@@ -42,7 +38,7 @@ bool object::check_enemy(object* target){
 
 spell_t object::choose_attack_spells(object* target){
     for(auto i=spells.begin(); i != spells.end(); i++){
-        switch((*i)->type){
+        switch((*i).second.definition->type){
             case FIREBALL:
                 if(in_range(this, target, 5)){
                     return FIREBALL;
@@ -67,4 +63,17 @@ spell_t object::choose_attack_spells(object* target){
     }
 
     return NOTHING;
+}
+
+void expirience::add(size_t amount){
+    full += amount;
+    avail += amount;
+}
+
+bool expirience::request(size_t amount){
+    if(avail < amount) return false;
+    else{
+        avail -= amount;
+        return true;
+    }
 }

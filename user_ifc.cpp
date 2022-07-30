@@ -61,7 +61,15 @@ bool user_turn(object* u, screen s){
     blink_t last_color;
 
     auto sp = u->get_spells();
-    s.common_menu->set_content((menu_element**)(&sp[0]), sp.size());
+    auto i = sp.begin();
+
+    menu_element* menuha[sp.size()];
+
+    for(size_t count = 0; i != sp.end(); i++){
+        menuha[count++] = (menu_element*)(i->second.definition);
+    }
+
+    s.common_menu->set_content(menuha, sp.size());
 
     char temp;
     while((temp = getch()) != ' '){

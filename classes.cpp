@@ -12,9 +12,9 @@ mage::mage(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){
 
     stat.effects.insert({MANA_RESTORE, {0, 2}});
 
-    spells.push_back(_SPELL_FIREBALL);
-    spells.push_back(_SPELL_PUNCH);
-    spells.push_back(_SPELL_LIGTHING);
+    spells.insert({FIREBALL, {_SPELL_FIREBALL, 1}});
+    spells.insert({PUNCH, {_SPELL_PUNCH, 1}});
+    spells.insert({LIGHTING, {_SPELL_LIGTHING, 1}});
 
     fract = HUMANITY;
 }
@@ -68,7 +68,7 @@ golem::golem(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){
     stat.effects.insert({ELECTRIC_WEAKNESS, {0, 10}});
     stat.effects.insert({UNFLAMED, {0, 0}});
     
-    spells.push_back(_SPELL_PUNCH);
+    spells.insert({PUNCH, {_SPELL_PUNCH, 1}});
 
     fract = MONSTER;
 }

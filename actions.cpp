@@ -25,6 +25,7 @@ void act_punch(object* obj, object* target){
     auto* value = obj->stat.get_property(STRENGTH);
     if(value){
         target->stat.act(CRUSH_ATTACK, {0, *value});
+        obj->exp.add(10);
         return;
     }
     else{
@@ -38,6 +39,7 @@ void act_lighting(object* obj, object* target){
     if(obj->stat.request_property(MANA, 10)){
         target->stat.act(ELECTRIC_DAMAGE, {0, 40});
         target->stat.act(MAGIC_ATTACK, {0, 10});
+        obj->exp.add(15);
     }
     else{
         log_msg(object::l, "Not enough mana.\n");
