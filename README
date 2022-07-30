@@ -3,12 +3,16 @@ Description:
     Battle mode development is first thing that was released but it also in progress yet.
 
 Build:
-    Directory "obj" should be created in the repo before building the project.
+    Note! Directory "obj" should be created in the repo before building the project.
+
     To build the programm you shoud use make:
         > make
     If you wish to get debug-version of the program or
         > make build
     To compile project with -O2 option and without debugs.
+
+    For additional customisation use wizard.
+        > builder.sh
     
 How to use:
     Build program and start "test".
@@ -65,4 +69,5 @@ End of game:
     Game have one end - death of your character. 
     Press space button if you want to exit from the game.
     
-Instruction is written at 23 may 2022.
+* Instruction is written at 23 may 2022.
+* Update at 24 Jul 2022.

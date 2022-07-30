@@ -62,7 +62,7 @@ void za_mapo::redraw(){
     int color;
 
     for(int i = 0; objects[i]; i++){
-        if(objects[i]->get_effect(DEAD) && objects[i]->graph_state != RED_INVERT)
+        if(!objects[i]->is_alive() && objects[i]->graph_state != RED_INVERT)
             color = 0;
 
         else{

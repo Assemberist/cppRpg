@@ -7,6 +7,7 @@ enum object_state{
     CHOOSE_TARGET
 };
 
+
 void clear_blinking(object** objs){
     for(int i=0; objs[i]; i++){
         switch (objs[i]->graph_state) {
@@ -58,7 +59,17 @@ bool user_turn(object* u, screen s){
     object* tar = nullptr;
     object* single_target = nullptr;
     blink_t last_color;
-    u->print_spells(s.common_menu);
+
+    auto sp = u->get_spells();
+    auto i = sp.begin();
+
+    menu_element* menuha[sp.size()];
+
+    for(size_t count = 0; i != sp.end(); i++){
+        menuha[count++] = (menu_element*)(i->second.definition);
+    }
+
+    s.common_menu->set_content(menuha, sp.size());
 
     char temp;
     while((temp = getch()) != ' '){
@@ -139,7 +150,7 @@ bool user_turn(object* u, screen s){
 
             case CHOOSE_TARGET:{
                 int8_t ranger;
-                void(*action)(object*);
+                void(*action)(object*, object*);
 
                 switch(choosed_spell){
                     case FIREBALL:{
@@ -147,11 +158,18 @@ bool user_turn(object* u, screen s){
                             case 'f':
                                 search_targets(nullptr, s, 0);
                                 while(single_target = search_targets(tar, s, 2)){
-                                    single_target->act(FIRE_DAMAGE, {0, 25});
-                                    single_target->act(MAGIC_ATTACK, {0, 5});
+                                    single_target->stat.act(FIRE_DAMAGE, {0, 25});
+                                    single_target->stat.act(MAGIC_ATTACK, {0, 5});
                                 }
 
+                            #ifndef DONT_LOG_ACTIONS
                                 s.common_log->print();
+                            #else
+                            #ifndef DONT_LOG_STATE
+                                s.common_log->print();
+                            #endif
+                            #endif
+
                                 goto done;
 
                             case 'r':
@@ -197,9 +215,17 @@ bool user_turn(object* u, screen s){
                                 break;
 
                             case 'f':
-                                action(single_target);
+                                action(u, single_target);
                                 single_target->graph_state = last_color;
+
+                            #ifndef DONT_LOG_ACTIONS
                                 s.common_log->print();
+                            #else
+                            #ifndef DONT_LOG_STATE
+                                s.common_log->print();
+                            #endif
+                            #endif
+
                                 goto done;
 
                             case 'q':

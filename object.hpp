@@ -1,39 +1,36 @@
 #pragma once
 
-#include <vector>
-#include <cstdint>
-#include <string>
-#include <map>
-
-#include "spell.hpp"
-#include "object_defs.hpp"
-#include "text_field.hpp"
+#include "state.hpp"
 
 #define abs(A, B) ((A) - (B) > 0 ? (A) - (B) : (B) - (A))
 
-using namespace std;
+struct expirience{
+    size_t full;
+    size_t avail;
 
-union effect{
-    struct{
-        int16_t time;
-        int16_t amount;
-    } timed;
-    int32_t large;
+    void add(size_t amount);
+    bool request(size_t amount);
 };
 
 class object{
 protected:
-    map<property_t, int32_t> propertyes;
-    map<effect_t, effect> effects;
-    vector<spell*> spells;
+    map<spell_t, spell> spells;
 
     string name;
+
     behavior_t behavior;
 
     fraction fract;
 
 public:
+    state stat;
+
+    expirience exp;
+
+#ifndef DONT_LOG_ACTIONS
     static log* l;
+#endif
+    
     uint8_t X;
     uint8_t Y;
 
@@ -43,29 +40,17 @@ public:
 
     virtual char get_type() = 0;
     const char* get_name();
-    void print_spells(menu* _menu);
-
-    void act(effect_t type, effect e);
-    virtual action_t turn() = 0;
-    void calculate();
-
-    effect* get_effect(effect_t type);
-    int32_t* get_property(property_t type);
-    bool request_property(property_t prop, size_t value);
-
-    void put_spell(spell* sp);
-    void remove_spell(spell* sp);
-
+    map<spell_t, spell>& get_spells();
     fraction get_fraction();
+
+    virtual action_t turn() = 0;
+
+    void put_spell(spell_t type, spell spell);
+    void remove_spell(spell_t type);
 
     void set_behavior(behavior_t bhv);
 
     bool is_alive();
     bool check_enemy(object* target);
-    bool use_attack_spells(object* target);
+    spell_t choose_attack_spells(object* target);
 };
-
-void act_punch(object* obj);
-void act_lighting(object* obj);
-// todo
-void act_fireball(object* target);
