@@ -1,4 +1,5 @@
 test
 *.txt
 obj/*
-effect_gen/*.beam
+effect_gen/effect_calculator.cpp
+effect_gen/generator

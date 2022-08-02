@@ -21,7 +21,7 @@ FRIZED
 
 _NO_EFFECT
     'HEALTH' > ->
-        'HEALTH'-- :%name got %value of physic damage.\n
+        'HEALTH'-- :got %value of physic damage.\n
     else ->
         'HEALTH' =0
-        DEAD(0, 0) :%name was killed.\n
+        DEAD(0, 0) :was killed.\n
