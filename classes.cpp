@@ -1,5 +1,4 @@
 #include "classes.hpp"
-#include "spell.hpp"
 
 target::target(int8_t _X, int8_t _Y) : object(_X, _Y, string("")) {}
 
@@ -13,9 +12,9 @@ mage::mage(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){
 
     stat.effects.insert({MANA_RESTORE, {0, 2}});
 
-    spells.insert({FIREBALL, {1}});
-    spells.insert({PUNCH, {1}});
-    spells.insert({LIGHTING, {1}});
+    spells.insert({FIREBALL, {_SPELL_FIREBALL, 1}});
+    spells.insert({PUNCH, {_SPELL_PUNCH, 1}});
+    spells.insert({LIGHTING, {_SPELL_LIGTHING, 1}});
 
     fract = HUMANITY;
 }
@@ -69,7 +68,7 @@ golem::golem(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){
     stat.effects.insert({ELECTRIC_WEAKNESS, {0, 10}});
     stat.effects.insert({UNFLAMED, {0, 0}});
     
-    spells.insert({PUNCH, {1}});
+    spells.insert({PUNCH, {_SPELL_PUNCH, 1}});
 
     fract = MONSTER;
 }

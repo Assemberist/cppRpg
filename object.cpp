@@ -38,7 +38,7 @@ bool object::check_enemy(object* target){
 
 spell_t object::choose_attack_spells(object* target){
     for(auto i=spells.begin(); i != spells.end(); i++){
-        switch(i->first){
+        switch((*i).second.definition->type){
             case FIREBALL:
                 if(in_range(this, target, 5)){
                     return FIREBALL;

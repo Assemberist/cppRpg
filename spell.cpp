@@ -1,8 +1,8 @@
 #include "spell.hpp"
 
-const char* spell_names[] = {
-    "Fireball\n",
-    "Punch\n",
-    "Lighting\n",
-    ""
+spell_def __spell_def[] = {
+    {"Fireball\n", FIREBALL},
+    {"Punch\n", PUNCH},
+    {"Lighting\n", LIGHTING},
+    {"", NOTHING}
 };

@@ -63,12 +63,13 @@ bool user_turn(object* u, screen s){
     auto sp = u->get_spells();
     auto i = sp.begin();
 
-    unsigned long menuha[sp.size()];
+    menu_element* menuha[sp.size()];
 
-    for(size_t count = 0; i != sp.end(); i++)
-        menuha[count++] = i->first;
+    for(size_t count = 0; i != sp.end(); i++){
+        menuha[count++] = (menu_element*)(i->second.definition);
+    }
 
-    s.common_menu->set_content(spell_names, menuha, sp.size());
+    s.common_menu->set_content(menuha, sp.size());
 
     char temp;
     while((temp = getch()) != ' '){
@@ -100,7 +101,7 @@ bool user_turn(object* u, screen s){
                         break;
 
                     case 'f':
-                        choosed_spell = (spell_t)s.common_menu->get_selected();
+                        choosed_spell = (spell_t)reinterpret_cast<long>(s.common_menu->get_selected());
                         clear_blinking(s.mapa->objects);
                         u->graph_state = GREEN_STABILE;
                         s.mapa->clear();
