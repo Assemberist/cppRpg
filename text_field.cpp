@@ -1,4 +1,5 @@
 #include "text_field.hpp"
+#include <cstddef>
 
 //--------------------------------------------------------------------------------------------//
 //  Text field functions                                                                      //
@@ -89,15 +90,16 @@ void menu::print(){
     wclear(win);
     for(int i = 0; i<count; i++){
         waddch(win, i == current ? '*' : ' ');
-        wprintw(win, elements[i]->name);
+        wprintw(win, strings[elements[i]]);
     }
     wrefresh(win);
 }
 
-void menu::set_content(menu_element** elements, size_t size){
-    this->elements = elements;
+void menu::set_content(const char* str_arry[], unsigned long* content, size_t size){
+    strings = (char**)str_arry;
+    elements = content;
     count = size;
     current = 0;
 }
 
-void* menu::get_selected(){ return elements[current]->element; }
+unsigned long menu::get_selected(){ return current; }
