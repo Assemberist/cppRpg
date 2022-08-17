@@ -89,15 +89,18 @@ void menu::print(){
     wclear(win);
     for(int i = 0; i<count; i++){
         waddch(win, i == current ? '*' : ' ');
-        wprintw(win, elements[i]->name);
+        wprintw(win, strings[elements[i].name]);
     }
     wrefresh(win);
 }
 
-void menu::set_content(menu_element** elements, size_t size){
+void menu::set_content(menu_element* elements, size_t size, const char* lexems[]){
+    strings = (char**)lexems;
     this->elements = elements;
     count = size;
     current = 0;
 }
 
-void* menu::get_selected(){ return elements[current]->element; }
+int menu::get_selected_key(){ return elements[current].name; }
+void* menu::get_selected_value(){ return elements[current].element; }
+short menu::get_index(){ return current; }

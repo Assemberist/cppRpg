@@ -1,5 +1,6 @@
 #include "user_ifc.hpp"
 #include "spell.hpp"
+#include "text_field.hpp"
 
 enum object_state{
     STAY,
@@ -63,13 +64,14 @@ bool user_turn(object* u, screen s){
     auto sp = u->get_spells();
     auto i = sp.begin();
 
-    menu_element* menuha[sp.size()];
+    menu_element menuha[sp.size()];
 
+    // fucking copy-constructor!!!
     for(size_t count = 0; i != sp.end(); i++){
-        menuha[count++] = (menu_element*)(i->second.definition);
+        menuha[count++] = *(menu_element*)&(*i);
     }
 
-    s.common_menu->set_content(menuha, sp.size());
+    s.common_menu->set_content(menuha, sp.size(), spell_names);
 
     char temp;
     while((temp = getch()) != ' '){
@@ -101,7 +103,7 @@ bool user_turn(object* u, screen s){
                         break;
 
                     case 'f':
-                        choosed_spell = (spell_t)reinterpret_cast<long>(s.common_menu->get_selected());
+                        choosed_spell = (spell_t)s.common_menu->get_selected_key();
                         clear_blinking(s.mapa->objects);
                         u->graph_state = GREEN_STABILE;
                         s.mapa->clear();
