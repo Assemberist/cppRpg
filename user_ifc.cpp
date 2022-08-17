@@ -162,12 +162,8 @@ bool user_turn(object* u, screen s){
                                     single_target->stat.act(MAGIC_ATTACK, {0, 5});
                                 }
 
-                            #ifndef DONT_LOG_ACTIONS
+                            #if !defined(DONT_LOG_ACTIONS) || !defined(DONT_LOG_STATE)
                                 s.common_log->print();
-                            #else
-                            #ifndef DONT_LOG_STATE
-                                s.common_log->print();
-                            #endif
                             #endif
 
                                 goto done;
@@ -218,12 +214,8 @@ bool user_turn(object* u, screen s){
                                 action(u, single_target);
                                 single_target->graph_state = last_color;
 
-                            #ifndef DONT_LOG_ACTIONS
+                            #if !defined(DONT_LOG_ACTIONS) || !defined(DONT_LOG_STATE)
                                 s.common_log->print();
-                            #else
-                            #ifndef DONT_LOG_STATE
-                                s.common_log->print();
-                            #endif
                             #endif
 
                                 goto done;

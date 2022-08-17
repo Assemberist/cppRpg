@@ -1,6 +1,7 @@
 #pragma once
 
 #include "object.hpp"
+#include "text_field.hpp"
 
 class za_mapo{
 public:
@@ -33,12 +34,10 @@ struct screen{
     menu* common_menu;
 
     // we can remove log only if all debug level are disabled
-    #ifndef DONT_LOG_ACTIONS
-    #ifndef DONT_LOG_STATE
-
+    #if !defined(DONT_LOG_ACTIONS) || !defined(DONT_LOG_STATE)
     log* common_log;
+    #else
 
-    #endif
     #endif
 };
 

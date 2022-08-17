@@ -36,12 +36,8 @@ int main(){
 
     screen s;
 
-#ifndef DONT_LOG_ACTIONS
+#if !defined (DONT_LOG_ACTIONS) || !defined (DONT_LOG_STATE)
     s.common_log = new log(10, 50, 0, 11);
-#else
-#ifndef DONT_LOG_STATE
-    s.common_log = new log(10, 50, 0, 11);
-#endif
 #endif
 
 #ifndef DONT_LOG_ACTIONS
@@ -79,11 +75,9 @@ int main(){
     if(!game_loop(objs, *objs, s)){
         timeout(-1);
 
-    #ifndef DONT_LOG_ACTIONS
-    #ifndef DONT_LOG_STATE
+    #if !defined (DONT_LOG_ACTIONS) || !defined (DONT_LOG_STATE)
         s.common_log->newline("Game ower\n");
         s.common_log->print();
-    #endif
     #endif
 
         getch();
