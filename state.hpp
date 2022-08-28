@@ -7,19 +7,7 @@
 
 #include "spell.hpp"
 #include "object_defs.hpp"
-
-
-#ifndef DONT_LOG_ACTIONS
-
 #include "text_field.hpp"
-
-#else
-#ifdef DONT_LOG_STATE
-
-#include "text_field.hpp"
-
-#endif
-#endif
 
 using namespace std;
 
