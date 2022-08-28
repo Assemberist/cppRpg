@@ -1,5 +1,7 @@
 #include "state.hpp"
 
+bool operator<(const effect_def& a, const effect_def& b){ return a.type < b.type; }
+
 void state::calculate(){
 
 }
@@ -17,7 +19,7 @@ bool state::request_property(property_t prop, size_t value){
     return false;
 }
 
-effect* state::get_effect(effect_t type){
+effect* state::get_effect(effect_def type){
     auto i = effects.find(type);
     return (i != effects.end() ? &i->second : NULL);
 }
@@ -32,5 +34,24 @@ bool state::there_is_property(property_t type){
 }
 
 bool state::there_is_effect(effect_t type){
+    effect_def def;
+    def.type = type;
+
+    def.is_shared = false;
+    def.is_permanent = false;
+    if(effects.find(def) != effects.end()) return true;
+
+    def.is_shared = true;
+    if(effects.find(def) != effects.end()) return true;
+
+    def.is_shared = false;
+    def.is_permanent = true;
+    if(effects.find(def) != effects.end()) return true;
+
+    def.is_shared = true;
+    return (effects.find(def) != effects.end());
+}
+
+bool state::there_is_effect(effect_def type){
     return (effects.find(type) != effects.end());
 }

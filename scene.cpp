@@ -97,7 +97,7 @@ void do_attack(object** objs, screen s, npc_state* stats, size_t num){
 
     spell_t sp = objs[num]->choose_attack_spells(stats[num].target);
 
-    if(sp == NOTHING)
+    if(sp == NOTHING_SPELL)
         s.mapa->magnetic_search(objs[num], stats[num].target);
     else
         do_action(objs[num], stats[num].target, sp);

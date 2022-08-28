@@ -1,6 +1,11 @@
 #pragma once
 #include "object.hpp"
 
+class humanoid : public object{
+public:
+    humanoid(int8_t _X, int8_t _Y, string _name);
+};
+
 class target : public object{
 public:
     target(int8_t _X, int8_t _Y);
@@ -8,7 +13,7 @@ public:
     action_t turn();
 };
 
-class mage : public object{
+class mage : public humanoid{
 public:
     mage(int8_t _X, int8_t _Y, string _name);
     char get_type(){ return 'm'; }

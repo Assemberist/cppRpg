@@ -1,6 +1,7 @@
 #pragma once
 
-#include "state.hpp"
+#include "items.hpp"
+#include "spell.hpp"
 
 #define abs(A, B) ((A) - (B) > 0 ? (A) - (B) : (B) - (A))
 
@@ -30,6 +31,9 @@ public:
 #ifndef DONT_LOG_ACTIONS
     static log* l;
 #endif
+
+    vector<item> equipment;
+    vector<item> inventory;
     
     uint8_t X;
     uint8_t Y;
@@ -44,6 +48,17 @@ public:
     fraction get_fraction();
 
     virtual action_t turn() = 0;
+
+    void pick_up_item(item& it);
+    bool equip(vector<item>::iterator it);
+    void use_item(vector<item>::iterator it);
+    void unequip(vector<item>::iterator it);
+    void drop_item(vector<item>::iterator it);
+    void put_item(vector<item>::iterator it, object* target);
+
+    void act(effect_def, effect);
+
+    void collect_effects(object* obj, state* stat, effect_def group);
 
     void put_spell(spell_t type, spell spell);
     void remove_spell(spell_t type);

@@ -6,7 +6,7 @@ enum spell_t{
     FIREBALL,
     PUNCH,
     LIGHTING,
-    NOTHING
+    NOTHING_SPELL
 };
 
 struct spell{

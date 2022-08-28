@@ -6,10 +6,12 @@
     #define log_msg(A, B) if((A)){(A)->newline(B);}
 #endif
 
-void state::act(effect_t type, effect e){
-    size_t num = 0;
+void state::act(effect_def type, effect e){
+    // all calculation should be changed due to new flags implemented into effect definition.
 
-    switch(type){
+/*    size_t num = 0;
+
+    switch(type.type){
         case CRUSH_ATTACK:{
             if(effects.find(DEAD) != effects.end()){
                 log_msg(state::l, "Stop punch the dead body!\n");
@@ -232,4 +234,5 @@ void state::act(effect_t type, effect e){
             log_msg(state::l, "!! Logic is not realised yet !!\n");
             return;
     }
+    */
 }

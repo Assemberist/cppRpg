@@ -160,8 +160,8 @@ bool user_turn(object* u, screen s){
                             case 'f':
                                 search_targets(nullptr, s, 0);
                                 while(single_target = search_targets(tar, s, 2)){
-                                    single_target->stat.act(FIRE_DAMAGE, {0, 25});
-                                    single_target->stat.act(MAGIC_ATTACK, {0, 5});
+                                    single_target->stat.act({0,1,FIRE_DAMAGE}, {0, 25});
+                                    single_target->stat.act({0,1,MAGIC_ATTACK}, {0, 5});
                                 }
 
                             #if !defined(DONT_LOG_ACTIONS) || !defined(DONT_LOG_STATE)

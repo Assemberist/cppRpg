@@ -62,7 +62,7 @@ spell_t object::choose_attack_spells(object* target){
         }
     }
 
-    return NOTHING;
+    return NOTHING_SPELL;
 }
 
 void expirience::add(size_t amount){
@@ -76,4 +76,78 @@ bool expirience::request(size_t amount){
         avail -= amount;
         return true;
     }
+}
+
+void object::act(effect_def def, effect e){
+    if(def.is_shared){
+        for(size_t i = equipment.size(); i--;){
+            effect part = {
+                e.timed.time >> 1,
+                rand() % e.timed.amount
+            };
+
+            e.timed.amount -= part.timed.amount;
+            equipment[i].stat.act(def, part);
+        }
+    }
+    stat.act(def, e);
+
+    for(size_t i = equipment.size(); i--;)
+        collect_effects(this, &equipment[i].stat, def);
+}
+
+bool object::equip(vector<item>::iterator it){
+    // find correct slot
+    for(int j=equipment.size(); j--;)
+        if( equipment[j].info.group == it->info.group &&
+            equipment[j].info.type_name == NOTHING_ITEM){
+                equipment[j] = *it;
+                for(auto i = it->stat.effects.begin(); i != it->stat.effects.end(); i++){
+                    if(i->first.is_permanent && i->first.is_shared){
+                        auto eff = stat.effects.find(i->first);
+                        if(eff == stat.effects.end()) eff->second.large += i->second.large;
+                        // permanent shared effects should have time = 1 and is_long = 0
+                        else stat.effects.insert(*i);
+                    }
+                }
+                return true;
+            }
+
+    return false;
+}
+
+void object::unequip(vector<item>::iterator it){
+    for(auto i = it->stat.effects.begin(); i != it->stat.effects.end(); i++){
+        if(i->first.is_permanent && i->first.is_shared){
+            /*
+            auto eff = stat.effects.find(i->first);
+            if(eff->second.timed.time > 1) eff->second.large -= i->second.large;
+            else stat.effects.erase(eff);
+            */
+        }
+    }
+}
+
+void object::pick_up_item(item& it){ inventory.push_back(it); }
+void object::drop_item(vector<item>::iterator it){ inventory.erase(it); }
+
+void object::put_item(vector<item>::iterator it, object* target){
+    target->inventory.push_back(*it);
+    inventory.erase(it);
+}
+
+void object::use_item(vector<item>::iterator it){
+    // usable utems should not have shared effects.
+    for(auto i = it->stat.effects.begin(); i != it->stat.effects.end(); i++){
+        if(i->second.timed.time > 0 && !i->first.is_permanent){
+            stat.act(i->first, i->second);
+            i->second.timed.time--;
+        }
+    }
+}
+
+void object::collect_effects(object* obj, state* stat, effect_def group){
+    for(auto i = stat->effects.begin(); i != stat->effects.end(); i++)
+        if(i->first.is_shared && !i->first.is_permanent)
+            obj->stat.act(i->first, i->second);
 }

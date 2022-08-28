@@ -36,8 +36,6 @@ struct screen{
     // we can remove log only if all debug level are disabled
     #if !defined(DONT_LOG_ACTIONS) || !defined(DONT_LOG_STATE)
     log* common_log;
-    #else
-
     #endif
 };
 
