@@ -6,6 +6,7 @@
 #include <map>
 
 #include "spell.hpp"
+#include "material.h"
 #include "object_defs.hpp"
 #include "text_field.hpp"
 
@@ -22,6 +23,8 @@ union effect{
 struct state{
     map<property_t, int32_t> propertyes;
     map<effect_t, effect> effects;
+
+    material_t material;
 
 #ifndef DONT_LOG_STATE
     static log* l;
