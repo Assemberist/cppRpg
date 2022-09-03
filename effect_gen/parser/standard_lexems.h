@@ -15,7 +15,9 @@ enum lexem_t{
     EXIT,
     EFFECT,
     NEW_EFFECT,
-    PROPERTY
+    PROPERTY,
+    TAB,
+    NON_STANDARD
 };
 
 struct lexem{
@@ -24,3 +26,5 @@ struct lexem{
 }
 
 extern lexem lexems[lexem_number];
+
+lexem* next_lexem(char* src);

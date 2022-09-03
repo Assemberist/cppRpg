@@ -10,6 +10,18 @@ lexem lexems[lexem_number] = {
     {"!=", NO_EQ},
     {"<", LESS},
     {"->", THEN},
-    {"exit", EXIT}
+    {"exit", EXIT},
+    {"    ", TAB},
+    {"\t", TAB}
 };
 
+static size_t NonStandardAmount = 0;
+static char* buffer;
+
+token* init_parser(){
+
+}
+
+lexem* next_lexem(char* src){
+
+}
