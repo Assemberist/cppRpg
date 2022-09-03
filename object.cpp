@@ -80,7 +80,10 @@ bool expirience::request(size_t amount){
 
 void object::act(effect_def def, effect e){
     if(def.is_shared){
-        for(size_t i = equipment.size(); i--;){
+        size_t i;
+        for(i = equipment.size(); i; i--){
+            if(!e.timed.amount) break;
+
             effect part = {
                 e.timed.time >> 1,
                 rand() % e.timed.amount
@@ -89,6 +92,9 @@ void object::act(effect_def def, effect e){
             e.timed.amount -= part.timed.amount;
             equipment[i].stat.act(def, part);
         }
+
+        for(; i; i--)
+            equipment[i].stat.act(def, {e.timed.time >> 1, 0});
     }
     stat.act(def, e);
 
