@@ -5,7 +5,13 @@
 enum object_state{
     STAY,
     CHOOSE_SPELL,
-    CHOOSE_TARGET
+    CHOOSE_TARGET,
+    OBSERVATION,
+    LOOT,
+    LOOKUP,
+    SPELL_SHOP,
+    OPEN_INVENTORY,
+    LOOT_INVENTORY
 };
 
 
@@ -61,18 +67,6 @@ bool user_turn(object* u, screen s){
     object* single_target = nullptr;
     blink_t last_color;
 
-    auto sp = u->get_spells();
-    auto i = sp.begin();
-
-    menu_element menuha[sp.size()];
-
-    // fucking copy-constructor!!!
-    for(size_t count = 0; i != sp.end(); i++){
-        menuha[count++] = *(menu_element*)&(*i);
-    }
-
-    s.common_menu->set_content(menuha, sp.size(), spell_names);
-
     char temp;
     while((temp = getch()) != ' '){
         switch(stat){
@@ -80,10 +74,49 @@ bool user_turn(object* u, screen s){
             case STAY:
                 s.mapa->clear();
                 switch(temp){
-                    case 'f':
+                    case 'f':{
+                        auto sp = u->get_spells();
+                        auto i = sp.begin();
+
+                        menu_element* menuha = new menu_element[sp.size()];
+
+                        // fucking copy-constructor!!!
+                        for(size_t count = 0; i != sp.end(); i++)
+                            menuha[count++] = *(menu_element*)&(*i);
+
+                        s.common_menu->set_content(menuha, sp.size(), spell_names);
                         s.common_menu->print();
                         stat = CHOOSE_SPELL;
-                        break;
+                    }
+                    break;
+
+                    case 'i':{
+                        size_t sas = 0;
+                        s.common_log->hide();
+
+                        bag_element* bagaje = new bag_element[u->inventory.size() + u->equipment.size()];
+
+                        for(size_t i = u->equipment.size(); i--;){
+                            if(u->equipment[i].info.type_name == NOTHING_ITEM) continue;
+                            bagaje[sas].is_equiped = true;
+                            bagaje[sas].type = u->equipment[i].info.type_name;
+                            bagaje[sas].element = i;
+                            sas++;
+                        }
+
+                        for(size_t i = u->inventory.size(); i--;){
+                            bagaje[sas].is_equiped = false;
+                            bagaje[sas].type = u->inventory[i].info.type_name;
+                            bagaje[sas].element = i;
+                            sas++;
+                        }
+
+                        s.bag->set_content(bagaje, sas, item_names);
+                        s.bag->print();
+
+                        stat = OPEN_INVENTORY;
+                    }
+                    break;
 
                     default:
                         if(is_move_char(temp)){
@@ -135,6 +168,7 @@ bool user_turn(object* u, screen s){
 
                     case 'q':
                         stat = STAY;
+                        s.common_menu->shrade_elements();
                         s.common_menu->hide();
                         break;
 
@@ -249,6 +283,8 @@ done:
     s.mapa->clear();
     s.mapa->update_card();
     s.common_menu->hide();
+    s.common_menu->shrade_elements();
+    
     search_targets(nullptr, s, 0);
 
     return (temp == ' ' ? false : true);

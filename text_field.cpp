@@ -101,6 +101,70 @@ void menu::set_content(menu_element* elements, size_t size, const char* lexems[]
     current = 0;
 }
 
+void menu::shrade_elements(){
+    delete[] elements;
+    elements = NULL;
+    strings = NULL;
+}
+
 int menu::get_selected_key(){ return elements[current].name; }
 void* menu::get_selected_value(){ return elements[current].element; }
 short menu::get_index(){ return current; }
+
+//--------------------------------------------------------------------------------------------//
+//   Inventory functions                                                                      //
+//____________________________________________________________________________________________//
+
+inventory::inventory(size_t rows, size_t cols, size_t pos_y, size_t pos_x) : text_field(rows, cols, pos_y, pos_x){
+    current = 0;
+    count = 0;
+}
+
+void inventory::print(){
+    wclear(win);
+
+    // print equipped items
+    wattron(win, COLOR_PAIR(2));
+    size_t i;
+    for(i = 0; i<count; i++){
+        if(bag[i].is_equiped == false) break;
+        waddch(win, i == current ? '*' : ' ');
+        wprintw(win, strings[bag[i].type]);
+    }
+    wattroff(win, COLOR_PAIR(2));
+
+    // print unequipped items
+    for(; i<count; i++){
+        waddch(win, i == current ? '*' : ' ');
+        wprintw(win, strings[bag[i].type]);
+    }
+
+    wrefresh(win);
+}
+
+void inventory::up(){
+    if(current < count-1)
+        current++;
+}
+
+void inventory::down(){
+    if(current)
+        current--;
+}
+
+void inventory::set_content(bag_element* elements, size_t size, const char* lexems[]){
+    strings = (char**)lexems;
+    bag = elements;
+    count = size;
+    current = 0;
+}
+
+void inventory::shrade_elements(){
+    delete[] bag;
+    bag = NULL;
+    strings = NULL;
+}
+
+size_t inventory::get_selected_key(){ return bag[current].type; }
+size_t inventory::get_selected_value(){ return bag[current].element; }
+short inventory::get_index(){ return current; }

@@ -52,4 +52,29 @@ public:
     int get_selected_key();
     void* get_selected_value();
     short get_index();
+    void shrade_elements();
+};
+
+struct bag_element{
+    bool is_equiped :1;
+    size_t type :31;
+    size_t element;
+};
+
+class inventory : public text_field{
+    bag_element* bag;
+
+public:
+    inventory(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
+    void print();
+
+    void up();
+    void down();
+    
+    void set_content(bag_element* elements, size_t size, const char* lexems[]);
+
+    size_t get_selected_key();
+    size_t get_selected_value();
+    short get_index();
+    void shrade_elements();
 };

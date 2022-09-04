@@ -108,6 +108,7 @@ bool object::equip(vector<item>::iterator it){
         if( equipment[j].info.group == it->info.group &&
             equipment[j].info.type_name == NOTHING_ITEM){
                 equipment[j] = *it;
+                inventory.erase(it);
                 for(auto i = it->stat.effects.begin(); i != it->stat.effects.end(); i++){
                     if(i->first.is_permanent && i->first.is_shared){
                         auto eff = stat.effects.find(i->first);
@@ -125,13 +126,13 @@ bool object::equip(vector<item>::iterator it){
 void object::unequip(vector<item>::iterator it){
     for(auto i = it->stat.effects.begin(); i != it->stat.effects.end(); i++){
         if(i->first.is_permanent && i->first.is_shared){
-            /*
             auto eff = stat.effects.find(i->first);
             if(eff->second.timed.time > 1) eff->second.large -= i->second.large;
             else stat.effects.erase(eff);
-            */
         }
     }
+    inventory.push_back(*it);
+    it->info.type_name = NOTHING_ITEM;
 }
 
 void object::pick_up_item(item& it){ inventory.push_back(it); }

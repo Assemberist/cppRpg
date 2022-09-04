@@ -48,6 +48,7 @@ int main(){
     state::l = s.common_log;
 #endif
 
+    s.bag = new inventory(10, 50, 0, 11);
     s.common_menu = new menu(3, 50, 12, 0);
     s.mapa = new za_mapo(10, 10, 0, 0);
 
@@ -60,6 +61,10 @@ int main(){
         new golem(7, 3, string("Ugga Boogga")),
         NULL
     };
+
+    state stat;
+    objs[0]->inventory.push_back({{ARMORY_HEAD, LEATHER_HELM}, stat});
+    objs[0]->inventory.push_back({{ARMORY_HAND, LEATHER_GLOVE}, stat});
 
     for(object** i = objs+1; *i; i++)
         (*i)->graph_state = RED_STABILE;

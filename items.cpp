@@ -1,26 +1,26 @@
 #include "items.hpp" 
 
-char* _item_names[] = {
-    "Wood Shield",
-    "Wood Sword",
-    "Wood Bow",
+const char* item_names[] = {
+    "Wood Shield\n",
+    "Wood Sword\n",
+    "Wood Bow\n",
     
-    "IRON SHIELD",
-    "IRON SWORD",
-    "IRON BOW",
+    "IRON SHIELD\n",
+    "IRON SWORD\n",
+    "IRON BOW\n",
 
-    "JACKET",
-    "JEANS",
+    "JACKET\n",
+    "JEANS\n",
 
-    "LATE HELM",
-    "LATE ARMORY",
-    "LATE GLOVE",
-    "LATE FOOT",
+    "LATE HELM\n",
+    "LATE ARMORY\n",
+    "LATE GLOVE\n",
+    "LATE FOOT\n",
 
-    "LEATHER HELM",
-    "LEATHER ARMORY",
-    "LEATHER GLOVE",
-    "LEATHER FOOT",
+    "LEATHER HELM\n",
+    "LEATHER ARMORY\n",
+    "LEATHER GLOVE\n",
+    "LEATHER FOOT\n",
 
-    "NOTHING"
+    "NOTHING\n"
 };

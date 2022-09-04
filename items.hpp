@@ -53,4 +53,4 @@ struct item_def{
     vector<item>::iterator it;
 };
 
-extern char* _item_names[];
+extern const char* item_names[];
