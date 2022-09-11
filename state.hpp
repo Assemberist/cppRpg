@@ -27,6 +27,13 @@ union effect{
     int32_t large;
 };
 
+enum effect_bhf{
+    SHARMANENT,
+    SHARED,
+    PERMANENT,
+    PURE
+};
+
 struct state{
     map<property_t, int32_t> propertyes;
     map<effect_def, effect> effects;
@@ -47,3 +54,5 @@ struct state{
 
     bool request_property(property_t prop, size_t value);
 };
+
+effect_bhf get_effect_behavior(effect_def def);

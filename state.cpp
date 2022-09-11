@@ -55,3 +55,9 @@ bool state::there_is_effect(effect_t type){
 bool state::there_is_effect(effect_def type){
     return (effects.find(type) != effects.end());
 }
+
+effect_bhf get_effect_behavior(effect_def def){
+    return (def.is_permanent ?
+        def.is_shared ? SHARMANENT : PERMANENT :
+        def.is_shared ? SHARED : PURE);
+}

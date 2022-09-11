@@ -10,6 +10,7 @@ enum object_state{
     LOOT,
     LOOKUP,
     SPELL_SHOP,
+    SPELL_HELP,
     OPEN_INVENTORY,
     LOOT_INVENTORY
 };
@@ -62,10 +63,14 @@ bool user_turn(object* u, screen s){
     u->graph_state = GREEN_ON;
 
     object_state stat = STAY;
-    spell_t choosed_spell;
+    object_state last_state;
+    spell_t choosed_spell = NOTHING_SPELL;
+    vector<item>::iterator item_to_use;
+
     object* tar = nullptr;
     object* single_target = nullptr;
     blink_t last_color;
+    
 
     char temp;
     while((temp = getch()) != ' '){
@@ -118,8 +123,13 @@ bool user_turn(object* u, screen s){
                     }
                     break;
 
+                    case 'o':
+                        break;
+
                     default:
                         if(is_move_char(temp)){
+                            // check if here object.
+                            // go to Loot if it is lootable
                             s.mapa->move(u, temp);
                             goto done;
                         }
@@ -167,6 +177,7 @@ bool user_turn(object* u, screen s){
                         break;
 
                     case 'q':
+                        choosed_spell = NOTHING_SPELL;
                         stat = STAY;
                         s.common_menu->shrade_elements();
                         s.common_menu->hide();
@@ -180,6 +191,11 @@ bool user_turn(object* u, screen s){
                     case 's':
                         s.common_menu->up();
                         s.common_menu->print();
+
+                    case 'h':
+                        // spell help
+                        // put hint about choosed spell
+                        stat = SPELL_HELP;
                 }
             }
             break;
@@ -269,9 +285,154 @@ bool user_turn(object* u, screen s){
                                 continue;
                         break;
                     }
+
+                    case NOTHING_SPELL:{
+                        if(is_item_for_single_target(item_to_use->info.type_name)){
+                            switch(temp){
+                                case 's':
+                                    single_target = search_targets(u, s, 4);
+                                    last_color = single_target->graph_state;
+                                    single_target->graph_state = RED_INVERT;
+                                    s.mapa->update_card();
+                                    break;
+
+                                case 'q':
+                                    stat = OPEN_INVENTORY;
+                                    single_target->graph_state = last_color;
+                                    single_target = nullptr;
+                                    break;
+
+                                case 'f':
+                                    single_target->graph_state = last_color;
+                                    for(auto i = item_to_use->stat.begin(); i != item_to_use->stat.end(); i++){
+                                        switch(get_effect_behavior(i->first)){
+                                            case SHARED:
+                                                if(i->second.timed.time == 0){
+                                                    item_to_use->stat.erase(i->first);
+                                                    break;
+                                                }
+
+                                            case SHARMANENT:
+                                                if(i->second.timed.time){
+                                                    effect_def def = i->first;
+                                                    def.is_permanent = false;
+
+                                                    effect eff = i->second;
+                                                    eff.timed.time = 0;
+                                                    single_target->act(def, eff);
+
+                                                    i->second.timed.time--;
+                                                }
+                                            break;
+
+                                            case PERMANENT:{
+                                                effect_def def = i->first;
+                                                def.is_permanent = false;
+                                                single_target->act(def, i->second);
+                                            }
+                                            break;
+
+                                            case PURE:
+                                                single_target->act(i->first, i->second);
+                                                item_to_use->stat.erase(i->first);
+                                            break;
+                                        }
+                                    }
+                                    goto done;
+                            }
+                        }
+                        else{
+                            // marking of mutiple targets
+                        }
+                    }
                 }
                 break;
             }
+
+            case OPEN_INVENTORY:{
+                switch(temp){
+                    case 's':
+                        break;
+
+                    case 'w':
+                        break;
+
+                    case 'e':
+                        break;
+
+                    case 'f':
+                        break;
+
+                    case 't':
+                        break;
+
+                    case 'q':
+                        break;
+
+                }
+            }
+            break;
+
+            case SPELL_HELP:
+                switch(temp){
+                    case 'q':
+                        // clean hint
+                        // need to return to right state.
+                        // stat = CHOOSE_SPELL : SPELL_SHOP;
+                }
+                break;
+
+            case LOOT:{
+                switch(temp){
+                    case "q":
+                        break;
+
+                    case "i":
+                        break;
+                }
+            }
+            break;
+
+            case LOOT_INVENTORY:{
+                switch(temp){
+                    case "i":
+                        break;
+
+                    case "u":
+                        break;
+
+                    case "q":
+                        break;
+                }
+            }
+            break;
+
+            case LOOKUP:{
+                switch(temp){
+                    case "q":
+                        break;
+                }
+            }
+            break;
+
+            case OBSERVATION:{
+                switch(temp){
+                    case "f":
+                        break;
+
+                    case "q":
+                        break;
+                }
+            }
+            break;
+
+            case SPELL_SHOP:{
+                switch(temp){
+                    case "i":
+                        break;
+                }
+            }
+            break;
         }
     }
 

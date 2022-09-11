@@ -9,10 +9,9 @@ enum item_group{
     CLOTH_BODY,
     CLOTH_FOOT,
     AMULET,
-    WEAPON_COLD,
-    WEAPON_RANGE,
-    STUF,
-    SINGLE_USE_ITEM
+    HOLDABLE_ONE_HAND,
+    HOLDABLE_TWO_HAND,
+    USEABLE_ITEM
 };
 
 enum item_t{
@@ -22,6 +21,7 @@ enum item_t{
 
     IRON_SHIELD,
     IRON_SWORD,
+    IRON_HUMMER,
     IRON_BOW,
 
     JACKET,
@@ -37,8 +37,26 @@ enum item_t{
     LEATHER_GLOVE,    
     LEATHER_FOOT,
 
+    ICE_CRYSTALL,
+    ACID_COLBA,
+    STONE,
+    HEALING_RUNE,
+    SINTOL,
+
     NOTHING_ITEM
 };
+
+bool is_item_for_single_target(item_t thing){
+    switch(thing){
+        case:
+            case ICE_CRYSTALL:
+            case ACID_COLBA:
+                return false;
+
+        default:
+            return true;
+    }
+}
 
 struct item{
     struct{

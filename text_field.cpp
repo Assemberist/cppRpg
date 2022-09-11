@@ -165,6 +165,7 @@ void inventory::shrade_elements(){
     strings = NULL;
 }
 
+bool inventory::is_current_equiped(){ return bag[current].is_equiped; }
 size_t inventory::get_selected_key(){ return bag[current].type; }
 size_t inventory::get_selected_value(){ return bag[current].element; }
 short inventory::get_index(){ return current; }

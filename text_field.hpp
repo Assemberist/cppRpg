@@ -77,4 +77,5 @@ public:
     size_t get_selected_value();
     short get_index();
     void shrade_elements();
+    bool is_current_equiped();
 };
