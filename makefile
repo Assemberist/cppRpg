@@ -1,6 +1,9 @@
 OBJS=obj/spell.o obj/text_field.o obj/state.o obj/object.o obj/classes.o obj/items.o \
 obj/actions.o obj/effect_calc.o obj/card.o obj/user_ifc.o obj/scene.o obj/main.o
 
+DIAGS=$(wildcard diagram/*.uml)
+DIAG_SRC=$(DIAGS:.uml=.png)
+
 trace=$(trace1) $(trace2)
 
 debug: DBG :=-g
@@ -46,6 +49,11 @@ obj/scene.o: scene.cpp scene.hpp obj/user_ifc.o
 
 obj/main.o: main.cpp scene.hpp
 	g++ -c main.cpp -o obj/main.o $(DBG) $(trace)
+
+diag: $(DIAG_SRC)
+
+diagram/%.png: diagram/%.uml
+	plantuml $<
 
 clean:
 	rm obj/*
