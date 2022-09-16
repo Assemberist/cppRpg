@@ -5,6 +5,8 @@
 #include <string>
 #include <map>
 
+#include "spell.hpp"
+#include "material.h"
 #include "object_defs.hpp"
 #include "text_field.hpp"
 
