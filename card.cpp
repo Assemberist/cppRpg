@@ -300,3 +300,14 @@ object* search_targets(object* obj, screen s, size_t range){
     last_target = NULL;
     return NULL;
 }
+
+object* za_mapo::get_object(object* obj, char direction){
+    int8_t x = obj->X;
+    int8_t y = obj->Y;
+    new_direction(&x, &y, direction, obj);
+    for(size_t i = 0; objects[i]; i++)
+        if(objects[i]->X == x && objects[i]->Y == y)
+            return objects[i];
+
+    return nullptr;
+}

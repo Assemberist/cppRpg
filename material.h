@@ -5,7 +5,7 @@ enum material_t{
     WOOD,
     IRON,
     ICE,
-    STONE,
+    STONE_MAT,
     EFIR,
     BONES
 };

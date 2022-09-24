@@ -1,17 +1,14 @@
 #include "classes.hpp"
 
 humanoid::humanoid(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){
-    state sata;
-    equipment.push_back({{ARMORY_HEAD, NOTHING_ITEM}, sata});
-    equipment.push_back({{ARMORY_HAND, NOTHING_ITEM}, sata});
-    equipment.push_back({{ARMORY_FOOT, NOTHING_ITEM}, sata});
-    equipment.push_back({{CLOTH_BODY, NOTHING_ITEM}, sata});
-    equipment.push_back({{CLOTH_FOOT, NOTHING_ITEM}, sata});
-    equipment.push_back({{AMULET, NOTHING_ITEM}, sata});
-    equipment.push_back({{WEAPON_COLD, NOTHING_ITEM}, sata});
-    equipment.push_back({{WEAPON_RANGE, NOTHING_ITEM}, sata});
-    equipment.push_back({{STUF, NOTHING_ITEM}, sata});
-    equipment.push_back({{SINGLE_USE_ITEM, NOTHING_ITEM}, sata});
+    equipment.push_back({{ARMORY_HEAD, NOTHING_ITEM}, state()});
+    equipment.push_back({{ARMORY_HAND, NOTHING_ITEM}, state()});
+    equipment.push_back({{ARMORY_FOOT, NOTHING_ITEM}, state()});
+    equipment.push_back({{CLOTH_BODY, NOTHING_ITEM}, state()});
+    equipment.push_back({{CLOTH_FOOT, NOTHING_ITEM}, state()});
+    equipment.push_back({{AMULET, NOTHING_ITEM}, state()});
+    equipment.push_back({{HOLDABLE_ONE_HAND, NOTHING_ITEM}, state()});
+    equipment.push_back({{HOLDABLE_ONE_HAND, NOTHING_ITEM}, state()});
 }
 
 target::target(int8_t _X, int8_t _Y) : object(_X, _Y, string("")) {}
@@ -83,6 +80,10 @@ golem::golem(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){
     stat.effects.insert({{1,0,UNFLAMED}, {0, 0}});
     
     spells.insert({PUNCH, {1}});
+
+    inventory.push_back({USEABLE_ITEM, STONE, state()});
+    inventory.push_back({USEABLE_ITEM, STONE, state()});
+    inventory.push_back({USEABLE_ITEM, STONE, state()});
 
     fract = MONSTER;
 }

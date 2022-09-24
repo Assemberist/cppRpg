@@ -52,7 +52,7 @@ public:
     void pick_up_item(item& it);
     bool equip(vector<item>::iterator it);
     void use_item(vector<item>::iterator it);
-    void unequip(vector<item>::iterator it);
+    bool unequip(vector<item>::iterator it);
     void drop_item(vector<item>::iterator it);
     void put_item(vector<item>::iterator it, object* target);
 

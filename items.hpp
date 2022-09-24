@@ -32,10 +32,10 @@ enum item_t{
     LATE_GLOVE,    
     LATE_FOOT,
 
-    LEATHER_HELM,
-    LEATHER_ARMORY,
-    LEATHER_GLOVE,    
-    LEATHER_FOOT,
+    LATEX_HELM,
+    LATEX_ARMORY,
+    LATEX_GLOVE,    
+    LATEX_FOOT,
 
     ICE_CRYSTALL,
     ACID_COLBA,
@@ -45,18 +45,6 @@ enum item_t{
 
     NOTHING_ITEM
 };
-
-bool is_item_for_single_target(item_t thing){
-    switch(thing){
-        case:
-            case ICE_CRYSTALL:
-            case ACID_COLBA:
-                return false;
-
-        default:
-            return true;
-    }
-}
 
 struct item{
     struct{
@@ -72,3 +60,5 @@ struct item_def{
 };
 
 extern const char* item_names[];
+
+bool is_item_for_single_target(item_t thing);

@@ -123,7 +123,7 @@ bool object::equip(vector<item>::iterator it){
     return false;
 }
 
-void object::unequip(vector<item>::iterator it){
+bool object::unequip(vector<item>::iterator it){
     for(auto i = it->stat.effects.begin(); i != it->stat.effects.end(); i++){
         if(i->first.is_permanent && i->first.is_shared){
             auto eff = stat.effects.find(i->first);
@@ -133,6 +133,7 @@ void object::unequip(vector<item>::iterator it){
     }
     inventory.push_back(*it);
     it->info.type_name = NOTHING_ITEM;
+    return true;
 }
 
 void object::pick_up_item(item& it){ inventory.push_back(it); }

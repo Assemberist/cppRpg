@@ -49,6 +49,7 @@ int main(){
 #endif
 
     s.bag = new inventory(10, 50, 0, 11);
+    s.loot = new inventory(10, 50, 0, 63);
     s.common_menu = new menu(3, 50, 12, 0);
     s.mapa = new za_mapo(10, 10, 0, 0);
 

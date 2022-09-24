@@ -7,6 +7,7 @@ const char* item_names[] = {
     
     "IRON SHIELD\n",
     "IRON SWORD\n",
+    "IRON HUMMER\n"
     "IRON BOW\n",
 
     "JACKET\n",
@@ -17,10 +18,27 @@ const char* item_names[] = {
     "LATE GLOVE\n",
     "LATE FOOT\n",
 
-    "LEATHER HELM\n",
-    "LEATHER ARMORY\n",
-    "LEATHER GLOVE\n",
-    "LEATHER FOOT\n",
+    "Latex helm\n",
+    "Latex armory\n",
+    "Latex Glove\n",
+    "Latex foot\n",
+
+    "Ice Crystall\n",
+    "Acid colba\n",
+    "Stone\n",
+    "Healing rune\n",
+    "Sintol\n",
 
     "NOTHING\n"
 };
+
+bool is_item_for_single_target(item_t thing){
+    switch(thing){
+        case ICE_CRYSTALL:
+        case ACID_COLBA:
+            return false;
+
+        default:
+            return true;
+    }
+}

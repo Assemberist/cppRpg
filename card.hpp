@@ -27,12 +27,15 @@ public:
 
     char move(object* obj, char direction);
     void free_move(object* target, char direction);
+
+    object* get_object(object* obj, char direction);
 };
 
 struct screen{
     za_mapo* mapa;
     menu* common_menu;
     inventory* bag;
+    inventory* loot;
 
     // we can remove log only if all debug level are disabled
     #if !defined(DONT_LOG_ACTIONS) || !defined(DONT_LOG_STATE)

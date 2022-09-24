@@ -15,6 +15,24 @@ enum object_state{
     LOOT_INVENTORY
 };
 
+bag_element* create_bag(object* u, size_t& sas){
+    sas = 0;
+    bag_element* bagaje = new bag_element[u->inventory.size() + u->equipment.size() + 1];
+    for(size_t i = u->equipment.size(); i--;){
+        if(u->equipment[i].info.type_name == NOTHING_ITEM) continue;
+        bagaje[sas].is_equiped = true;
+        bagaje[sas].type = u->equipment[i].info.type_name;
+        bagaje[sas].element = i;
+        sas++;
+    }
+    for(size_t i = u->inventory.size(); i--;){
+        bagaje[sas].is_equiped = false;
+        bagaje[sas].type = u->inventory[i].info.type_name;
+        bagaje[sas].element = i;
+        sas++;
+    }
+    return bagaje;
+}
 
 void clear_blinking(object** objs){
     for(int i=0; objs[i]; i++){
@@ -96,29 +114,11 @@ bool user_turn(object* u, screen s){
                     break;
 
                     case 'i':{
-                        size_t sas = 0;
                         s.common_log->hide();
-
-                        bag_element* bagaje = new bag_element[u->inventory.size() + u->equipment.size()];
-
-                        for(size_t i = u->equipment.size(); i--;){
-                            if(u->equipment[i].info.type_name == NOTHING_ITEM) continue;
-                            bagaje[sas].is_equiped = true;
-                            bagaje[sas].type = u->equipment[i].info.type_name;
-                            bagaje[sas].element = i;
-                            sas++;
-                        }
-
-                        for(size_t i = u->inventory.size(); i--;){
-                            bagaje[sas].is_equiped = false;
-                            bagaje[sas].type = u->inventory[i].info.type_name;
-                            bagaje[sas].element = i;
-                            sas++;
-                        }
-
-                        s.bag->set_content(bagaje, sas, item_names);
+                        size_t count;
+                        bag_element* bagaje = create_bag(u, count);
+                        s.bag->set_content(bagaje, count, item_names);
                         s.bag->print();
-
                         stat = OPEN_INVENTORY;
                     }
                     break;
@@ -128,10 +128,18 @@ bool user_turn(object* u, screen s){
 
                     default:
                         if(is_move_char(temp)){
-                            // check if here object.
-                            // go to Loot if it is lootable
-                            s.mapa->move(u, temp);
-                            goto done;
+                            single_target = s.mapa->get_object(u, temp);
+                            if(single_target){
+                                size_t count;
+                                bag_element* loot_bag = create_bag(single_target, count);
+                                s.loot->set_content(loot_bag, count, item_names);
+                                s.loot->print();
+                                stat = LOOT;
+                            }
+                            else{
+                                s.mapa->move(u, temp);
+                                goto done;
+                            }
                         }
                         else break;
                 }
@@ -302,13 +310,13 @@ bool user_turn(object* u, screen s){
                                     single_target = nullptr;
                                     break;
 
-                                case 'f':
+                                case 'f':{
                                     single_target->graph_state = last_color;
-                                    for(auto i = item_to_use->stat.begin(); i != item_to_use->stat.end(); i++){
+                                    for(auto i = item_to_use->stat.effects.begin(); i != item_to_use->stat.effects.end(); i++){
                                         switch(get_effect_behavior(i->first)){
                                             case SHARED:
                                                 if(i->second.timed.time == 0){
-                                                    item_to_use->stat.erase(i->first);
+                                                    item_to_use->stat.effects.erase(i->first);
                                                     break;
                                                 }
 
@@ -334,11 +342,12 @@ bool user_turn(object* u, screen s){
 
                                             case PURE:
                                                 single_target->act(i->first, i->second);
-                                                item_to_use->stat.erase(i->first);
+                                                item_to_use->stat.effects.erase(i->first);
                                             break;
                                         }
                                     }
                                     goto done;
+                                }
                             }
                         }
                         else{
@@ -352,13 +361,27 @@ bool user_turn(object* u, screen s){
             case OPEN_INVENTORY:{
                 switch(temp){
                     case 's':
+                        s.bag->up();
+                        s.bag->print();
                         break;
 
                     case 'w':
+                        s.bag->down();
+                        s.bag->print();
                         break;
 
-                    case 'e':
+                    case 'e':{
+                        if(s.bag->is_current_equiped()){
+                            if(u->unequip(u->equipment.begin() + s.bag->get_selected_value()))
+                                s.bag->invert_equip();
+                        }
+                        else{
+                            if(u->equip(u->inventory.begin() + s.bag->get_selected_value()))
+                                s.bag->invert_equip();
+                        }
+                        s.bag->print();
                         break;
+                    }
 
                     case 'f':
                         break;
@@ -367,8 +390,10 @@ bool user_turn(object* u, screen s){
                         break;
 
                     case 'q':
+                        s.bag->hide();
+                        s.bag->shrade_elements();
+                        stat = STAY;
                         break;
-
                 }
             }
             break;
@@ -379,15 +404,16 @@ bool user_turn(object* u, screen s){
                         // clean hint
                         // need to return to right state.
                         // stat = CHOOSE_SPELL : SPELL_SHOP;
+                        10;
                 }
                 break;
 
             case LOOT:{
                 switch(temp){
-                    case "q":
+                    case 'q':
                         break;
 
-                    case "i":
+                    case 'i':
                         break;
                 }
             }
@@ -395,13 +421,13 @@ bool user_turn(object* u, screen s){
 
             case LOOT_INVENTORY:{
                 switch(temp){
-                    case "i":
+                    case 'i':
                         break;
 
-                    case "u":
+                    case 'u':
                         break;
 
-                    case "q":
+                    case 'q':
                         break;
                 }
             }
@@ -409,7 +435,7 @@ bool user_turn(object* u, screen s){
 
             case LOOKUP:{
                 switch(temp){
-                    case "q":
+                    case 'q':
                         break;
                 }
             }
@@ -417,10 +443,10 @@ bool user_turn(object* u, screen s){
 
             case OBSERVATION:{
                 switch(temp){
-                    case "f":
+                    case 'f':
                         break;
 
-                    case "q":
+                    case 'q':
                         break;
                 }
             }
@@ -428,7 +454,7 @@ bool user_turn(object* u, screen s){
 
             case SPELL_SHOP:{
                 switch(temp){
-                    case "i":
+                    case 'i':
                         break;
                 }
             }
