@@ -7,7 +7,7 @@ const char* item_names[] = {
     
     "IRON SHIELD\n",
     "IRON SWORD\n",
-    "IRON HUMMER\n"
+    "IRON HUMMER\n",
     "IRON BOW\n",
 
     "JACKET\n",
