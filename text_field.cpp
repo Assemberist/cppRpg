@@ -123,16 +123,19 @@ inventory::inventory(size_t rows, size_t cols, size_t pos_y, size_t pos_x) : tex
 void inventory::print(){
     wclear(win);
 
-    for(size_t i = 0; i < count; i++){
-        if(bag[i].is_equiped)
-            wattron(win, COLOR_PAIR(2));
-    
-        waddch(win, i == current ? '*' : ' ');
-        wprintw(win, strings[bag[i].type]);
-    
-        if(bag[i].is_equiped)
-            wattroff(win, COLOR_PAIR(2));
+    if(count){
+        for(size_t i = 0; i < count; i++){
+            if(bag[i].is_equiped)
+                wattron(win, COLOR_PAIR(2));
+        
+            waddch(win, i == current ? '*' : ' ');
+            wprintw(win, strings[bag[i].type]);
+        
+            if(bag[i].is_equiped)
+                wattroff(win, COLOR_PAIR(2));
+        }
     }
+    else wprintw(win, "[inventory is empty]");
 
     wrefresh(win);
 }
@@ -165,3 +168,4 @@ size_t inventory::get_selected_key(){ return bag[current].type; }
 size_t inventory::get_selected_value(){ return bag[current].element; }
 short inventory::get_index(){ return current; }
 void inventory::invert_equip(){ bag[current].is_equiped = !bag[current].is_equiped; }
+size_t inventory::size(){ return count;}

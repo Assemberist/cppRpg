@@ -1,4 +1,5 @@
 #include "user_ifc.hpp"
+#include "items.hpp"
 #include "spell.hpp"
 #include "text_field.hpp"
 
@@ -411,10 +412,61 @@ bool user_turn(object* u, screen s){
             case LOOT:{
                 switch(temp){
                     case 'q':
+                        s.loot->hide();
+                        s.loot->shrade_elements();
+                        stat = STAY;
                         break;
 
-                    case 'i':
+                    case 's':
+                        s.loot->up();
+                        s.loot->print();
                         break;
+
+                    case 'w':
+                        s.loot->down();
+                        s.loot->print();
+                        break;
+
+                    case 'f':{
+                        size_t num = s.loot->get_selected_value();
+                        if(s.loot->is_current_equiped()){
+                            if(single_target->unequip(single_target->equipment.begin() + num)){
+                                s.loot->print();
+                            }
+                        }
+                        else{
+                            if(s.loot->size()){
+                                u->inventory.push_back(*(single_target->inventory.begin() + num));
+                                single_target->inventory.erase(single_target->inventory.begin() + num);
+
+                                s.loot->shrade_elements();
+                                size_t count;
+                                bag_element* tempor = create_bag(single_target, count);
+                                s.loot->set_content(tempor, count, item_names);
+                                s.loot->print();
+                            }
+                        }
+                        break;
+                    }
+
+                    case 'i':{
+                        size_t count;
+                        bag_element* inv = create_bag(u, count);
+                        s.bag->set_content(inv, count, item_names);
+                        s.bag->print();
+                        stat = LOOT_INVENTORY;
+                        break;
+                    }
+
+                    case 'z':{
+                        u->inventory.insert(u->inventory.cend(), single_target->inventory.begin(), single_target->inventory.end());
+                        single_target->inventory.clear();
+
+                        s.loot->shrade_elements();
+                        s.loot->set_content(NULL, 0, item_names);
+                        s.loot->print();
+                        break;
+                    }
                 }
             }
             break;

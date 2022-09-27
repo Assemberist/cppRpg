@@ -78,6 +78,7 @@ public:
     short get_index();
     void shrade_elements();
     bool is_current_equiped();
+    size_t size();
 
     void invert_equip();
 };

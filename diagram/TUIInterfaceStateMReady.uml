@@ -1,0 +1,39 @@
+@startuml
+
+(moving) --> (choose spell) #line:green;line.bold : 'f'
+
+(moving) --> (loot) #line:green;line.bold : move to object
+(loot) --> (moving) #line:green;line.bold : 'q'
+(loot) --> (loot & inventory) #line:green;line.bold : 'i'
+(loot & inventory) --> (loot) : 'i'
+(loot & inventory) --> (moving) : 'q'
+(loot & inventory) --> (choose target) : 'u'
+(choose target) --> (loot & inventory) : 'q'
+
+(moving) --> (open inventory) #line:green;line.bold : 'i'
+(open inventory) --> (moving) #line:green;line.bold : 'q'
+
+(open inventory) --> (choose target) : 'u'
+(choose target) --> (open inventory) : 'q'
+
+(moving) --> (spell shop) : 'p'
+(spell shop) --> (moving) : 'q'
+
+(choose spell) --> (spell help) : 'h'
+(spell help) --> (choose spell) : 'q'
+
+(spell shop) --> (spell help) : 'h'
+(spell help) --> (spell shop) : 'q'
+
+(choose spell) --> (choose target) : 'f'
+(choose target) --> (choose spell) : 'q/r'
+(choose target) --> (moving) : 'f'
+
+(choose spell) --> (moving) : 'q'
+
+(moving) --> (observe) : 'o'
+(observe) --> (lookup) : 'f'
+(lookup) --> (observe) : 'q'
+(observe) --> (moving) : 'q'
+
+@enduml
