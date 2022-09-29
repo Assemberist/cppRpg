@@ -63,6 +63,7 @@ struct bag_element{
 
 class inventory : public text_field{
     bag_element* bag;
+    bool isActive;
 
 public:
     inventory(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
@@ -79,6 +80,8 @@ public:
     void shrade_elements();
     bool is_current_equiped();
     size_t size();
+    void activate(size_t num);
+    void deactivate();
 
     void invert_equip();
 };

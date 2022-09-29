@@ -1,19 +1,38 @@
 @startuml
 
+usecase moving as "moving
+--
+movement keys - move"
+
+usecase loot as "loot
+--
+f - take item and put to inventory
+z - take all"
+
+usecase loot_inventory as "loot & inventory
+--
+f - take replace focused item
+z - take all unequiped"
+
+usecase open_inventory as "open_inventory
+--
+e - un/equip item"
+
 (moving) --> (choose spell) : 'f'
 
 (moving) --> (loot) : move to object
 (loot) --> (moving) : 'q'
-(loot) <--> (loot & inventory) : 'i'
-(loot & inventory) --> (moving) : 'q'
-(loot & inventory) --> (choose target) : 'u'
-(choose target) --> (loot & inventory) : 'q'
+(loot) <--> (loot_inventory) : 'i'
+(loot) --> (choose target) : 'u' - use,\n't' - throw
+(loot_inventory) --> (moving) : 'q'
+(loot_inventory) --> (choose target) : 'u' - use,\n't' - throw
+(choose target) --> (loot_inventory) : 'q'
 
-(moving) --> (open inventory) : 'i'
-(open inventory) --> (moving) : 'q'
+(moving) --> (open_inventory) : 'i'
+(open_inventory) --> (moving) : 'q'
 
-(open inventory) --> (choose target) : 'u'
-(choose target) --> (open inventory) : 'q'
+(open_inventory) --> (choose target) : 'u' - use,\n't' - throw
+(choose target) --> (open_inventory) : 'q'
 
 (moving) --> (spell shop) : 'p'
 (spell shop) --> (moving) : 'q'
@@ -26,7 +45,7 @@
 
 (choose spell) --> (choose target) : 'f'
 (choose target) --> (choose spell) : 'q/r'
-(choose target) --> (moving) : 'f'
+(choose target) --> (moving) : 'f' - use item/spell
 
 (choose spell) --> (moving) : 'q'
 

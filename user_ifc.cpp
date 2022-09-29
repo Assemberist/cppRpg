@@ -1,5 +1,4 @@
 #include "user_ifc.hpp"
-#include "items.hpp"
 #include "spell.hpp"
 #include "text_field.hpp"
 
@@ -86,6 +85,8 @@ bool user_turn(object* u, screen s){
     spell_t choosed_spell = NOTHING_SPELL;
     vector<item>::iterator item_to_use;
 
+    inventory* current_inv;
+
     object* tar = nullptr;
     object* single_target = nullptr;
     blink_t last_color;
@@ -119,6 +120,7 @@ bool user_turn(object* u, screen s){
                         size_t count;
                         bag_element* bagaje = create_bag(u, count);
                         s.bag->set_content(bagaje, count, item_names);
+                        s.bag->activate(0);
                         s.bag->print();
                         stat = OPEN_INVENTORY;
                     }
@@ -134,6 +136,7 @@ bool user_turn(object* u, screen s){
                                 size_t count;
                                 bag_element* loot_bag = create_bag(single_target, count);
                                 s.loot->set_content(loot_bag, count, item_names);
+                                s.loot->activate(0);
                                 s.loot->print();
                                 stat = LOOT;
                             }
@@ -453,7 +456,9 @@ bool user_turn(object* u, screen s){
                         size_t count;
                         bag_element* inv = create_bag(u, count);
                         s.bag->set_content(inv, count, item_names);
+                        s.bag->deactivate();
                         s.bag->print();
+                        current_inv = s.loot;
                         stat = LOOT_INVENTORY;
                         break;
                     }
@@ -474,12 +479,52 @@ bool user_turn(object* u, screen s){
             case LOOT_INVENTORY:{
                 switch(temp){
                     case 'i':
+                        s.bag->hide();
+                        s.bag->shrade_elements();
+                        stat = LOOT;
+                        break;
+
+                    case 'w':
+                        current_inv->down();
+                        current_inv->print();
+                        break;
+
+                    case 's':
+                        current_inv->up();
+                        current_inv->print();
+                        break;
+
+                    case 'a':
+                        current_inv->deactivate();
+                        s.bag->activate(current_inv->get_index());
+                        current_inv = s.bag;
+                        s.bag->print();
+                        s.loot->print();
+                        break;
+
+                    case 'd':
+                        current_inv->deactivate();
+                        s.loot->activate(current_inv->get_index());
+                        current_inv = s.loot;
+                        s.bag->print();
+                        s.loot->print();
                         break;
 
                     case 'u':
                         break;
 
+                    case 'e':
+                        break;
+
+                    case 'f':
+                        break;
+
                     case 'q':
+                        s.bag->hide();
+                        s.bag->shrade_elements();
+                        s.loot->hide();
+                        s.loot->shrade_elements();
+                        stat = STAY;
                         break;
                 }
             }

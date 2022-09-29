@@ -118,6 +118,7 @@ short menu::get_index(){ return current; }
 inventory::inventory(size_t rows, size_t cols, size_t pos_y, size_t pos_x) : text_field(rows, cols, pos_y, pos_x){
     current = 0;
     count = 0;
+    isActive = false;
 }
 
 void inventory::print(){
@@ -127,8 +128,9 @@ void inventory::print(){
         for(size_t i = 0; i < count; i++){
             if(bag[i].is_equiped)
                 wattron(win, COLOR_PAIR(2));
-        
-            waddch(win, i == current ? '*' : ' ');
+
+            if(isActive)
+                waddch(win, i == current ? '*' : ' ');
             wprintw(win, strings[bag[i].type]);
         
             if(bag[i].is_equiped)
@@ -162,6 +164,12 @@ void inventory::shrade_elements(){
     bag = NULL;
     strings = NULL;
 }
+
+void inventory::activate(size_t num){
+    isActive = true;
+    current = num >= count ? count-1 : num;
+}
+void inventory::deactivate(){ isActive = false; }
 
 bool inventory::is_current_equiped(){ return bag[current].is_equiped; }
 size_t inventory::get_selected_key(){ return bag[current].type; }
