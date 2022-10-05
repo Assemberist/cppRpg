@@ -57,6 +57,28 @@ void clear_blinking(object** objs){
     }
 }
 
+bool do_equp_unquip(inventory* inv, object* obj){
+    if(inv->is_current_equiped()){
+        if(obj->unequip(obj->equipment.begin() + inv->get_selected_value())){
+            size_t i;
+            bag_element* bag = create_bag(obj, i);
+            inv->shrade_elements();
+            inv->set_content(bag, i, item_names);
+            return true;
+        }
+    }
+    else{
+        if(obj->equip(obj->inventory.begin() + inv->get_selected_value())){
+            size_t i;
+            bag_element* bag = create_bag(obj, i);
+            inv->shrade_elements();
+            inv->set_content(bag, i, item_names);
+            return true;
+        }
+    }
+    return false;
+}
+
 bool is_move_char(char direction){
     switch(direction){
         case 'q':
@@ -85,7 +107,7 @@ bool user_turn(object* u, screen s){
     spell_t choosed_spell = NOTHING_SPELL;
     vector<item>::iterator item_to_use;
 
-    inventory* current_inv;
+    inventory* active_inv;
 
     object* tar = nullptr;
     object* single_target = nullptr;
@@ -375,19 +397,12 @@ bool user_turn(object* u, screen s){
                         break;
 
                     case 'e':{
-                        if(s.bag->is_current_equiped()){
-                            if(u->unequip(u->equipment.begin() + s.bag->get_selected_value()))
-                                s.bag->invert_equip();
-                        }
-                        else{
-                            if(u->equip(u->inventory.begin() + s.bag->get_selected_value()))
-                                s.bag->invert_equip();
-                        }
+                        do_equp_unquip(s.bag, u);
                         s.bag->print();
                         break;
                     }
 
-                    case 'f':
+                    case 'u':
                         break;
 
                     case 't':
@@ -430,6 +445,12 @@ bool user_turn(object* u, screen s){
                         s.loot->print();
                         break;
 
+                    case 'e':{
+                        do_equp_unquip(s.loot, single_target);
+                        s.loot->print();
+                        break;
+                    }
+
                     case 'f':{
                         size_t num = s.loot->get_selected_value();
                         if(s.loot->is_current_equiped()){
@@ -458,7 +479,7 @@ bool user_turn(object* u, screen s){
                         s.bag->set_content(inv, count, item_names);
                         s.bag->deactivate();
                         s.bag->print();
-                        current_inv = s.loot;
+                        active_inv = s.loot;
                         stat = LOOT_INVENTORY;
                         break;
                     }
@@ -485,27 +506,27 @@ bool user_turn(object* u, screen s){
                         break;
 
                     case 'w':
-                        current_inv->down();
-                        current_inv->print();
+                        active_inv->down();
+                        active_inv->print();
                         break;
 
                     case 's':
-                        current_inv->up();
-                        current_inv->print();
+                        active_inv->up();
+                        active_inv->print();
                         break;
 
                     case 'a':
-                        current_inv->deactivate();
-                        s.bag->activate(current_inv->get_index());
-                        current_inv = s.bag;
+                        active_inv->deactivate();
+                        s.bag->activate(active_inv->get_index());
+                        active_inv = s.bag;
                         s.bag->print();
                         s.loot->print();
                         break;
 
                     case 'd':
-                        current_inv->deactivate();
-                        s.loot->activate(current_inv->get_index());
-                        current_inv = s.loot;
+                        active_inv->deactivate();
+                        s.loot->activate(active_inv->get_index());
+                        active_inv = s.loot;
                         s.bag->print();
                         s.loot->print();
                         break;
@@ -513,11 +534,90 @@ bool user_turn(object* u, screen s){
                     case 'u':
                         break;
 
-                    case 'e':
+                    case 'e':{
+                        if(active_inv->size() == 0) break;
+                        object* tempor = active_inv == s.loot ? single_target : u;
+                        do_equp_unquip(active_inv, tempor);
+                        active_inv->print();
                         break;
+                    }
 
-                    case 'f':
+                    case 'z':{
+                        if(active_inv->size() == 0) break;
+
+                        size_t i;
+                        if(active_inv == s.loot){
+                            u->inventory.insert(u->inventory.cend(), single_target->inventory.begin(), single_target->inventory.end());
+                            single_target->inventory.clear();
+
+                            bag_element* bag = create_bag(u, i);
+                            s.bag->shrade_elements();
+                            s.bag->set_content(bag, i, item_names);
+
+                            s.loot->shrade_elements();
+                            s.loot->set_content(NULL, 0, item_names);
+                        }
+                        else{
+                            single_target->inventory.insert(single_target->inventory.cend(), u->inventory.begin(), u->inventory.end());
+                            u->inventory.clear();
+
+                            bag_element* bag = create_bag(single_target, i);
+                            s.loot->shrade_elements();
+                            s.loot->set_content(bag, i, item_names);
+
+                            s.bag->shrade_elements();
+                            s.bag->set_content(NULL, 0, item_names);
+                        }
+
+                        s.loot->print();
+                        s.bag->print();
                         break;
+                    }
+
+                    case 'f':{
+                        if(active_inv->size() == 0) break;
+                                                
+                        if(active_inv == s.loot){
+                            if(active_inv->is_current_equiped()){
+                                if(do_equp_unquip(active_inv, single_target)){
+                                    u->pick_up_item(single_target->inventory.back());
+                                    single_target->inventory.pop_back();
+                                }
+                                else break;
+                            }
+                            else{
+                                vector<item>::iterator thing = single_target->inventory.begin() + active_inv->get_selected_value();
+                                u->pick_up_item(*(thing));
+                                single_target->inventory.erase(thing);
+                            }
+                        }
+                        else{
+                            if(active_inv->is_current_equiped()){
+                                if(do_equp_unquip(active_inv, u)){
+                                    single_target->pick_up_item(u->inventory.back());
+                                    u->inventory.pop_back();
+                                }
+                                else break;
+                            }
+                            else{
+                                vector<item>::iterator thing = u->inventory.begin() + active_inv->get_selected_value();
+                                single_target->pick_up_item(*(thing));
+                                u->inventory.erase(thing);
+                            }
+                        }
+
+                        size_t i;
+                        bag_element* bag = create_bag(u, i);
+                        s.bag->shrade_elements();
+                        s.bag->set_content(bag, i, item_names);
+                        s.bag->print();
+
+                        bag = create_bag(single_target, i);
+                        s.loot->shrade_elements();
+                        s.loot->set_content(bag, i, item_names);
+                        s.loot->print();
+                        break;
+                    }
 
                     case 'q':
                         s.bag->hide();

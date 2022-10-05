@@ -124,6 +124,7 @@ bool object::equip(vector<item>::iterator it){
 }
 
 bool object::unequip(vector<item>::iterator it){
+    // here can be check of possibilty to unequip item.
     for(auto i = it->stat.effects.begin(); i != it->stat.effects.end(); i++){
         if(i->first.is_permanent && i->first.is_shared){
             auto eff = stat.effects.find(i->first);
@@ -131,6 +132,7 @@ bool object::unequip(vector<item>::iterator it){
             else stat.effects.erase(eff);
         }
     }
+    inventory.end() - 1;
     inventory.push_back(*it);
     it->info.type_name = NOTHING_ITEM;
     return true;
