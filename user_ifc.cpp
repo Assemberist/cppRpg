@@ -6,6 +6,7 @@ enum object_state{
     STAY,
     CHOOSE_SPELL,
     CHOOSE_TARGET,
+    CHOOSE_TARGET_FOR_ITEM,
     OBSERVATION,
     LOOT,
     LOOKUP,
@@ -110,15 +111,17 @@ bool user_turn(object* u, screen s){
     inventory* active_inv;
 
     object* tar = nullptr;
+    object* looted_obj = nullptr;
     object* single_target = nullptr;
     blink_t last_color;
+
     
 
     char temp;
     while((temp = getch()) != ' '){
         switch(stat){
             // moving and choosing of spell are allowed
-            case STAY:
+            case STAY:{
                 s.mapa->clear();
                 switch(temp){
                     case 'f':{
@@ -171,6 +174,7 @@ bool user_turn(object* u, screen s){
                 }
                 s.mapa->update_card();
                 break;
+            }
 
             case CHOOSE_SPELL:{
                 switch(temp){
@@ -225,6 +229,7 @@ bool user_turn(object* u, screen s){
                     case 's':
                         s.common_menu->up();
                         s.common_menu->print();
+                        break;
 
                     case 'h':
                         // spell help
@@ -233,6 +238,70 @@ bool user_turn(object* u, screen s){
                 }
             }
             break;
+
+            case CHOOSE_TARGET_FOR_ITEM:{
+                if(is_item_for_single_target(item_to_use->info.type_name)){
+                    switch(temp){
+                        case 's':
+                            single_target->graph_state = last_color;
+                            while(!(single_target = search_targets(u, s, 4)));
+                            last_color = single_target->graph_state;
+                            single_target->graph_state = RED_INVERT;
+                            s.mapa->clear();
+                            s.mapa->update_card();
+                            break;
+
+                        case 'q':
+                            single_target = looted_obj;
+                            stat = last_state;
+                            single_target->graph_state = last_color;
+                            switch(last_state)
+                            break;
+
+                        case 'f':{
+                            single_target->graph_state = last_color;
+                            for(auto i = item_to_use->stat.effects.begin(); i != item_to_use->stat.effects.end(); i++){
+                                switch(get_effect_behavior(i->first)){
+                                    case SHARED:
+                                        if(i->second.timed.time == 0){
+                                            item_to_use->stat.effects.erase(i->first);
+                                            break;
+                                        }
+
+                                    case SHARMANENT:
+                                        if(i->second.timed.time){
+                                            effect_def def = i->first;
+                                            def.is_permanent = false;
+
+                                            effect eff = i->second;
+                                            eff.timed.time = 0;
+                                            single_target->act(def, eff);
+
+                                            i->second.timed.time--;
+                                        }
+                                    break;
+
+                                    case PERMANENT:{
+                                        effect_def def = i->first;
+                                        def.is_permanent = false;
+                                        single_target->act(def, i->second);
+                                    }
+                                    break;
+
+                                    case PURE:
+                                        single_target->act(i->first, i->second);
+                                        item_to_use->stat.effects.erase(i->first);
+                                    break;
+                                }
+                            }
+                            goto done;
+                        }
+                    }
+                }
+                else{
+                    // marking of mutiple targets
+                }
+            }
 
             case CHOOSE_TARGET:{
                 int8_t ranger;
@@ -319,67 +388,7 @@ bool user_turn(object* u, screen s){
                                 continue;
                         break;
                     }
-
-                    case NOTHING_SPELL:{
-                        if(is_item_for_single_target(item_to_use->info.type_name)){
-                            switch(temp){
-                                case 's':
-                                    single_target = search_targets(u, s, 4);
-                                    last_color = single_target->graph_state;
-                                    single_target->graph_state = RED_INVERT;
-                                    s.mapa->update_card();
-                                    break;
-
-                                case 'q':
-                                    stat = OPEN_INVENTORY;
-                                    single_target->graph_state = last_color;
-                                    single_target = nullptr;
-                                    break;
-
-                                case 'f':{
-                                    single_target->graph_state = last_color;
-                                    for(auto i = item_to_use->stat.effects.begin(); i != item_to_use->stat.effects.end(); i++){
-                                        switch(get_effect_behavior(i->first)){
-                                            case SHARED:
-                                                if(i->second.timed.time == 0){
-                                                    item_to_use->stat.effects.erase(i->first);
-                                                    break;
-                                                }
-
-                                            case SHARMANENT:
-                                                if(i->second.timed.time){
-                                                    effect_def def = i->first;
-                                                    def.is_permanent = false;
-
-                                                    effect eff = i->second;
-                                                    eff.timed.time = 0;
-                                                    single_target->act(def, eff);
-
-                                                    i->second.timed.time--;
-                                                }
-                                            break;
-
-                                            case PERMANENT:{
-                                                effect_def def = i->first;
-                                                def.is_permanent = false;
-                                                single_target->act(def, i->second);
-                                            }
-                                            break;
-
-                                            case PURE:
-                                                single_target->act(i->first, i->second);
-                                                item_to_use->stat.effects.erase(i->first);
-                                            break;
-                                        }
-                                    }
-                                    goto done;
-                                }
-                            }
-                        }
-                        else{
-                            // marking of mutiple targets
-                        }
-                    }
+                    break;
                 }
                 break;
             }
@@ -454,13 +463,15 @@ bool user_turn(object* u, screen s){
                     case 'f':{
                         size_t num = s.loot->get_selected_value();
                         if(s.loot->is_current_equiped()){
-                            if(single_target->unequip(single_target->equipment.begin() + num)){
-                                s.loot->print();
+                            if(do_equp_unquip(s.loot, single_target)){
+                                u->pick_up_item(single_target->inventory.back());
+                                single_target->inventory.pop_back();
                             }
+                            else break;
                         }
                         else{
                             if(s.loot->size()){
-                                u->inventory.push_back(*(single_target->inventory.begin() + num));
+                                u->pick_up_item(*(single_target->inventory.begin() + num));
                                 single_target->inventory.erase(single_target->inventory.begin() + num);
 
                                 s.loot->shrade_elements();
@@ -470,6 +481,44 @@ bool user_turn(object* u, screen s){
                                 s.loot->print();
                             }
                         }
+                        break;
+                    }
+
+                    case 'u':{
+                        s.loot->hide();
+                        if(s.loot->is_current_equiped()){
+                            if(do_equp_unquip(s.loot, single_target)){
+                                item_to_use = single_target->inventory.end() - 1;
+                            }
+                            else break;
+                        }
+                        else item_to_use = single_target->inventory.begin() + s.loot->get_selected_value();
+
+                        looted_obj = single_target;
+                        search_targets(NULL, s, 0);
+                        single_target = search_targets(u, s, 4);
+                        choosed_spell = NOTHING_SPELL;
+                        last_state = LOOT;
+                        stat = CHOOSE_TARGET_FOR_ITEM;
+                        break;
+                    }
+
+                    case 't':{
+                        s.loot->hide();
+                        if(s.loot->is_current_equiped()){
+                            if(do_equp_unquip(s.loot, single_target)){
+                                item_to_use = single_target->inventory.end() - 1;
+                            }
+                            else break;
+                        }
+                        else item_to_use = single_target->inventory.begin() + s.loot->get_selected_value();
+
+                        looted_obj = single_target;
+                        search_targets(NULL, s, 0);
+                        single_target = search_targets(u, s, 4);
+                        choosed_spell = NOTHING_SPELL;
+                        last_state = LOOT;
+                        stat = CHOOSE_TARGET_FOR_ITEM;
                         break;
                     }
 
@@ -532,6 +581,9 @@ bool user_turn(object* u, screen s){
                         break;
 
                     case 'u':
+                        break;
+
+                    case 't':
                         break;
 
                     case 'e':{

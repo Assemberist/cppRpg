@@ -4,7 +4,6 @@ usecase moving #palegreen;line:green;line.bold;text:green as "moving
 --
 movement keys - move"
 
-
 usecase loot #palegreen;line:green;line.bold;text:green as "loot
 --
 f - take item and put to inventory
@@ -15,7 +14,7 @@ usecase loot_inventory #palegreen;line:green;line.bold;text:green as "loot & inv
 f - take replace focused item
 z - take all unequiped"
 
-usecase open_inventory #palegreen;line:green;line.bold;text:green as "open_inventory
+usecase open_inventory as "open_inventory
 --
 e - un/equip item"
 
@@ -24,16 +23,17 @@ e - un/equip item"
 (moving) --> (loot) #line:green;line.bold : move to object
 (loot) --> (moving) #line:green;line.bold : 'q'
 (loot) <--> (loot_inventory) #line:green;line.bold : 'i'
-(loot) --> (choose target) : 'u' - use,\n't' - throw
+(loot) --> (choose target for item) : 'u' - use,\n't' - throw
+(choose target for item) --> (loot) : 'q'
 (loot_inventory) --> (moving) #line:green;line.bold : 'q'
-(loot_inventory) --> (choose target) : 'u' - use,\n't' - throw
-(choose target) --> (loot_inventory) : 'q'
+(loot_inventory) --> (choose target for item) : 'u' - use,\n't' - throw
+(choose target for item) --> (loot_inventory) : 'q'
 
-(moving) --> (open_inventory) #line:green;line.bold : 'i'
-(open_inventory) --> (moving) #line:green;line.bold : 'q'
+(moving) --> (open_inventory) : 'i'
+(open_inventory) --> (moving) : 'q'
 
-(open_inventory) --> (choose target) : 'u' - use,\n't' - throw,
-(choose target) --> (open_inventory) : 'q'
+(open_inventory) --> (choose target for item) : 'u' - use,\n't' - throw
+(choose target for item) --> (open_inventory) : 'q'
 
 (moving) --> (spell shop) : 'p'
 (spell shop) --> (moving) : 'q'
@@ -44,11 +44,13 @@ e - un/equip item"
 (spell shop) --> (spell help) : 'h'
 (spell help) --> (spell shop) : 'q'
 
-(choose spell) --> (choose target) : 'f'
-(choose target) --> (choose spell) : 'q/r'
-(choose target) --> (moving) : 'f' - use item/spell
+(choose target for item) --> (moving) : 'f' - use item
 
-(choose spell) --> (moving) : 'q'
+(choose spell) --> (choose target for spell) : 'f'
+(choose target for spell) --> (choose spell) : 'q/r'
+(choose target for spell) --> (moving) : 'f' - use spell
+
+(choose spell) --> (moving) #line:green;line.bold : 'q'
 
 (moving) --> (observe) : 'o'
 (observe) --> (lookup) : 'f'

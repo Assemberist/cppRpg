@@ -23,16 +23,17 @@ e - un/equip item"
 (moving) --> (loot) : move to object
 (loot) --> (moving) : 'q'
 (loot) <--> (loot_inventory) : 'i'
-(loot) --> (choose target) : 'u' - use,\n't' - throw
+(loot) --> (choose target for item) : 'u' - use,\n't' - throw
+(choose target for item) --> (loot) : 'q'
 (loot_inventory) --> (moving) : 'q'
-(loot_inventory) --> (choose target) : 'u' - use,\n't' - throw
-(choose target) --> (loot_inventory) : 'q'
+(loot_inventory) --> (choose target for item) : 'u' - use,\n't' - throw
+(choose target for item) --> (loot_inventory) : 'q'
 
 (moving) --> (open_inventory) : 'i'
 (open_inventory) --> (moving) : 'q'
 
-(open_inventory) --> (choose target) : 'u' - use,\n't' - throw
-(choose target) --> (open_inventory) : 'q'
+(open_inventory) --> (choose target for item) : 'u' - use,\n't' - throw
+(choose target for item) --> (open_inventory) : 'q'
 
 (moving) --> (spell shop) : 'p'
 (spell shop) --> (moving) : 'q'
@@ -43,9 +44,11 @@ e - un/equip item"
 (spell shop) --> (spell help) : 'h'
 (spell help) --> (spell shop) : 'q'
 
-(choose spell) --> (choose target) : 'f'
-(choose target) --> (choose spell) : 'q/r'
-(choose target) --> (moving) : 'f' - use item/spell
+(choose target for item) --> (moving) : 'f' - use item
+
+(choose spell) --> (choose target for spell) : 'f'
+(choose target for spell) --> (choose spell) : 'q/r'
+(choose target for spell) --> (moving) : 'f' - use spell
 
 (choose spell) --> (moving) : 'q'
 
