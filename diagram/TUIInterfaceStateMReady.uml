@@ -23,7 +23,7 @@ e - un/equip item"
 (moving) --> (loot) #line:green;line.bold : move to object
 (loot) --> (moving) #line:green;line.bold : 'q'
 (loot) <--> (loot_inventory) #line:green;line.bold : 'i'
-(loot) --> (choose target for item) : 'u' - use,\n't' - throw
+(loot) --> (choose target for item) #line:green;line.bold : 'u' - use,\n't' - throw
 (choose target for item) --> (loot) : 'q'
 (loot_inventory) --> (moving) #line:green;line.bold : 'q'
 (loot_inventory) --> (choose target for item) : 'u' - use,\n't' - throw
@@ -32,7 +32,7 @@ e - un/equip item"
 (moving) --> (open_inventory) : 'i'
 (open_inventory) --> (moving) : 'q'
 
-(open_inventory) --> (choose target for item) : 'u' - use,\n't' - throw
+(open_inventory) --> (choose target for item) #line:green;line.bold : 'u' - use,\n't' - throw
 (choose target for item) --> (open_inventory) : 'q'
 
 (moving) --> (spell shop) : 'p'

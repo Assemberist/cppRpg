@@ -411,11 +411,61 @@ bool user_turn(object* u, screen s){
                         break;
                     }
 
-                    case 'u':
-                        break;
+                    case 'u':{
+                        if(s.bag->is_current_equiped()){
+                            if(do_equp_unquip(s.bag, u)){
+                                item_to_use = u->inventory.end() - 1;
+                            }
+                            else break;
+                        }
+                        else item_to_use = u->inventory.begin() + s.bag->get_selected_value();
 
-                    case 't':
+                        s.bag->hide();
+
+                        looted_obj = u;
+
+                        u->graph_state = last_color;
+
+                        search_targets(NULL, s, 0);
+                        single_target = search_targets(u, s, 4);
+                        single_target->graph_state = RED_INVERT;
+
+                        s.mapa->clear();
+                        s.mapa->update_card();
+
+                        choosed_spell = NOTHING_SPELL;
+                        last_state = OPEN_INVENTORY;
+                        stat = CHOOSE_TARGET_FOR_ITEM;
                         break;
+                    }
+
+                    case 't':{
+                        if(s.bag->is_current_equiped()){
+                            if(do_equp_unquip(s.bag, u)){
+                                item_to_use = u->inventory.end() - 1;
+                            }
+                            else break;
+                        }
+                        else item_to_use = u->inventory.begin() + s.bag->get_selected_value();
+
+                        s.bag->hide();
+
+                        looted_obj = u;
+
+                        u->graph_state = last_color;
+
+                        search_targets(NULL, s, 0);
+                        single_target = search_targets(u, s, 4);
+                        single_target->graph_state = RED_INVERT;
+
+                        s.mapa->clear();
+                        s.mapa->update_card();
+
+                        choosed_spell = THROW;
+                        last_state = OPEN_INVENTORY;
+                        stat = CHOOSE_TARGET_FOR_ITEM;
+                        break;
+                    }
 
                     case 'q':
                         s.bag->hide();
@@ -485,7 +535,6 @@ bool user_turn(object* u, screen s){
                     }
 
                     case 'u':{
-                        s.loot->hide();
                         if(s.loot->is_current_equiped()){
                             if(do_equp_unquip(s.loot, single_target)){
                                 item_to_use = single_target->inventory.end() - 1;
@@ -494,9 +543,19 @@ bool user_turn(object* u, screen s){
                         }
                         else item_to_use = single_target->inventory.begin() + s.loot->get_selected_value();
 
+                        s.loot->hide();
+
                         looted_obj = single_target;
+
+                        u->graph_state = last_color;
+
                         search_targets(NULL, s, 0);
                         single_target = search_targets(u, s, 4);
+                        single_target->graph_state = RED_INVERT;
+
+                        s.mapa->clear();
+                        s.mapa->update_card();
+
                         choosed_spell = NOTHING_SPELL;
                         last_state = LOOT;
                         stat = CHOOSE_TARGET_FOR_ITEM;
@@ -504,7 +563,6 @@ bool user_turn(object* u, screen s){
                     }
 
                     case 't':{
-                        s.loot->hide();
                         if(s.loot->is_current_equiped()){
                             if(do_equp_unquip(s.loot, single_target)){
                                 item_to_use = single_target->inventory.end() - 1;
@@ -513,10 +571,20 @@ bool user_turn(object* u, screen s){
                         }
                         else item_to_use = single_target->inventory.begin() + s.loot->get_selected_value();
 
+                        s.loot->hide();
+
                         looted_obj = single_target;
+
+                        u->graph_state = last_color;
+
                         search_targets(NULL, s, 0);
                         single_target = search_targets(u, s, 4);
-                        choosed_spell = NOTHING_SPELL;
+                        single_target->graph_state = RED_INVERT;
+
+                        s.mapa->clear();
+                        s.mapa->update_card();
+
+                        choosed_spell = THROW;
                         last_state = LOOT;
                         stat = CHOOSE_TARGET_FOR_ITEM;
                         break;
