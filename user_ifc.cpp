@@ -252,10 +252,24 @@ bool user_turn(object* u, screen s){
                             break;
 
                         case 'q':
+                            single_target->graph_state = last_color;
                             single_target = looted_obj;
                             stat = last_state;
-                            single_target->graph_state = last_color;
-                            switch(last_state)
+                            s.mapa->clear();
+                            s.mapa->update_card();
+
+                            switch(last_state){
+                                case LOOT:
+                                    s.loot->print();
+                                    break;
+                                
+                                case LOOT_INVENTORY:
+                                    s.loot->print();
+
+                                case OPEN_INVENTORY:
+                                    s.bag->print();
+                            }
+
                             break;
 
                         case 'f':{
@@ -301,6 +315,7 @@ bool user_turn(object* u, screen s){
                 else{
                     // marking of mutiple targets
                 }
+                break;
             }
 
             case CHOOSE_TARGET:{
@@ -546,11 +561,11 @@ bool user_turn(object* u, screen s){
                         s.loot->hide();
 
                         looted_obj = single_target;
-
                         u->graph_state = last_color;
 
                         search_targets(NULL, s, 0);
                         single_target = search_targets(u, s, 4);
+                        last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
 
                         s.mapa->clear();
@@ -579,6 +594,7 @@ bool user_turn(object* u, screen s){
 
                         search_targets(NULL, s, 0);
                         single_target = search_targets(u, s, 4);
+                        last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
 
                         s.mapa->clear();
@@ -649,9 +665,59 @@ bool user_turn(object* u, screen s){
                         break;
 
                     case 'u':
+                        looted_obj = active_inv == s.bag ? u : single_target;
+
+                        if(active_inv->is_current_equiped()){
+                            if(do_equp_unquip(active_inv, looted_obj)){
+                                item_to_use = looted_obj->inventory.end() - 1;
+                            }
+                            else break;
+                        }
+                        else item_to_use = looted_obj->inventory.begin() + active_inv->get_selected_value();
+
+                        s.bag->hide();
+                        s.loot->hide();
+
+                        u->graph_state = last_color;
+
+                        search_targets(NULL, s, 0);
+                        single_target = search_targets(u, s, 4);
+                        single_target->graph_state = RED_INVERT;
+
+                        s.mapa->clear();
+                        s.mapa->update_card();
+
+                        choosed_spell = NOTHING_SPELL;
+                        last_state = LOOT_INVENTORY;
+                        stat = CHOOSE_TARGET_FOR_ITEM;
                         break;
 
                     case 't':
+                        looted_obj = active_inv == s.bag ? u : single_target;
+
+                        if(active_inv->is_current_equiped()){
+                            if(do_equp_unquip(active_inv, looted_obj)){
+                                item_to_use = looted_obj->inventory.end() - 1;
+                            }
+                            else break;
+                        }
+                        else item_to_use = looted_obj->inventory.begin() + active_inv->get_selected_value();
+
+                        s.bag->hide();
+                        s.loot->hide();
+
+                        u->graph_state = last_color;
+
+                        search_targets(NULL, s, 0);
+                        single_target = search_targets(u, s, 4);
+                        single_target->graph_state = RED_INVERT;
+
+                        s.mapa->clear();
+                        s.mapa->update_card();
+
+                        choosed_spell = THROW;
+                        last_state = LOOT_INVENTORY;
+                        stat = CHOOSE_TARGET_FOR_ITEM;
                         break;
 
                     case 'e':{
