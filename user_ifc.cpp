@@ -147,6 +147,7 @@ bool user_turn(object* u, screen s){
                         s.bag->set_content(bagaje, count, item_names);
                         s.bag->activate(0);
                         s.bag->print();
+                        u->graph_state = GREEN_STABILE;
                         stat = OPEN_INVENTORY;
                     }
                     break;
@@ -163,6 +164,7 @@ bool user_turn(object* u, screen s){
                                 s.loot->set_content(loot_bag, count, item_names);
                                 s.loot->activate(0);
                                 s.loot->print();
+                                u->graph_state = GREEN_STABILE;
                                 stat = LOOT;
                             }
                             else{
@@ -435,16 +437,14 @@ bool user_turn(object* u, screen s){
                         }
                         else item_to_use = u->inventory.begin() + s.bag->get_selected_value();
 
-                        s.bag->hide();
-
                         looted_obj = u;
-
-                        u->graph_state = last_color;
 
                         search_targets(NULL, s, 0);
                         single_target = search_targets(u, s, 4);
+                        last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
 
+                        s.bag->hide();
                         s.mapa->clear();
                         s.mapa->update_card();
 
@@ -463,16 +463,14 @@ bool user_turn(object* u, screen s){
                         }
                         else item_to_use = u->inventory.begin() + s.bag->get_selected_value();
 
-                        s.bag->hide();
-
                         looted_obj = u;
-
-                        u->graph_state = last_color;
 
                         search_targets(NULL, s, 0);
                         single_target = search_targets(u, s, 4);
+                        last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
 
+                        s.bag->hide();
                         s.mapa->clear();
                         s.mapa->update_card();
 
@@ -485,6 +483,7 @@ bool user_turn(object* u, screen s){
                     case 'q':
                         s.bag->hide();
                         s.bag->shrade_elements();
+                        u->graph_state = GREEN_ON;
                         stat = STAY;
                         break;
                 }
@@ -506,6 +505,7 @@ bool user_turn(object* u, screen s){
                     case 'q':
                         s.loot->hide();
                         s.loot->shrade_elements();
+                        u->graph_state = GREEN_ON;
                         stat = STAY;
                         break;
 
@@ -558,16 +558,14 @@ bool user_turn(object* u, screen s){
                         }
                         else item_to_use = single_target->inventory.begin() + s.loot->get_selected_value();
 
-                        s.loot->hide();
-
                         looted_obj = single_target;
-                        u->graph_state = last_color;
 
                         search_targets(NULL, s, 0);
                         single_target = search_targets(u, s, 4);
                         last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
 
+                        s.loot->hide();
                         s.mapa->clear();
                         s.mapa->update_card();
 
@@ -586,17 +584,14 @@ bool user_turn(object* u, screen s){
                         }
                         else item_to_use = single_target->inventory.begin() + s.loot->get_selected_value();
 
-                        s.loot->hide();
-
                         looted_obj = single_target;
-
-                        u->graph_state = last_color;
 
                         search_targets(NULL, s, 0);
                         single_target = search_targets(u, s, 4);
                         last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
 
+                        s.loot->hide();
                         s.mapa->clear();
                         s.mapa->update_card();
 
@@ -675,15 +670,13 @@ bool user_turn(object* u, screen s){
                         }
                         else item_to_use = looted_obj->inventory.begin() + active_inv->get_selected_value();
 
-                        s.bag->hide();
-                        s.loot->hide();
-
-                        u->graph_state = last_color;
-
                         search_targets(NULL, s, 0);
                         single_target = search_targets(u, s, 4);
+                        last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
 
+                        s.bag->hide();
+                        s.loot->hide();
                         s.mapa->clear();
                         s.mapa->update_card();
 
@@ -703,15 +696,13 @@ bool user_turn(object* u, screen s){
                         }
                         else item_to_use = looted_obj->inventory.begin() + active_inv->get_selected_value();
 
-                        s.bag->hide();
-                        s.loot->hide();
-
-                        u->graph_state = last_color;
-
                         search_targets(NULL, s, 0);
                         single_target = search_targets(u, s, 4);
+                        last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
 
+                        s.bag->hide();
+                        s.loot->hide();
                         s.mapa->clear();
                         s.mapa->update_card();
 
