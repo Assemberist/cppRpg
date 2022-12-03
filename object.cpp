@@ -65,6 +65,10 @@ spell_t object::choose_attack_spells(object* target){
     return NOTHING_SPELL;
 }
 
+void object::trigger(spell_trigger trigger, object* target){
+    // send triggers to equipment.
+}
+
 void expirience::add(size_t amount){
     full += amount;
     avail += amount;

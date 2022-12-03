@@ -1,0 +1,17 @@
+@startuml
+
+node "object" {
+    [object effects]
+    package "equipment" {
+    }
+    package "inventory" {
+        node "item" {
+            [item effects]
+        }
+    }
+}
+
+[item effects] --> [object effects] : 1) shared effects as pure, \nPermashared as buffs (permanent)
+item --> equipment : 2) Item mooved to equipment
+
+@enduml

@@ -1,0 +1,19 @@
+@startuml
+
+node "projectile" {
+    [item effects ]
+}
+
+node "object" {
+    [object effects]
+    node "items_equipment" {
+        [item effects]
+    }
+}
+
+projectile --> [object effects] : 1) Physical damage (send effect)
+[item effects ] --> [object effects] : 2) Shared effects shared with target
+[object effects] --> [item effects] : 3) Effects shared in deep (to equipment)
+projectile --> items_equipment : 4) Item followed to target inventory
+
+@enduml

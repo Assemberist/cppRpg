@@ -1,0 +1,14 @@
+@startuml
+
+node "object" {
+    [object effects]
+    node "item" {
+        [item effects]
+        [spell slots]
+    }
+}
+
+[spell slots] --> [target] : 1) Using a spell (set of effects).
+[item effects] --> [object effects] : 2) User receives shared effects but as pure
+
+@enduml

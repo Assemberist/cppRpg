@@ -7,33 +7,41 @@ movement keys - move"
 usecase loot #palegreen;line:green;line.bold;text:green as "loot
 --
 f - take item and put to inventory
-z - take all"
+z - take all
+e - un/equip item"
 
 usecase loot_inventory #palegreen;line:green;line.bold;text:green as "loot & inventory
 --
 f - take replace focused item
-z - take all unequiped"
+z - take all unequiped
+e - un/equip item"
 
 usecase open_inventory #palegreen;line:green;line.bold;text:green as "open_inventory
 --
 e - un/equip item"
+
+usecase choose_target_for_item #palegreen;line:green;line.bold;text:green as "choose target for item
+"
 
 (moving) --> (choose spell) : 'f'
 
 (moving) --> (loot) #line:green;line.bold : move to object
 (loot) --> (moving) #line:green;line.bold : 'q'
 (loot) <--> (loot_inventory) #line:green;line.bold : 'i'
-(loot) --> (choose target for item) #line:green;line.bold : 'u' - use,\n't' - throw
-(choose target for item) --> (loot) #line:green;line.bold : 'q'
+(loot) --> choose_target_for_item #line:green;line.bold : 'u' - use
+(loot) --> (choose target for spell) : 't' - throw
+choose_target_for_item --> (loot) #line:green;line.bold : 'q'
 (loot_inventory) --> (moving) #line:green;line.bold : 'q'
-(loot_inventory) --> (choose target for item) #line:green;line.bold : 'u' - use,\n't' - throw
-(choose target for item) --> (loot_inventory) #line:green;line.bold : 'q'
+(loot_inventory) --> choose_target_for_item #line:green;line.bold : 'u' - use
+(loot_inventory) --> (choose target for spell) : 't' - throw
+choose_target_for_item --> (loot_inventory) #line:green;line.bold : 'q'
 
 (moving) --> (open_inventory) #line:green;line.bold : 'i'
 (open_inventory) --> (moving) #line:green;line.bold : 'q'
 
-(open_inventory) --> (choose target for item) #line:green;line.bold : 'u' - use,\n't' - throw
-(choose target for item) --> (open_inventory) #line:green;line.bold : 'q'
+(open_inventory) --> choose_target_for_item #line:green;line.bold : 'u' - use
+(open_inventory) --> (choose target for spell) : 't' - throw
+choose_target_for_item --> (open_inventory) #line:green;line.bold : 'q'
 
 (moving) --> (spell shop) : 'p'
 (spell shop) --> (moving) : 'q'
@@ -44,7 +52,7 @@ e - un/equip item"
 (spell shop) --> (spell help) : 'h'
 (spell help) --> (spell shop) : 'q'
 
-(choose target for item) --> (moving) : 'f' - use item
+choose_target_for_item --> (moving) : 'f' - use item
 
 (choose spell) --> (choose target for spell) : 'f'
 (choose target for spell) --> (choose spell) : 'q/r'

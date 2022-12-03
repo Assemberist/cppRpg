@@ -57,11 +57,13 @@ public:
     void put_item(vector<item>::iterator it, object* target);
 
     void act(effect_def, effect);
+    void trigger(spell_trigger trigger, object* target);
 
     void collect_effects(object* obj, state* stat, effect_def group);
 
     void put_spell(spell_t type, spell spell);
     void remove_spell(spell_t type);
+
 
     void set_behavior(behavior_t bhv);
 

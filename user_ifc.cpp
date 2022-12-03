@@ -249,16 +249,12 @@ bool user_turn(object* u, screen s){
                             while(!(single_target = search_targets(u, s, 4)));
                             last_color = single_target->graph_state;
                             single_target->graph_state = RED_INVERT;
-                            s.mapa->clear();
-                            s.mapa->update_card();
                             break;
 
                         case 'q':
                             single_target->graph_state = last_color;
                             single_target = looted_obj;
                             stat = last_state;
-                            s.mapa->clear();
-                            s.mapa->update_card();
 
                             switch(last_state){
                                 case LOOT:
@@ -276,38 +272,15 @@ bool user_turn(object* u, screen s){
 
                         case 'f':{
                             single_target->graph_state = last_color;
+                            for(spell_slot* s = item_to_use->slots; s; s = s->next)
+                                if(s->config.trigger == BY_OWNER)
+                                    ; // execute spells
+                            
                             for(auto i = item_to_use->stat.effects.begin(); i != item_to_use->stat.effects.end(); i++){
-                                switch(get_effect_behavior(i->first)){
-                                    case SHARED:
-                                        if(i->second.timed.time == 0){
-                                            item_to_use->stat.effects.erase(i->first);
-                                            break;
-                                        }
-
-                                    case SHARMANENT:
-                                        if(i->second.timed.time){
-                                            effect_def def = i->first;
-                                            def.is_permanent = false;
-
-                                            effect eff = i->second;
-                                            eff.timed.time = 0;
-                                            single_target->act(def, eff);
-
-                                            i->second.timed.time--;
-                                        }
-                                    break;
-
-                                    case PERMANENT:{
-                                        effect_def def = i->first;
-                                        def.is_permanent = false;
-                                        single_target->act(def, i->second);
-                                    }
-                                    break;
-
-                                    case PURE:
-                                        single_target->act(i->first, i->second);
-                                        item_to_use->stat.effects.erase(i->first);
-                                    break;
+                                if(get_effect_behavior(i->first) == SHARED){
+                                    effect_def e = i->first;
+                                    e.is_shared = false;
+                                    u->act(e, i->second);
                                 }
                             }
                             goto done;
@@ -317,6 +290,9 @@ bool user_turn(object* u, screen s){
                 else{
                     // marking of mutiple targets
                 }
+
+                s.mapa->clear();
+                s.mapa->update_card();
                 break;
             }
 
@@ -476,7 +452,7 @@ bool user_turn(object* u, screen s){
 
                         choosed_spell = THROW;
                         last_state = OPEN_INVENTORY;
-                        stat = CHOOSE_TARGET_FOR_ITEM;
+                        stat = CHOOSE_TARGET;
                         break;
                     }
 
@@ -597,7 +573,7 @@ bool user_turn(object* u, screen s){
 
                         choosed_spell = THROW;
                         last_state = LOOT;
-                        stat = CHOOSE_TARGET_FOR_ITEM;
+                        stat = CHOOSE_TARGET;
                         break;
                     }
 
@@ -708,7 +684,7 @@ bool user_turn(object* u, screen s){
 
                         choosed_spell = THROW;
                         last_state = LOOT_INVENTORY;
-                        stat = CHOOSE_TARGET_FOR_ITEM;
+                        stat = CHOOSE_TARGET;
                         break;
 
                     case 'e':{

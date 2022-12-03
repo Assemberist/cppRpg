@@ -1,0 +1,14 @@
+@startuml
+
+node "object" {
+    [object effects]
+    node "items (equipment)" {
+        [item effects]
+        [spell slots]
+    }
+}
+
+[caster] --> [object effects] : 1) Caster cast a spell (set of effects).
+[object effects] --> [item effects] : 2) Shared effects will be shared with equipment
+
+@enduml

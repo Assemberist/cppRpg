@@ -1,6 +1,7 @@
 #pragma once
 
 #include "state.hpp"
+#include "spell.hpp"
 
 enum item_group{
     ARMORY_HEAD,
@@ -51,6 +52,7 @@ struct item{
         item_group group:16;
         item_t type_name:16;
     } info;
+    spell_slot* slots;
     state stat;
 };
 

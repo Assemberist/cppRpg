@@ -1,0 +1,17 @@
+@startuml
+
+node "object" {
+    [object effects]
+    package "equipment" {
+        node "item" {
+            [item effects]
+        }
+    }
+    package "inventory" {
+    }
+}
+
+[item effects] <-- [object effects] : 1) Substract buffs
+item --> inventory : 2) Item mooved to inventory
+
+@enduml

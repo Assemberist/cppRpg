@@ -64,8 +64,8 @@ int main(){
     };
 
     state stat;
-    objs[0]->inventory.push_back({{ARMORY_HEAD, LATEX_HELM}, stat});
-    objs[0]->inventory.push_back({{ARMORY_HAND, LATEX_GLOVE}, stat});
+    objs[0]->inventory.push_back({{ARMORY_HEAD, LATEX_HELM}, NULL, stat});
+    objs[0]->inventory.push_back({{ARMORY_HAND, LATEX_GLOVE}, NULL, stat});
 
     for(object** i = objs+1; *i; i++)
         (*i)->graph_state = RED_STABILE;
