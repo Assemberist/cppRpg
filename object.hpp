@@ -40,6 +40,9 @@ public:
 
     blink_t graph_state:4;
 
+    // The code is crutch for execution act_throw() in user_ifc.
+    item* item_to_use;
+
     object(int8_t _X, int8_t _Y, string _name) : X(_X), Y(_Y), name(_name), behavior(BHV_ATTACK) {}
 
     virtual char get_type() = 0;
@@ -51,15 +54,12 @@ public:
 
     void pick_up_item(item& it);
     bool equip(vector<item>::iterator it);
-    void use_item(vector<item>::iterator it);
     bool unequip(vector<item>::iterator it);
     void drop_item(vector<item>::iterator it);
     void put_item(vector<item>::iterator it, object* target);
 
     void act(effect_def, effect);
     void trigger(spell_trigger trigger, object* target);
-
-    void collect_effects(object* obj, state* stat, effect_def group);
 
     void put_spell(spell_t type, spell spell);
     void remove_spell(spell_t type);

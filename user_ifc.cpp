@@ -343,6 +343,11 @@ bool user_turn(object* u, screen s){
                         action = act_punch;
                         goto act_with_target;
 
+                    case THROW:
+                        ranger = 4;
+                        action = act_throw;
+                        goto act_with_target;
+                        
                     case LIGHTING:
                         ranger = 5;
                         action = act_lighting;
@@ -359,6 +364,10 @@ bool user_turn(object* u, screen s){
                                 break;
 
                             case 'f':
+                                if(choosed_spell == THROW){
+                                    single_target->pick_up_item(*item_to_use);
+                                    looted_obj->inventory.erase(item_to_use);
+                                }
                                 action(u, single_target);
                                 single_target->graph_state = last_color;
 
@@ -440,8 +449,9 @@ bool user_turn(object* u, screen s){
                         else item_to_use = u->inventory.begin() + s.bag->get_selected_value();
 
                         looted_obj = u;
+                        u->item_to_use = &*item_to_use;
 
-                        search_targets(NULL, s, 0);
+                        search_targets(NULL, s, 4);
                         single_target = search_targets(u, s, 4);
                         last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
@@ -561,6 +571,7 @@ bool user_turn(object* u, screen s){
                         else item_to_use = single_target->inventory.begin() + s.loot->get_selected_value();
 
                         looted_obj = single_target;
+                        u->item_to_use = &*item_to_use;
 
                         search_targets(NULL, s, 0);
                         single_target = search_targets(u, s, 4);
@@ -671,6 +682,8 @@ bool user_turn(object* u, screen s){
                             else break;
                         }
                         else item_to_use = looted_obj->inventory.begin() + active_inv->get_selected_value();
+
+                        u->item_to_use = &*item_to_use;
 
                         search_targets(NULL, s, 0);
                         single_target = search_targets(u, s, 4);

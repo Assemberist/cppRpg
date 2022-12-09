@@ -84,13 +84,21 @@ bool expirience::request(size_t amount){
 
 void object::act(effect_def def, effect e){
     if(def.is_shared){
+        def.is_shared = false;
+
         size_t i;
-        for(i = equipment.size(); i; i--){
+        for(i = equipment.size()-1; i; i--){
+            if(equipment[i].info.type_name == NOTHING_ITEM)
+                continue;
+
             if(!e.timed.amount) break;
 
             effect part = {
-                e.timed.time >> 1,
-                rand() % e.timed.amount
+                .timed = {
+                    false,
+                    e.timed.time >> 1,
+                    rand() % e.timed.amount
+                }
             };
 
             e.timed.amount -= part.timed.amount;
@@ -98,12 +106,10 @@ void object::act(effect_def def, effect e){
         }
 
         for(; i; i--)
-            equipment[i].stat.act(def, {e.timed.time >> 1, 0});
+            if(equipment[i].info.type_name != NOTHING_ITEM)
+                equipment[i].stat.act(def, {false, e.timed.time >> 1, 0});
     }
     stat.act(def, e);
-
-    for(size_t i = equipment.size(); i--;)
-        collect_effects(this, &equipment[i].stat, def);
 }
 
 bool object::equip(vector<item>::iterator it){
@@ -148,20 +154,4 @@ void object::drop_item(vector<item>::iterator it){ inventory.erase(it); }
 void object::put_item(vector<item>::iterator it, object* target){
     target->inventory.push_back(*it);
     inventory.erase(it);
-}
-
-void object::use_item(vector<item>::iterator it){
-    // usable utems should not have shared effects.
-    for(auto i = it->stat.effects.begin(); i != it->stat.effects.end(); i++){
-        if(i->second.timed.time > 0 && !i->first.is_permanent){
-            stat.act(i->first, i->second);
-            i->second.timed.time--;
-        }
-    }
-}
-
-void object::collect_effects(object* obj, state* stat, effect_def group){
-    for(auto i = stat->effects.begin(); i != stat->effects.end(); i++)
-        if(i->first.is_shared && !i->first.is_permanent)
-            obj->stat.act(i->first, i->second);
 }

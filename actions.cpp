@@ -24,7 +24,7 @@ void do_nothing(object*, object*){}
 void act_punch(object* obj, object* target){
     auto* value = obj->stat.get_property(STRENGTH);
     if(value){
-        target->act({0,1,CRUSH_ATTACK}, {0, *value});
+        target->act({0,1,CRUSH_ATTACK}, {0, 0, *value});
         obj->exp.add(10);
         return;
     }
@@ -37,8 +37,8 @@ void act_punch(object* obj, object* target){
 
 void act_lighting(object* obj, object* target){
     if(obj->stat.request_property(MANA, 10)){
-        target->act({0,1,ELECTRIC_DAMAGE}, {0, 40});
-        target->act({0,1,MAGIC_ATTACK}, {0, 10});
+        target->act({0,1,ELECTRIC_DAMAGE}, {0, 0, 40});
+        target->act({0,1,MAGIC_ATTACK}, {0, 0, 10});
         obj->exp.add(15);
     }
     else{
@@ -49,4 +49,16 @@ void act_lighting(object* obj, object* target){
 // todo
 void act_fireball(object* obj, object* target){
     
+}
+
+void act_throw(object* obj, object* target){
+    if(obj == target) {
+        log_msg(object::l, "You throw and catch item. But why?\n");
+        return;
+    }
+    target->act({0,1,CRUSH_ATTACK}, {0, 0, 20});
+
+    for(auto i = obj->item_to_use->stat.effects.begin(); i != obj->item_to_use->stat.effects.end(); i++)
+        if(get_effect_behavior(i->first) == SHARED)
+            target->act(i->first, i->second);
 }

@@ -23,24 +23,27 @@ e - un/equip item"
 usecase choose_target_for_item #palegreen;line:green;line.bold;text:green as "choose target for item
 "
 
-(moving) --> (choose spell) : 'f'
+(choose target for spell) #palegreen;line:green;line.bold;text:green
+(choose spell) #palegreen;line:green;line.bold;text:green
+
+(moving) --> (choose spell) #line:green;line.bold : 'f'
 
 (moving) --> (loot) #line:green;line.bold : move to object
 (loot) --> (moving) #line:green;line.bold : 'q'
 (loot) <--> (loot_inventory) #line:green;line.bold : 'i'
 (loot) --> choose_target_for_item #line:green;line.bold : 'u' - use
-(loot) --> (choose target for spell) : 't' - throw
+(loot) --> (choose target for spell) #line:green;line.bold : 't' - throw
 choose_target_for_item --> (loot) #line:green;line.bold : 'q'
 (loot_inventory) --> (moving) #line:green;line.bold : 'q'
 (loot_inventory) --> choose_target_for_item #line:green;line.bold : 'u' - use
-(loot_inventory) --> (choose target for spell) : 't' - throw
+(loot_inventory) --> (choose target for spell) #line:green;line.bold : 't' - throw
 choose_target_for_item --> (loot_inventory) #line:green;line.bold : 'q'
 
 (moving) --> (open_inventory) #line:green;line.bold : 'i'
 (open_inventory) --> (moving) #line:green;line.bold : 'q'
 
 (open_inventory) --> choose_target_for_item #line:green;line.bold : 'u' - use
-(open_inventory) --> (choose target for spell) : 't' - throw
+(open_inventory) --> (choose target for spell) #line:green;line.bold : 't' - throw
 choose_target_for_item --> (open_inventory) #line:green;line.bold : 'q'
 
 (moving) --> (spell shop) : 'p'
@@ -54,9 +57,9 @@ choose_target_for_item --> (open_inventory) #line:green;line.bold : 'q'
 
 choose_target_for_item --> (moving) : 'f' - use item
 
-(choose spell) --> (choose target for spell) : 'f'
-(choose target for spell) --> (choose spell) : 'q/r'
-(choose target for spell) --> (moving) : 'f' - use spell
+(choose spell) --> (choose target for spell) #line:green;line.bold : 'f'
+(choose target for spell) --> (choose spell) #line:green;line.bold : 'q/r'
+(choose target for spell) --> (moving) #line:green;line.bold : 'f' - use spell
 
 (choose spell) --> (moving) #line:green;line.bold : 'q'
 
