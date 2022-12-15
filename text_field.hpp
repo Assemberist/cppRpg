@@ -21,7 +21,6 @@ public:
 
 
 class log : public text_field{
-
 public:
     log(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
 

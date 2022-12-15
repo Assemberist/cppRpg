@@ -1,6 +1,8 @@
+#include <climits>
 #include "user_ifc.hpp"
 #include "spell.hpp"
 #include "text_field.hpp"
+#include "object_defs.hpp"
 
 enum object_state{
     STAY,
@@ -15,6 +17,43 @@ enum object_state{
     OPEN_INVENTORY,
     LOOT_INVENTORY
 };
+
+log* create_log_effects(object* obj){
+    char buffer[70];
+    size_t amount = obj->stat.effects.size();
+
+    log* new_log = new log(10, 70, 1, 12);
+
+    for(auto i = obj->stat.effects.begin(); i != obj->stat.effects.end(); i++){
+        sprintf(buffer, "%30s Tim %4d Val %4d\n\0",
+            effect_names[i->first.type],
+            i->second.timed.time,
+            i->second.timed.amount
+        );
+
+        new_log->newline(buffer);
+    }
+
+    return new_log;
+}
+
+log* create_log_properties(object* obj){
+    char buffer[50];
+    size_t amount = obj->stat.effects.size();
+
+    log* new_log = new log(10, 50, 12, 12);
+
+    for(auto i = obj->stat.propertyes.begin(); i != obj->stat.propertyes.end(); i++){
+        sprintf(buffer, "%30s Val %4d\n\0",
+            property_names[i->first],
+            i->second
+        );
+
+        new_log->newline(buffer);
+    }
+
+    return new_log;
+}
 
 bag_element* create_bag(object* u, size_t& sas){
     sas = 0;
@@ -109,12 +148,13 @@ bool user_turn(object* u, screen s){
     vector<item>::iterator item_to_use;
 
     inventory* active_inv;
+    log* property_screen;
+    log* effect_screen;
 
     object* tar = nullptr;
     object* looted_obj = nullptr;
     object* single_target = nullptr;
     blink_t last_color;
-
     
 
     char temp;
@@ -153,6 +193,12 @@ bool user_turn(object* u, screen s){
                     break;
 
                     case 'o':
+                        u->graph_state = GREEN_STABILE;
+                        search_targets(NULL, s, NULL);
+                        single_target = search_targets(u, s, INT_MAX);
+                        last_color = single_target->graph_state;
+                        single_target->graph_state = RED_INVERT;
+                        stat = OBSERVATION;
                         break;
 
                     default:
@@ -799,6 +845,11 @@ bool user_turn(object* u, screen s){
             case LOOKUP:{
                 switch(temp){
                     case 'q':
+                        effect_screen->hide();
+                        delete effect_screen;
+                        property_screen->hide();
+                        delete property_screen;
+                        stat = OBSERVATION;
                         break;
                 }
             }
@@ -806,10 +857,26 @@ bool user_turn(object* u, screen s){
 
             case OBSERVATION:{
                 switch(temp){
+                    case 's':
+                        s.mapa->clear();
+                        single_target->graph_state = last_color;
+                        while(!(single_target = search_targets(u, s, INT_MAX)));
+                        last_color = single_target->graph_state;
+                        single_target->graph_state = RED_INVERT;
+                        s.mapa->update_card();
+                        break;
+
                     case 'f':
+                        effect_screen = create_log_effects(single_target);
+                        effect_screen->print();
+                        property_screen = create_log_properties(single_target);
+                        property_screen->print();
+                        stat = LOOKUP;
                         break;
 
                     case 'q':
+                        u->graph_state = GREEN_ON;
+                        stat = STAY;
                         break;
                 }
             }

@@ -20,7 +20,10 @@ obj/spell.o: spell.cpp spell.hpp
 obj/text_field.o: text_field.cpp text_field.hpp
 	g++ -c text_field.cpp -o obj/text_field.o $(DBG) $(trace)
 
-obj/state.o: state.cpp state.hpp object_defs.hpp obj/spell.o
+obj/object_defs.o: object_defs.cpp object_defs.hpp
+	g++ -c object_defs.cpp -o obj/object_defs.o $(DBG) $(trace)
+
+obj/state.o: state.cpp state.hpp obj/object_defs.o obj/spell.o
 	g++ -c state.cpp -o obj/state.o $(DBG) $(trace)
 
 obj/items.o: items.cpp items.hpp obj/state.o

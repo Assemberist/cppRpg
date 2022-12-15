@@ -78,11 +78,15 @@ enum effect_t{
     ICE_DAMAGE
 };
 
+extern const char* effect_names[51];
+
 enum property_t{
     HEALTH,
     MANA,
     STRENGTH
 };
+
+extern const char* property_names[3];
 
 enum fraction{
     HUMANITY,
