@@ -48,9 +48,12 @@ int main(){
     state::l = s.common_log;
 #endif
 
-    s.bag = new inventory(10, 50, 0, 11);
-    s.loot = new inventory(10, 50, 0, 63);
+    s.bag = new menu(10, 50, 0, 11);
+    s.bag->set_print_fun(print_inventory);
+    s.loot = new menu(10, 50, 0, 63);
+    s.loot->set_print_fun(print_inventory);
     s.common_menu = new menu(3, 50, 12, 0);
+    s.common_menu->set_print_fun(print_menu);
     s.mapa = new za_mapo(10, 10, 0, 0);
 
     refresh();

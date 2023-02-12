@@ -19,7 +19,6 @@ public:
     ~text_field();
 };
 
-
 class log : public text_field{
 public:
     log(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
@@ -31,13 +30,9 @@ public:
     ~log();
 };
 
-struct menu_element{
-    int name;
-    void* element;
-};
-
 class menu : public text_field{
-    menu_element* elements;
+    void** elements;
+    void(*print_fun)(WINDOW*, size_t, size_t, void**, char**);
 
 public:
     menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
@@ -47,40 +42,15 @@ public:
     void up();
     void down();
 
-    void set_content(menu_element* elements, size_t size, const char* lexems[]);
-    int get_selected_key();
-    void* get_selected_value();
-    short get_index();
+    void set_content(void** elements, size_t size, const char* lexems[]);
+    void set_print_fun(void(*)(WINDOW*, size_t, size_t, void**, char**));
     void shrade_elements();
-};
 
-struct bag_element{
-    bool is_equiped :1;
-    size_t type :31;
-    size_t element;
-};
-
-class inventory : public text_field{
-    bag_element* bag;
-    bool isActive;
-
-public:
-    inventory(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
-    void print();
-
-    void up();
-    void down();
-    
-    void set_content(bag_element* elements, size_t size, const char* lexems[]);
-
-    size_t get_selected_key();
-    size_t get_selected_value();
-    short get_index();
-    void shrade_elements();
-    bool is_current_equiped();
+    size_t get_index();
+    void* get_value();
+    // bool is_current_equiped();
+    // void invert_equip();
     size_t size();
-    void activate(size_t num);
-    void deactivate();
-
-    void invert_equip();
+    //void activate(size_t num);
+    //void deactivate();
 };

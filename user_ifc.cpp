@@ -18,62 +18,6 @@ enum object_state{
     LOOT_INVENTORY
 };
 
-log* create_log_effects(object* obj){
-    char buffer[70];
-    size_t amount = obj->stat.effects.size();
-
-    log* new_log = new log(10, 70, 1, 12);
-
-    for(auto i = obj->stat.effects.begin(); i != obj->stat.effects.end(); i++){
-        sprintf(buffer, "%30s Tim %4d Val %4d\n\0",
-            effect_names[i->first.type],
-            i->second.timed.time,
-            i->second.timed.amount
-        );
-
-        new_log->newline(buffer);
-    }
-
-    return new_log;
-}
-
-log* create_log_properties(object* obj){
-    char buffer[50];
-    size_t amount = obj->stat.effects.size();
-
-    log* new_log = new log(10, 50, 12, 12);
-
-    for(auto i = obj->stat.propertyes.begin(); i != obj->stat.propertyes.end(); i++){
-        sprintf(buffer, "%30s Val %4d\n\0",
-            property_names[i->first],
-            i->second
-        );
-
-        new_log->newline(buffer);
-    }
-
-    return new_log;
-}
-
-bag_element* create_bag(object* u, size_t& sas){
-    sas = 0;
-    bag_element* bagaje = new bag_element[u->inventory.size() + u->equipment.size() + 1];
-    for(size_t i = u->equipment.size(); i--;){
-        if(u->equipment[i].info.type_name == NOTHING_ITEM) continue;
-        bagaje[sas].is_equiped = true;
-        bagaje[sas].type = u->equipment[i].info.type_name;
-        bagaje[sas].element = i;
-        sas++;
-    }
-    for(size_t i = u->inventory.size(); i--;){
-        bagaje[sas].is_equiped = false;
-        bagaje[sas].type = u->inventory[i].info.type_name;
-        bagaje[sas].element = i;
-        sas++;
-    }
-    return bagaje;
-}
-
 void clear_blinking(object** objs){
     for(int i=0; objs[i]; i++){
         switch (objs[i]->graph_state) {
@@ -147,7 +91,7 @@ bool user_turn(object* u, screen s){
     spell_t choosed_spell = NOTHING_SPELL;
     vector<item>::iterator item_to_use;
 
-    inventory* active_inv;
+    menu* active_inv;
     log* property_screen;
     log* effect_screen;
 
@@ -156,6 +100,8 @@ bool user_turn(object* u, screen s){
     object* single_target = nullptr;
     blink_t last_color;
     
+    s.bag->set_print_fun(print_inventory);
+    s.menu->set_print_fun(print_menu);
 
     char temp;
     while((temp = getch()) != ' '){
@@ -198,6 +144,7 @@ bool user_turn(object* u, screen s){
                         single_target = search_targets(u, s, INT_MAX);
                         last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
+
                         stat = OBSERVATION;
                         break;
 
@@ -865,6 +812,9 @@ bool user_turn(object* u, screen s){
                         single_target->graph_state = RED_INVERT;
                         s.mapa->update_card();
                         break;
+
+                    case 'f':
+
 
                     case 'f':
                         effect_screen = create_log_effects(single_target);
