@@ -1,5 +1,6 @@
 OBJS=obj/spell.o obj/text_field.o obj/state.o obj/object.o obj/classes.o obj/items.o \
-obj/actions.o obj/effect_calc.o obj/card.o obj/user_ifc.o obj/scene.o obj/main.o
+obj/actions.o obj/effect_calc.o obj/card.o obj/user_ifc.o obj/scene.o obj/main.o \
+obj/user_ifc_lib.o
 
 DIAGS=$(wildcard diagram/*.uml)
 DIAG_SRC=$(DIAGS:.uml=.png)
@@ -44,7 +45,10 @@ obj/actions.o: actions.cpp actions.hpp obj/object.o
 obj/classes.o: classes.hpp classes.cpp obj/object.o
 	g++ -c classes.cpp -o obj/classes.o $(DBG) $(trace) 
 
-obj/user_ifc.o: user_ifc.cpp user_ifc.hpp obj/card.o obj/classes.o obj/actions.o
+obj/user_ifc_lib.o: user_ifc_lib.cpp user_ifc_lib.hpp obj/card.o obj/classes.o obj/actions.o
+	g++ -c user_ifc_lib.cpp -o obj/user_ifc_lib.o $(DBG) $(trace)
+
+obj/user_ifc.o: user_ifc.cpp user_ifc.hpp obj/user_ifc_lib.o
 	g++ -c user_ifc.cpp -o obj/user_ifc.o $(DBG) $(trace)
 
 obj/scene.o: scene.cpp scene.hpp obj/user_ifc.o

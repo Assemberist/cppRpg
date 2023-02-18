@@ -31,56 +31,19 @@ public:
     ~log();
 };
 
-struct menu_element{
-    int name;
-    void* element;
-};
-
-class menu : public text_field{
-    menu_element* elements;
-
+template<typename T> class menu : public text_field{
+    T* content;
 public:
     menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
 
-    void print();
-
     void up();
     void down();
 
-    void set_content(menu_element* elements, size_t size, const char* lexems[]);
-    int get_selected_key();
-    void* get_selected_value();
-    short get_index();
-    void shrade_elements();
-};
+    short get_selected_index();
+    T get_selected_value();
+    short size();
 
-struct bag_element{
-    bool is_equiped :1;
-    size_t type :31;
-    size_t element;
-};
+    void delete_content();
 
-class inventory : public text_field{
-    bag_element* bag;
-    bool isActive;
-
-public:
-    inventory(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
-    void print();
-
-    void up();
-    void down();
-    
-    void set_content(bag_element* elements, size_t size, const char* lexems[]);
-
-    size_t get_selected_key();
-    size_t get_selected_value();
-    short get_index();
-    void shrade_elements();
-    bool is_current_equiped();
-    size_t size();
-    void activate(size_t num);
-    void deactivate();
-
-    void invert_equip();
+    ~menu();
 };

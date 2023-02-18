@@ -55,25 +55,6 @@ log* create_log_properties(object* obj){
     return new_log;
 }
 
-bag_element* create_bag(object* u, size_t& sas){
-    sas = 0;
-    bag_element* bagaje = new bag_element[u->inventory.size() + u->equipment.size() + 1];
-    for(size_t i = u->equipment.size(); i--;){
-        if(u->equipment[i].info.type_name == NOTHING_ITEM) continue;
-        bagaje[sas].is_equiped = true;
-        bagaje[sas].type = u->equipment[i].info.type_name;
-        bagaje[sas].element = i;
-        sas++;
-    }
-    for(size_t i = u->inventory.size(); i--;){
-        bagaje[sas].is_equiped = false;
-        bagaje[sas].type = u->inventory[i].info.type_name;
-        bagaje[sas].element = i;
-        sas++;
-    }
-    return bagaje;
-}
-
 void clear_blinking(object** objs){
     for(int i=0; objs[i]; i++){
         switch (objs[i]->graph_state) {
@@ -137,6 +118,27 @@ bool is_move_char(char direction){
     }
 }
 
+object* search_targets(object* obj, screen s, size_t range){
+    static object** last_target = NULL;
+
+    if(!last_target) last_target = s.mapa->objects;
+
+    if(obj){
+        while(*last_target){
+            if(abs((*last_target)->X, obj->X) <= range)
+                if(abs((*last_target)->Y, obj->Y) <= range){
+                    last_target++;
+                    return *(last_target-1);
+                }
+
+            last_target++;
+        }
+    }
+
+    last_target = NULL;
+    return NULL;
+}
+
 bool user_turn(object* u, screen s){
     blink_t original_color = u->graph_state;
 
@@ -165,16 +167,7 @@ bool user_turn(object* u, screen s){
                 s.mapa->clear();
                 switch(temp){
                     case 'f':{
-                        auto sp = u->get_spells();
-                        auto i = sp.begin();
-
-                        menu_element* menuha = new menu_element[sp.size()];
-
-                        // fucking copy-constructor!!!
-                        for(size_t count = 0; i != sp.end(); i++)
-                            menuha[count++] = *(menu_element*)&(*i);
-
-                        s.common_menu->set_content(menuha, sp.size(), spell_names);
+                        s.common_menu->build_content(u);
                         s.common_menu->print();
                         stat = CHOOSE_SPELL;
                     }

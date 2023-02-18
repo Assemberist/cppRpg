@@ -280,27 +280,6 @@ void za_mapo::draw_range(object* target, int8_t range){
     wrefresh(win);
 }
 
-object* search_targets(object* obj, screen s, size_t range){
-    static object** last_target = NULL;
-
-    if(!last_target) last_target = s.mapa->objects;
-
-    if(obj){
-        while(*last_target){
-            if(abs((*last_target)->X, obj->X) <= range)
-                if(abs((*last_target)->Y, obj->Y) <= range){
-                    last_target++;
-                    return *(last_target-1);
-                }
-
-            last_target++;
-        }
-    }
-
-    last_target = NULL;
-    return NULL;
-}
-
 object* za_mapo::get_object(object* obj, char direction){
     int8_t x = obj->X;
     int8_t y = obj->Y;

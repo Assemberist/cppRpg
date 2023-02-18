@@ -1,7 +1,8 @@
 #pragma once
 
+#include <ncurses.h>
+#include <string.h>
 #include "object.hpp"
-#include "text_field.hpp"
 
 class za_mapo{
 public:
@@ -30,17 +31,3 @@ public:
 
     object* get_object(object* obj, char direction);
 };
-
-struct screen{
-    za_mapo* mapa;
-    menu* common_menu;
-    inventory* bag;
-    inventory* loot;
-
-    // we can remove log only if all debug level are disabled
-    #if !defined(DONT_LOG_ACTIONS) || !defined(DONT_LOG_STATE)
-    log* common_log;
-    #endif
-};
-
-object* search_targets(object* obj, screen s, size_t range);
