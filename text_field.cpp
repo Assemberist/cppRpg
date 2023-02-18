@@ -75,40 +75,105 @@ menu::menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x) : text_field(ro
     count = 0;
 }
 
+void menu::up(){
+    if(current < count-1)
+        current++;
+}
+
+void menu::down(){
+    if(current)
+        current--;
+}
+
 void menu::print(){
     wclear(win);
-    print_fun(win, count, current, elements, strings);
+    for(int i = 0; i<count; i++){
+        waddch(win, i == current ? '*' : ' ');
+        wprintw(win, strings[elements[i].name]);
+    }
     wrefresh(win);
 }
 
-/*void menu::shrade_elements(){
-    delete[] elements;
-    elements = NULL;
-    strings = NULL;
-}*/
-
-void menu::set_content(void** bag, size_t size, const char* lexems[]){
+void menu::set_content(menu_element* elements, size_t size, const char* lexems[]){
     strings = (char**)lexems;
-    elements = bag;
+    this->elements = elements;
     count = size;
     current = 0;
 }
 
-void menu::up(){ if(current < count-1) current++; }
-void menu::down(){ if(current) current--; }
-void menu::set_print_fun(void(*fun)(WINDOW*, size_t, size_t, void**, char**)){ print_fun = fun; }
 void menu::shrade_elements(){
-    while(count--) delete (char*)elements[count]; // char* not calls destructor. 
     delete[] elements;
-    count = 0;
+    elements = NULL;
+    strings = NULL;
 }
 
-size_t menu::get_index(){ return current; }
-void* menu::get_value(){ return elements[current]; }
-size_t menu::size(){ return count;}
+int menu::get_selected_key(){ return elements[current].name; }
+void* menu::get_selected_value(){ return elements[current].element; }
+short menu::get_index(){ return current; }
 
-//void menu::activate(size_t num){ isActive = true; current = num >= count ? count-1 : num; }
-//void menu::deactivate(){ isActive = false; }
+//--------------------------------------------------------------------------------------------//
+//   Inventory functions                                                                      //
+//____________________________________________________________________________________________//
 
-// bool inventory::is_current_equiped(){ return bag[current].is_equiped; }
-// void inventory::invert_equip(){ bag[current].is_equiped = !bag[current].is_equiped; }
+inventory::inventory(size_t rows, size_t cols, size_t pos_y, size_t pos_x) : text_field(rows, cols, pos_y, pos_x){
+    current = 0;
+    count = 0;
+    isActive = false;
+}
+
+void inventory::print(){
+    wclear(win);
+
+    if(count){
+        for(size_t i = 0; i < count; i++){
+            if(bag[i].is_equiped)
+                wattron(win, COLOR_PAIR(2));
+
+            if(isActive)
+                waddch(win, i == current ? '*' : ' ');
+            wprintw(win, strings[bag[i].type]);
+        
+            if(bag[i].is_equiped)
+                wattroff(win, COLOR_PAIR(2));
+        }
+    }
+    else wprintw(win, "[inventory is empty]");
+
+    wrefresh(win);
+}
+
+void inventory::up(){
+    if(current < count-1)
+        current++;
+}
+
+void inventory::down(){
+    if(current)
+        current--;
+}
+
+void inventory::set_content(bag_element* elements, size_t size, const char* lexems[]){
+    strings = (char**)lexems;
+    bag = elements;
+    count = size;
+    current = 0;
+}
+
+void inventory::shrade_elements(){
+    delete[] bag;
+    bag = NULL;
+    strings = NULL;
+}
+
+void inventory::activate(size_t num){
+    isActive = true;
+    current = num >= count ? count-1 : num;
+}
+void inventory::deactivate(){ isActive = false; }
+
+bool inventory::is_current_equiped(){ return bag[current].is_equiped; }
+size_t inventory::get_selected_key(){ return bag[current].type; }
+size_t inventory::get_selected_value(){ return bag[current].element; }
+short inventory::get_index(){ return current; }
+void inventory::invert_equip(){ bag[current].is_equiped = !bag[current].is_equiped; }
+size_t inventory::size(){ return count;}

@@ -34,8 +34,8 @@ public:
 struct screen{
     za_mapo* mapa;
     menu* common_menu;
-    menu* bag;
-    menu* loot;
+    inventory* bag;
+    inventory* loot;
 
     // we can remove log only if all debug level are disabled
     #if !defined(DONT_LOG_ACTIONS) || !defined(DONT_LOG_STATE)
