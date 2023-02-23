@@ -6,7 +6,7 @@
 
 struct screen{
     za_mapo* mapa;
-    menu* common_menu;
+    spell_menu* common_menu;
     inventory* bag;
     inventory* loot;
 

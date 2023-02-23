@@ -6,7 +6,7 @@
 
 typedef std::pair<const spell_t, spell> spell_menu_content;
 
-class spell_menu : menu<spell_menu_content*>{
+class spell_menu : public menu<spell_menu_content*>{
 public:
     spell_menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
     void build_content(object* obj);
@@ -30,7 +30,7 @@ public:
     void activate(size_t num);
     void deactivate();
 
-    // bool is_current_equiped();
+    bool is_current_equiped();
     // void invert_equip();
 };
 
@@ -38,6 +38,8 @@ public:
 union inventory_content_2{
     object* owner;
     inventory_content content;
+
+    inventory_content_2(){ owner = nullptr; }
 };
 
 class inventory_with_owner : public menu<inventory_content_2>{
@@ -47,4 +49,5 @@ public:
     inventory_with_owner(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
     void build_content(object* obj);
     void print();
+    bool is_current_equiped();
 };

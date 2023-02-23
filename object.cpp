@@ -87,11 +87,9 @@ void object::act(effect_def def, effect e){
         def.is_shared = false;
 
         size_t i;
-        for(i = equipment.size()-1; i; i--){
+        for(i = equipment.size(); i--;){
             if(equipment[i].info.type_name == NOTHING_ITEM)
                 continue;
-
-            if(!e.timed.amount) break;
 
             effect part = {
                 .timed = {
@@ -103,11 +101,15 @@ void object::act(effect_def def, effect e){
 
             e.timed.amount -= part.timed.amount;
             equipment[i].stat.act(def, part);
-        }
 
-        for(; i; i--)
-            if(equipment[i].info.type_name != NOTHING_ITEM)
-                equipment[i].stat.act(def, {false, e.timed.time >> 1, 0});
+            if(!e.timed.amount) {
+                while(i--)
+                    if(equipment[i].info.type_name != NOTHING_ITEM)
+                        equipment[i].stat.act(def, {false, e.timed.time >> 1, 0});
+
+                break;
+            }
+        }
     }
     stat.act(def, e);
 }

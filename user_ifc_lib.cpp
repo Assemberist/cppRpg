@@ -1,14 +1,14 @@
 #include "user_ifc_lib.hpp"
 
 spell_menu::spell_menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x)
-    : menu<spell_menu_content*>(size_t rows, size_t cols, size_t pos_y, size_t pos_x)
-    { strings = spell_names; }
+    : menu<spell_menu_content*>(rows, cols, pos_y, pos_x)
+    { strings = (char**)spell_names; }
 
 void spell_menu::build_content(object* obj){
     delete_content();
 
-    auto sp = u->get_spells();
-    content = new spell_menu_content[sp.size()];
+    auto sp = obj->get_spells();
+    content = new spell_menu_content*[sp.size()];
     count = 0;
     current = 0;
 
@@ -29,23 +29,22 @@ void spell_menu::print(){
 //   Inventory functions                                                                      //
 //____________________________________________________________________________________________//
 
-class inventory : public menu<inventory_content>{
 inventory::inventory(size_t rows, size_t cols, size_t pos_y, size_t pos_x)
-    : menu<inventory_content>(size_t rows, size_t cols, size_t pos_y, size_t pos_x),
+    : menu<inventory_content>(rows, cols, pos_y, pos_x),
       isActive(false)
-    { strings = item_names; }
+    { strings = (char**)item_names; }
 
 void inventory::build_content(object* obj){
     current = 0;
     count = 0;
-    content = new inventory_content[u->inventory.size() + u->equipment.size()];
-    for(size_t i = u->equipment.size(); i--;){
-        if(u->equipment[i].info.type_name == NOTHING_ITEM) continue;
+    content = new inventory_content[obj->inventory.size() + obj->equipment.size()];
+    for(auto i = obj->equipment.begin(); i != obj->equipment.end(); i++){
+        if(i->info.type_name == NOTHING_ITEM) continue;
         content[count].is_equiped = true;
         content[count].it = i;
         count++;
     }
-    for(size_t i = u->inventory.size(); i--;){
+    for(auto i = obj->inventory.begin(); i != obj->inventory.end(); i++){
         content[count].is_equiped = false;
         content[count].it = i;
         count++;
@@ -79,27 +78,27 @@ void inventory::activate(size_t num){
 }
 void inventory::deactivate(){ isActive = false; }
 
-// bool inventory::is_current_equiped(){ return bag[current].is_equiped; }
+bool inventory::is_current_equiped(){ return content[current].is_equiped; }
 // void inventory::invert_equip(){ bag[current].is_equiped = !bag[current].is_equiped; }
 
 inventory_with_owner::inventory_with_owner(size_t rows, size_t cols, size_t pos_y, size_t pos_x)
-    : menu<inventory_content_2>(size_t rows, size_t cols, size_t pos_y, size_t pos_x),
+    : menu<inventory_content_2>(rows, cols, pos_y, pos_x),
       isActive(false)
-    { strings = item_names; }
+    { strings = (char**)item_names; }
 
 void inventory_with_owner::build_content(object* obj){
     current = 0;
     count = 1;
-    content = new inventory_content_2[u->inventory.size() + u->equipment.size() + 1];
+    content = new inventory_content_2[obj->inventory.size() + obj->equipment.size() + 1];
     content[0].owner = obj;
 
-    for(size_t i = u->equipment.size(); i--;){
-        if(u->equipment[i].info.type_name == NOTHING_ITEM) continue;
+    for(auto i = obj->equipment.begin(); i != obj->equipment.end(); i++){
+        if(i->info.type_name == NOTHING_ITEM) continue;
         content[count].content.is_equiped = true;
         content[count].content.it = i;
         count++;
     }
-    for(size_t i = u->inventory.size(); i--;){
+    for(auto i = obj->inventory.begin(); i != obj->inventory.end(); i++){
         content[count].content.is_equiped = false;
         content[count].content.it = i;
         count++;
@@ -111,7 +110,7 @@ void inventory_with_owner::print(){
 
     size_t i = 0;
     waddch(win, i == current ? '*' : ' ');
-    wprintw(win, content[0].owner->name());
+    wprintw(win, content[0].owner->get_name());
 
     for(i = 1; i < count; i++){
         if(content[i].content.is_equiped)
@@ -126,3 +125,5 @@ void inventory_with_owner::print(){
 
     wrefresh(win);
 }
+
+bool inventory_with_owner::is_current_equiped(){ return content[current].content.is_equiped; }

@@ -65,27 +65,3 @@ log::~log(){
     if(strings) delete[] strings;
     strings = NULL;
 }
-
-//--------------------------------------------------------------------------------------------//
-//   Menu functions                                                                           //
-//____________________________________________________________________________________________//
-
-template<typename T> menu<T>::menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x) : text_field(rows, cols, pos_y, pos_x){
-    current = 0;
-    count = 0;
-    content = nullptr;
-}
-
-template<typename T> void menu<T>::up(){ if(current < count-1) current++; }
-template<typename T> void menu<T>::down(){ if(current) current--; }
-
-template<typename T> short menu<T>::get_selected_index(){ return current; }
-template<typename T> T* menu<T>::get_selected_value(){ return content[current]; }
-template<typename T> short menu<T>::size(){ return count; }
-
-template<typename T> void menu<T>::delete_content(){
-    delete[] content;
-    content = NULL;
-}
-
-template<typename T> menu<T>::~menu(){ delete_content(); }

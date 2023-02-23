@@ -32,18 +32,27 @@ public:
 };
 
 template<typename T> class menu : public text_field{
+protected:
     T* content;
 public:
-    menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
+    menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x)
+        : text_field(rows, cols, pos_y, pos_x)
+        { current = 0;
+          count = 0;
+          content = nullptr; }
 
-    void up();
-    void down();
+    void up(){ if(current < count-1) current++; }
+    void down(){ if(current) current--; }
 
-    short get_selected_index();
-    T get_selected_value();
-    short size();
+    short get_selected_index(){ return current; }
+    T get_selected_value(){ return content[current]; }
+    short size(){ return count; }
 
-    void delete_content();
+    void delete_content(){
+        delete[] content;
+        content = NULL;
+        count = 0;
+    }
 
-    ~menu();
+    ~menu(){ delete_content(); }
 };

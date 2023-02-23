@@ -80,20 +80,14 @@ void clear_blinking(object** objs){
 
 bool do_equp_unquip(inventory* inv, object* obj){
     if(inv->is_current_equiped()){
-        if(obj->unequip(obj->equipment.begin() + inv->get_selected_value())){
-            size_t i;
-            bag_element* bag = create_bag(obj, i);
-            inv->shrade_elements();
-            inv->set_content(bag, i, item_names);
+        if(obj->unequip(inv->get_selected_value().it)){
+            inv->build_content(obj);
             return true;
         }
     }
     else{
-        if(obj->equip(obj->inventory.begin() + inv->get_selected_value())){
-            size_t i;
-            bag_element* bag = create_bag(obj, i);
-            inv->shrade_elements();
-            inv->set_content(bag, i, item_names);
+        if(obj->equip(inv->get_selected_value().it)){
+            inv->build_content(obj);
             return true;
         }
     }
@@ -175,9 +169,7 @@ bool user_turn(object* u, screen s){
 
                     case 'i':{
                         s.common_log->hide();
-                        size_t count;
-                        bag_element* bagaje = create_bag(u, count);
-                        s.bag->set_content(bagaje, count, item_names);
+                        s.bag->build_content(u);
                         s.bag->activate(0);
                         s.bag->print();
                         u->graph_state = GREEN_STABILE;
@@ -198,9 +190,7 @@ bool user_turn(object* u, screen s){
                         if(is_move_char(temp)){
                             single_target = s.mapa->get_object(u, temp);
                             if(single_target){
-                                size_t count;
-                                bag_element* loot_bag = create_bag(single_target, count);
-                                s.loot->set_content(loot_bag, count, item_names);
+                                s.loot->build_content(single_target);
                                 s.loot->activate(0);
                                 s.loot->print();
                                 u->graph_state = GREEN_STABILE;
@@ -225,7 +215,7 @@ bool user_turn(object* u, screen s){
                         break;
 
                     case 'f':
-                        choosed_spell = (spell_t)s.common_menu->get_selected_key();
+                        choosed_spell = s.common_menu->get_selected_value()->first;
                         clear_blinking(s.mapa->objects);
                         u->graph_state = GREEN_STABILE;
                         s.mapa->clear();
@@ -258,7 +248,7 @@ bool user_turn(object* u, screen s){
                     case 'q':
                         choosed_spell = NOTHING_SPELL;
                         stat = STAY;
-                        s.common_menu->shrade_elements();
+                        s.common_menu->delete_content();
                         s.common_menu->hide();
                         break;
 
@@ -345,8 +335,8 @@ bool user_turn(object* u, screen s){
                             case 'f':
                                 search_targets(nullptr, s, 0);
                                 while(single_target = search_targets(tar, s, 2)){
-                                    single_target->stat.act({0,1,FIRE_DAMAGE}, {0, 25});
-                                    single_target->stat.act({0,1,MAGIC_ATTACK}, {0, 5});
+                                    single_target->stat.act({0,1,FIRE_DAMAGE}, {0, 0, 25});
+                                    single_target->stat.act({0,1,MAGIC_ATTACK}, {0, 0, 5});
                                 }
 
                             #if !defined(DONT_LOG_ACTIONS) || !defined(DONT_LOG_STATE)
@@ -459,7 +449,7 @@ bool user_turn(object* u, screen s){
                             }
                             else break;
                         }
-                        else item_to_use = u->inventory.begin() + s.bag->get_selected_value();
+                        else item_to_use = s.bag->get_selected_value().it;
 
                         looted_obj = u;
 
@@ -485,7 +475,7 @@ bool user_turn(object* u, screen s){
                             }
                             else break;
                         }
-                        else item_to_use = u->inventory.begin() + s.bag->get_selected_value();
+                        else item_to_use = s.bag->get_selected_value().it;
 
                         looted_obj = u;
                         u->item_to_use = &*item_to_use;
@@ -507,7 +497,7 @@ bool user_turn(object* u, screen s){
 
                     case 'q':
                         s.bag->hide();
-                        s.bag->shrade_elements();
+                        s.bag->delete_content();
                         u->graph_state = GREEN_ON;
                         stat = STAY;
                         break;
@@ -529,7 +519,7 @@ bool user_turn(object* u, screen s){
                 switch(temp){
                     case 'q':
                         s.loot->hide();
-                        s.loot->shrade_elements();
+                        s.loot->delete_content();
                         u->graph_state = GREEN_ON;
                         stat = STAY;
                         break;
@@ -551,7 +541,6 @@ bool user_turn(object* u, screen s){
                     }
 
                     case 'f':{
-                        size_t num = s.loot->get_selected_value();
                         if(s.loot->is_current_equiped()){
                             if(do_equp_unquip(s.loot, single_target)){
                                 u->pick_up_item(single_target->inventory.back());
@@ -561,13 +550,12 @@ bool user_turn(object* u, screen s){
                         }
                         else{
                             if(s.loot->size()){
-                                u->pick_up_item(*(single_target->inventory.begin() + num));
-                                single_target->inventory.erase(single_target->inventory.begin() + num);
+                                auto num = s.loot->get_selected_value().it;
+                                u->pick_up_item(*(num));
+                                single_target->inventory.erase(num);
 
-                                s.loot->shrade_elements();
-                                size_t count;
-                                bag_element* tempor = create_bag(single_target, count);
-                                s.loot->set_content(tempor, count, item_names);
+                                s.loot->delete_content();
+                                s.loot->build_content(single_target);
                                 s.loot->print();
                             }
                         }
@@ -581,7 +569,7 @@ bool user_turn(object* u, screen s){
                             }
                             else break;
                         }
-                        else item_to_use = single_target->inventory.begin() + s.loot->get_selected_value();
+                        else item_to_use = s.loot->get_selected_value().it;
 
                         looted_obj = single_target;
 
@@ -607,7 +595,7 @@ bool user_turn(object* u, screen s){
                             }
                             else break;
                         }
-                        else item_to_use = single_target->inventory.begin() + s.loot->get_selected_value();
+                        else item_to_use = s.loot->get_selected_value().it;
 
                         looted_obj = single_target;
                         u->item_to_use = &*item_to_use;
@@ -628,9 +616,7 @@ bool user_turn(object* u, screen s){
                     }
 
                     case 'i':{
-                        size_t count;
-                        bag_element* inv = create_bag(u, count);
-                        s.bag->set_content(inv, count, item_names);
+                        s.bag->build_content(u);
                         s.bag->deactivate();
                         s.bag->print();
                         active_inv = s.loot;
@@ -641,9 +627,7 @@ bool user_turn(object* u, screen s){
                     case 'z':{
                         u->inventory.insert(u->inventory.cend(), single_target->inventory.begin(), single_target->inventory.end());
                         single_target->inventory.clear();
-
-                        s.loot->shrade_elements();
-                        s.loot->set_content(NULL, 0, item_names);
+                        s.loot->delete_content();
                         s.loot->print();
                         break;
                     }
@@ -655,7 +639,7 @@ bool user_turn(object* u, screen s){
                 switch(temp){
                     case 'i':
                         s.bag->hide();
-                        s.bag->shrade_elements();
+                        s.bag->delete_content();
                         stat = LOOT;
                         break;
 
@@ -671,7 +655,7 @@ bool user_turn(object* u, screen s){
 
                     case 'a':
                         active_inv->deactivate();
-                        s.bag->activate(active_inv->get_index());
+                        s.bag->activate(active_inv->get_selected_index());
                         active_inv = s.bag;
                         s.bag->print();
                         s.loot->print();
@@ -679,7 +663,7 @@ bool user_turn(object* u, screen s){
 
                     case 'd':
                         active_inv->deactivate();
-                        s.loot->activate(active_inv->get_index());
+                        s.loot->activate(active_inv->get_selected_index());
                         active_inv = s.loot;
                         s.bag->print();
                         s.loot->print();
@@ -694,7 +678,7 @@ bool user_turn(object* u, screen s){
                             }
                             else break;
                         }
-                        else item_to_use = looted_obj->inventory.begin() + active_inv->get_selected_value();
+                        else item_to_use = active_inv->get_selected_value().it;
 
                         search_targets(NULL, s, 0);
                         single_target = search_targets(u, s, 4);
@@ -720,7 +704,7 @@ bool user_turn(object* u, screen s){
                             }
                             else break;
                         }
-                        else item_to_use = looted_obj->inventory.begin() + active_inv->get_selected_value();
+                        else item_to_use = active_inv->get_selected_value().it;
 
                         u->item_to_use = &*item_to_use;
 
@@ -750,28 +734,17 @@ bool user_turn(object* u, screen s){
                     case 'z':{
                         if(active_inv->size() == 0) break;
 
-                        size_t i;
                         if(active_inv == s.loot){
                             u->inventory.insert(u->inventory.cend(), single_target->inventory.begin(), single_target->inventory.end());
                             single_target->inventory.clear();
-
-                            bag_element* bag = create_bag(u, i);
-                            s.bag->shrade_elements();
-                            s.bag->set_content(bag, i, item_names);
-
-                            s.loot->shrade_elements();
-                            s.loot->set_content(NULL, 0, item_names);
+                            s.bag->build_content(u);
+                            s.loot->delete_content();
                         }
                         else{
                             single_target->inventory.insert(single_target->inventory.cend(), u->inventory.begin(), u->inventory.end());
                             u->inventory.clear();
-
-                            bag_element* bag = create_bag(single_target, i);
-                            s.loot->shrade_elements();
-                            s.loot->set_content(bag, i, item_names);
-
-                            s.bag->shrade_elements();
-                            s.bag->set_content(NULL, 0, item_names);
+                            s.loot->build_content(single_target);
+                            s.bag->delete_content();
                         }
 
                         s.loot->print();
@@ -791,8 +764,8 @@ bool user_turn(object* u, screen s){
                                 else break;
                             }
                             else{
-                                vector<item>::iterator thing = single_target->inventory.begin() + active_inv->get_selected_value();
-                                u->pick_up_item(*(thing));
+                                auto thing = active_inv->get_selected_value().it;
+                                u->pick_up_item(*thing);
                                 single_target->inventory.erase(thing);
                             }
                         }
@@ -805,30 +778,25 @@ bool user_turn(object* u, screen s){
                                 else break;
                             }
                             else{
-                                vector<item>::iterator thing = u->inventory.begin() + active_inv->get_selected_value();
+                                auto thing = active_inv->get_selected_value().it;
                                 single_target->pick_up_item(*(thing));
                                 u->inventory.erase(thing);
                             }
                         }
 
-                        size_t i;
-                        bag_element* bag = create_bag(u, i);
-                        s.bag->shrade_elements();
-                        s.bag->set_content(bag, i, item_names);
+                        s.bag->build_content(u);
                         s.bag->print();
 
-                        bag = create_bag(single_target, i);
-                        s.loot->shrade_elements();
-                        s.loot->set_content(bag, i, item_names);
+                        s.loot->build_content(single_target);
                         s.loot->print();
                         break;
                     }
 
                     case 'q':
                         s.bag->hide();
-                        s.bag->shrade_elements();
+                        s.bag->delete_content();
                         s.loot->hide();
-                        s.loot->shrade_elements();
+                        s.loot->delete_content();
                         stat = STAY;
                         break;
                 }
@@ -893,7 +861,7 @@ done:
     s.mapa->clear();
     s.mapa->update_card();
     s.common_menu->hide();
-    s.common_menu->shrade_elements();
+    s.common_menu->delete_content();
     
     search_targets(nullptr, s, 0);
 
