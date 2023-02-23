@@ -63,4 +63,4 @@ diagram/%.png: diagram/%.uml
 	plantuml $<
 
 clean:
-	rm obj/*
+	rm obj/*.o
