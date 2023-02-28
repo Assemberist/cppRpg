@@ -56,8 +56,10 @@ e - un/equip item"
 (choose spell) --> (moving) : 'q'
 
 (moving) --> (observe) : 'o'
-(observe) --> (lookup) : 'f'
-(lookup) --> (observe) : 'q'
+(observe) --> (choose object for obervation) : 'f'
+(choose object for obervation) --> (lookup) : 'f'
+(lookup) --> (choose object for obervation) : q
+(choose object for obervation) --> (observe) : 'q'
 (observe) --> (moving) : 'q'
 
 @enduml

@@ -25,6 +25,9 @@ usecase choose_target_for_item #palegreen;line:green;line.bold;text:green as "ch
 
 (choose target for spell) #palegreen;line:green;line.bold;text:green
 (choose spell) #palegreen;line:green;line.bold;text:green
+(choose object for obervation) #palegreen;line:green;line.bold;text:green
+(observe) #palegreen;line:green;line.bold;text:green
+(lookup) #palegreen;line:green;line.bold;text:green
 
 (moving) --> (choose spell) #line:green;line.bold : 'f'
 
@@ -63,9 +66,11 @@ choose_target_for_item --> (moving) : 'f' - use item
 
 (choose spell) --> (moving) #line:green;line.bold : 'q'
 
-(moving) --> (observe) : 'o'
-(observe) --> (lookup) : 'f'
-(lookup) --> (observe) : 'q'
-(observe) --> (moving) : 'q'
+(moving) --> (observe) #line:green;line.bold : 'o'
+(observe) --> (choose object for obervation) #line:green;line.bold : 'f'
+(choose object for obervation) --> (lookup) #line:green;line.bold : 'f'
+(lookup) --> (choose object for obervation) #line:green;line.bold : q
+(choose object for obervation) --> (observe) #line:green;line.bold : 'q'
+(observe) --> (moving) #line:green;line.bold : 'q'
 
 @enduml
