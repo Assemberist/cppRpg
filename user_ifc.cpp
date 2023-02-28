@@ -8,6 +8,7 @@ enum object_state{
     STAY,
     CHOOSE_SPELL,
     CHOOSE_TARGET,
+    CHOOSE_STATE_FOR_OBERVATION,
     CHOOSE_TARGET_FOR_ITEM,
     OBSERVATION,
     LOOT,
@@ -18,13 +19,13 @@ enum object_state{
     LOOT_INVENTORY
 };
 
-log* create_log_effects(object* obj){
+log* create_log_effects(state* stat){
     char buffer[70];
-    size_t amount = obj->stat.effects.size();
+    size_t amount = stat->effects.size();
 
     log* new_log = new log(10, 70, 1, 12);
 
-    for(auto i = obj->stat.effects.begin(); i != obj->stat.effects.end(); i++){
+    for(auto i = stat->effects.begin(); i != stat->effects.end(); i++){
         sprintf(buffer, "%30s Tim %4d Val %4d\n\0",
             effect_names[i->first.type],
             i->second.timed.time,
@@ -37,13 +38,13 @@ log* create_log_effects(object* obj){
     return new_log;
 }
 
-log* create_log_properties(object* obj){
+log* create_log_properties(state* stat){
     char buffer[50];
-    size_t amount = obj->stat.effects.size();
+    size_t amount = stat->effects.size();
 
     log* new_log = new log(10, 50, 12, 12);
 
-    for(auto i = obj->stat.propertyes.begin(); i != obj->stat.propertyes.end(); i++){
+    for(auto i = stat->propertyes.begin(); i != stat->propertyes.end(); i++){
         sprintf(buffer, "%30s Val %4d\n\0",
             property_names[i->first],
             i->second
@@ -152,6 +153,7 @@ bool user_turn(object* u, screen s){
     object* single_target = nullptr;
     blink_t last_color;
     
+    state* observed_state = nullptr;
 
     char temp;
     while((temp = getch()) != ' '){
@@ -254,12 +256,10 @@ bool user_turn(object* u, screen s){
 
                     case 'w':
                         s.common_menu->down();
-                        s.common_menu->print();
                         break;
 
                     case 's':
                         s.common_menu->up();
-                        s.common_menu->print();
                         break;
 
                     case 'h':
@@ -428,12 +428,10 @@ bool user_turn(object* u, screen s){
                 switch(temp){
                     case 's':
                         s.bag->up();
-                        s.bag->print();
                         break;
 
                     case 'w':
                         s.bag->down();
-                        s.bag->print();
                         break;
 
                     case 'e':{
@@ -526,12 +524,10 @@ bool user_turn(object* u, screen s){
 
                     case 's':
                         s.loot->up();
-                        s.loot->print();
                         break;
 
                     case 'w':
                         s.loot->down();
-                        s.loot->print();
                         break;
 
                     case 'e':{
@@ -645,12 +641,10 @@ bool user_turn(object* u, screen s){
 
                     case 'w':
                         active_inv->down();
-                        active_inv->print();
                         break;
 
                     case 's':
                         active_inv->up();
-                        active_inv->print();
                         break;
 
                     case 'a':
@@ -803,18 +797,6 @@ bool user_turn(object* u, screen s){
             }
             break;
 
-            case LOOKUP:{
-                switch(temp){
-                    case 'q':
-                        effect_screen->hide();
-                        delete effect_screen;
-                        property_screen->hide();
-                        delete property_screen;
-                        stat = OBSERVATION;
-                        break;
-                }
-            }
-            break;
 
             case OBSERVATION:{
                 switch(temp){
@@ -828,16 +810,62 @@ bool user_turn(object* u, screen s){
                         break;
 
                     case 'f':
-                        effect_screen = create_log_effects(single_target);
+                        s.observe_menu->build_content(single_target);
+                        s.observe_menu->print();
+                        stat = CHOOSE_STATE_FOR_OBERVATION;
+                        break;
+
+                    case 'q':
+                        single_target->graph_state = GREEN_ON;
+                        stat = STAY;
+                        break;
+                }
+            }
+            break;
+
+            case CHOOSE_STATE_FOR_OBERVATION:{
+                switch (temp) {
+                    case 'f':
+                        s.observe_menu->hide();
+
+                        observed_state =
+                            s.observe_menu->get_selected_index() == 0 ?
+                                &s.observe_menu->get_selected_value().owner->stat :
+                                &s.observe_menu->get_selected_value().content.it->stat;
+
+                        effect_screen = create_log_effects(observed_state);
                         effect_screen->print();
-                        property_screen = create_log_properties(single_target);
+                        property_screen = create_log_properties(observed_state);
                         property_screen->print();
                         stat = LOOKUP;
                         break;
 
                     case 'q':
-                        u->graph_state = GREEN_ON;
-                        stat = STAY;
+                        s.observe_menu->hide();
+                        stat = OBSERVATION;
+                        break;
+
+                    case 's':
+                        s.observe_menu->up();
+                        break;
+
+                    case 'w':
+                        s.observe_menu->down();
+                        break;
+                }
+            }
+            break;
+
+            case LOOKUP:{
+                switch(temp){
+                    case 'q':
+                        effect_screen->hide();
+                        delete effect_screen;
+                        property_screen->hide();
+                        delete property_screen;
+
+                        s.observe_menu->print();
+                        stat = CHOOSE_STATE_FOR_OBERVATION;
                         break;
                 }
             }

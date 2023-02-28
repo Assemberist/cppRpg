@@ -41,8 +41,18 @@ public:
           count = 0;
           content = nullptr; }
 
-    void up(){ if(current < count-1) current++; }
-    void down(){ if(current) current--; }
+    void up(){
+        if(current < count-1){
+            current++;
+            print();
+        }
+    }
+    void down(){
+        if(current){
+            current--;
+            print();
+        }
+    }
 
     short get_selected_index(){ return current; }
     T get_selected_value(){ return content[current]; }

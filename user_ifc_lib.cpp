@@ -111,6 +111,7 @@ void inventory_with_owner::print(){
     size_t i = 0;
     waddch(win, i == current ? '*' : ' ');
     wprintw(win, content[0].owner->get_name());
+    waddch(win, '\n');
 
     for(i = 1; i < count; i++){
         if(content[i].content.is_equiped)
