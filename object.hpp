@@ -28,9 +28,7 @@ public:
 
     expirience exp;
 
-#ifndef DONT_LOG_ACTIONS
     static log* l;
-#endif
 
     vector<item> equipment;
     vector<item> inventory;

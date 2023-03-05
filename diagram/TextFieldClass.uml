@@ -1,0 +1,50 @@
+@startuml
+
+abstract text_field
+
+text_field : short count;
+text_field : short current;
+text_field : char** strings;
+text_field : WINDOW* win;
+
+text_field : hide()
+text_field : print()
+
+interface log
+log : newline()
+
+file_log <|-- log
+file_log : log_file
+file_log : index
+file_log : nextFile()
+
+text_log <|-- text_field
+text_log <|-- log
+text_log : clear()
+
+menu <|-- text_field
+menu : templated<> content
+menu : up()
+menu : down()
+menu : get_selected_index()
+menu : get_selected_value()
+menu : size()
+menu : delete_content()
+
+spell_menu <|-- menu
+spell_menu : build_content()
+
+inventory <|-- menu
+inventory : isActive
+inventory : build_content()
+inventory : activate(size_t num)
+inventory : deactivate()
+inventory : is_current_equiped()
+
+observe_menu <|-- menu
+observe_menu : isActive
+observe_menu : build_content()
+observe_menu : is_current_equiped()
+
+
+@enduml

@@ -43,10 +43,7 @@ bool game_loop(object** objs, object* gamer, screen s){
         for(size_t i=0; i < obj_count; i++){
             s.mapa->clear();
             s.mapa->update_card();
-
-        #if !defined(DONT_LOG_ACTIONS) || !defined(DONT_LOG_STATE)
             s.common_log->print();
-        #endif
 
             if(objs[i] == gamer){
                 if(!user_turn(objs[i], s))

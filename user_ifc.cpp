@@ -1,8 +1,21 @@
 #include <climits>
+#include "items.hpp"
 #include "user_ifc.hpp"
 #include "spell.hpp"
 #include "text_field.hpp"
 #include "object_defs.hpp"
+
+static spell_menu* common_menu;
+static inventory* bag;
+static inventory* loot;
+static inventory_with_owner* observe_menu;
+
+void setup_user_ifc(){
+    common_menu = new spell_menu(3, 50, 12, 0);
+    bag = new inventory(10, 50, 0, 11);
+    loot = new inventory(10, 50, 0, 63);
+    observe_menu = new inventory_with_owner(10, 50, 0, 11);
+}
 
 enum object_state{
     STAY,
@@ -19,11 +32,11 @@ enum object_state{
     LOOT_INVENTORY
 };
 
-log* create_log_effects(state* stat){
+text_log* create_log_effects(state* stat){
     char buffer[70];
     size_t amount = stat->effects.size();
 
-    log* new_log = new log(10, 70, 1, 12);
+    text_log* new_log = new text_log(10, 70, 1, 12);
 
     for(auto i = stat->effects.begin(); i != stat->effects.end(); i++){
         sprintf(buffer, "%30s Tim %4d Val %4d\n\0",
@@ -38,11 +51,11 @@ log* create_log_effects(state* stat){
     return new_log;
 }
 
-log* create_log_properties(state* stat){
+text_log* create_log_properties(state* stat){
     char buffer[50];
     size_t amount = stat->effects.size();
 
-    log* new_log = new log(10, 50, 12, 12);
+    text_log* new_log = new text_log(10, 50, 12, 12);
 
     for(auto i = stat->propertyes.begin(); i != stat->propertyes.end(); i++){
         sprintf(buffer, "%30s Val %4d\n\0",
@@ -145,8 +158,8 @@ bool user_turn(object* u, screen s){
     vector<item>::iterator item_to_use;
 
     inventory* active_inv;
-    log* property_screen;
-    log* effect_screen;
+    text_log* property_screen;
+    text_log* effect_screen;
 
     object* tar = nullptr;
     object* looted_obj = nullptr;
@@ -163,17 +176,17 @@ bool user_turn(object* u, screen s){
                 s.mapa->clear();
                 switch(temp){
                     case 'f':{
-                        s.common_menu->build_content(u);
-                        s.common_menu->print();
+                        common_menu->build_content(u);
+                        common_menu->print();
                         stat = CHOOSE_SPELL;
                     }
                     break;
 
                     case 'i':{
                         s.common_log->hide();
-                        s.bag->build_content(u);
-                        s.bag->activate(0);
-                        s.bag->print();
+                        bag->build_content(u);
+                        bag->activate(0);
+                        bag->print();
                         u->graph_state = GREEN_STABILE;
                         stat = OPEN_INVENTORY;
                     }
@@ -192,9 +205,9 @@ bool user_turn(object* u, screen s){
                         if(is_move_char(temp)){
                             single_target = s.mapa->get_object(u, temp);
                             if(single_target){
-                                s.loot->build_content(single_target);
-                                s.loot->activate(0);
-                                s.loot->print();
+                                loot->build_content(single_target);
+                                loot->activate(0);
+                                loot->print();
                                 u->graph_state = GREEN_STABILE;
                                 stat = LOOT;
                             }
@@ -217,7 +230,7 @@ bool user_turn(object* u, screen s){
                         break;
 
                     case 'f':
-                        choosed_spell = s.common_menu->get_selected_value()->first;
+                        choosed_spell = common_menu->get_selected_value()->first;
                         clear_blinking(s.mapa->objects);
                         u->graph_state = GREEN_STABILE;
                         s.mapa->clear();
@@ -243,23 +256,23 @@ bool user_turn(object* u, screen s){
                                 s.mapa->update_card();
                                 break;
                         }
-                        s.common_menu->hide();
+                        common_menu->hide();
                         stat = CHOOSE_TARGET;
                         break;
 
                     case 'q':
                         choosed_spell = NOTHING_SPELL;
                         stat = STAY;
-                        s.common_menu->delete_content();
-                        s.common_menu->hide();
+                        common_menu->delete_content();
+                        common_menu->hide();
                         break;
 
                     case 'w':
-                        s.common_menu->down();
+                        common_menu->down();
                         break;
 
                     case 's':
-                        s.common_menu->up();
+                        common_menu->up();
                         break;
 
                     case 'h':
@@ -287,14 +300,14 @@ bool user_turn(object* u, screen s){
 
                             switch(last_state){
                                 case LOOT:
-                                    s.loot->print();
+                                    loot->print();
                                     break;
                                 
                                 case LOOT_INVENTORY:
-                                    s.loot->print();
+                                    loot->print();
 
                                 case OPEN_INVENTORY:
-                                    s.bag->print();
+                                    bag->print();
                             }
 
                             break;
@@ -349,7 +362,7 @@ bool user_turn(object* u, screen s){
                                 stat = CHOOSE_SPELL;
                                 s.mapa->clear();
                                 u->graph_state = GREEN_ON;
-                                s.common_menu->print();
+                                common_menu->print();
                                 search_targets(nullptr, s, 0);
                                 s.mapa->update_card();
                                 break;
@@ -410,7 +423,7 @@ bool user_turn(object* u, screen s){
                                 stat = CHOOSE_SPELL;
                                 s.mapa->clear();
                                 u->graph_state = GREEN_ON;
-                                s.common_menu->print();
+                                common_menu->print();
                                 s.mapa->update_card();
                                 search_targets(nullptr, s, 0);
                                 break;
@@ -427,27 +440,27 @@ bool user_turn(object* u, screen s){
             case OPEN_INVENTORY:{
                 switch(temp){
                     case 's':
-                        s.bag->up();
+                        bag->up();
                         break;
 
                     case 'w':
-                        s.bag->down();
+                        bag->down();
                         break;
 
                     case 'e':{
-                        do_equp_unquip(s.bag, u);
-                        s.bag->print();
+                        do_equp_unquip(bag, u);
+                        bag->print();
                         break;
                     }
 
                     case 'u':{
-                        if(s.bag->is_current_equiped()){
-                            if(do_equp_unquip(s.bag, u)){
+                        if(bag->is_current_equiped()){
+                            if(do_equp_unquip(bag, u)){
                                 item_to_use = u->inventory.end() - 1;
                             }
                             else break;
                         }
-                        else item_to_use = s.bag->get_selected_value().it;
+                        else item_to_use = bag->get_selected_value().it;
 
                         looted_obj = u;
 
@@ -456,7 +469,7 @@ bool user_turn(object* u, screen s){
                         last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
 
-                        s.bag->hide();
+                        bag->hide();
                         s.mapa->clear();
                         s.mapa->update_card();
 
@@ -467,13 +480,13 @@ bool user_turn(object* u, screen s){
                     }
 
                     case 't':{
-                        if(s.bag->is_current_equiped()){
-                            if(do_equp_unquip(s.bag, u)){
+                        if(bag->is_current_equiped()){
+                            if(do_equp_unquip(bag, u)){
                                 item_to_use = u->inventory.end() - 1;
                             }
                             else break;
                         }
-                        else item_to_use = s.bag->get_selected_value().it;
+                        else item_to_use = bag->get_selected_value().it;
 
                         looted_obj = u;
                         u->item_to_use = &*item_to_use;
@@ -483,7 +496,7 @@ bool user_turn(object* u, screen s){
                         last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
 
-                        s.bag->hide();
+                        bag->hide();
                         s.mapa->clear();
                         s.mapa->update_card();
 
@@ -494,8 +507,8 @@ bool user_turn(object* u, screen s){
                     }
 
                     case 'q':
-                        s.bag->hide();
-                        s.bag->delete_content();
+                        bag->hide();
+                        bag->delete_content();
                         u->graph_state = GREEN_ON;
                         stat = STAY;
                         break;
@@ -516,56 +529,56 @@ bool user_turn(object* u, screen s){
             case LOOT:{
                 switch(temp){
                     case 'q':
-                        s.loot->hide();
-                        s.loot->delete_content();
+                        loot->hide();
+                        loot->delete_content();
                         u->graph_state = GREEN_ON;
                         stat = STAY;
                         break;
 
                     case 's':
-                        s.loot->up();
+                        loot->up();
                         break;
 
                     case 'w':
-                        s.loot->down();
+                        loot->down();
                         break;
 
                     case 'e':{
-                        do_equp_unquip(s.loot, single_target);
-                        s.loot->print();
+                        do_equp_unquip(loot, single_target);
+                        loot->print();
                         break;
                     }
 
                     case 'f':{
-                        if(s.loot->is_current_equiped()){
-                            if(do_equp_unquip(s.loot, single_target)){
+                        if(loot->is_current_equiped()){
+                            if(do_equp_unquip(loot, single_target)){
                                 u->pick_up_item(single_target->inventory.back());
                                 single_target->inventory.pop_back();
                             }
                             else break;
                         }
                         else{
-                            if(s.loot->size()){
-                                auto num = s.loot->get_selected_value().it;
+                            if(loot->size()){
+                                auto num = loot->get_selected_value().it;
                                 u->pick_up_item(*(num));
                                 single_target->inventory.erase(num);
 
-                                s.loot->delete_content();
-                                s.loot->build_content(single_target);
-                                s.loot->print();
+                                loot->delete_content();
+                                loot->build_content(single_target);
+                                loot->print();
                             }
                         }
                         break;
                     }
 
                     case 'u':{
-                        if(s.loot->is_current_equiped()){
-                            if(do_equp_unquip(s.loot, single_target)){
+                        if(loot->is_current_equiped()){
+                            if(do_equp_unquip(loot, single_target)){
                                 item_to_use = single_target->inventory.end() - 1;
                             }
                             else break;
                         }
-                        else item_to_use = s.loot->get_selected_value().it;
+                        else item_to_use = loot->get_selected_value().it;
 
                         looted_obj = single_target;
 
@@ -574,7 +587,7 @@ bool user_turn(object* u, screen s){
                         last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
 
-                        s.loot->hide();
+                        loot->hide();
                         s.mapa->clear();
                         s.mapa->update_card();
 
@@ -585,13 +598,13 @@ bool user_turn(object* u, screen s){
                     }
 
                     case 't':{
-                        if(s.loot->is_current_equiped()){
-                            if(do_equp_unquip(s.loot, single_target)){
+                        if(loot->is_current_equiped()){
+                            if(do_equp_unquip(loot, single_target)){
                                 item_to_use = single_target->inventory.end() - 1;
                             }
                             else break;
                         }
-                        else item_to_use = s.loot->get_selected_value().it;
+                        else item_to_use = loot->get_selected_value().it;
 
                         looted_obj = single_target;
                         u->item_to_use = &*item_to_use;
@@ -601,7 +614,7 @@ bool user_turn(object* u, screen s){
                         last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
 
-                        s.loot->hide();
+                        loot->hide();
                         s.mapa->clear();
                         s.mapa->update_card();
 
@@ -612,10 +625,10 @@ bool user_turn(object* u, screen s){
                     }
 
                     case 'i':{
-                        s.bag->build_content(u);
-                        s.bag->deactivate();
-                        s.bag->print();
-                        active_inv = s.loot;
+                        bag->build_content(u);
+                        bag->deactivate();
+                        bag->print();
+                        active_inv = loot;
                         stat = LOOT_INVENTORY;
                         break;
                     }
@@ -623,8 +636,8 @@ bool user_turn(object* u, screen s){
                     case 'z':{
                         u->inventory.insert(u->inventory.cend(), single_target->inventory.begin(), single_target->inventory.end());
                         single_target->inventory.clear();
-                        s.loot->delete_content();
-                        s.loot->print();
+                        loot->delete_content();
+                        loot->print();
                         break;
                     }
                 }
@@ -634,8 +647,8 @@ bool user_turn(object* u, screen s){
             case LOOT_INVENTORY:{
                 switch(temp){
                     case 'i':
-                        s.bag->hide();
-                        s.bag->delete_content();
+                        bag->hide();
+                        bag->delete_content();
                         stat = LOOT;
                         break;
 
@@ -649,22 +662,22 @@ bool user_turn(object* u, screen s){
 
                     case 'a':
                         active_inv->deactivate();
-                        s.bag->activate(active_inv->get_selected_index());
-                        active_inv = s.bag;
-                        s.bag->print();
-                        s.loot->print();
+                        bag->activate(active_inv->get_selected_index());
+                        active_inv = bag;
+                        bag->print();
+                        loot->print();
                         break;
 
                     case 'd':
                         active_inv->deactivate();
-                        s.loot->activate(active_inv->get_selected_index());
-                        active_inv = s.loot;
-                        s.bag->print();
-                        s.loot->print();
+                        loot->activate(active_inv->get_selected_index());
+                        active_inv = loot;
+                        bag->print();
+                        loot->print();
                         break;
 
                     case 'u':
-                        looted_obj = active_inv == s.bag ? u : single_target;
+                        looted_obj = active_inv == bag ? u : single_target;
 
                         if(active_inv->is_current_equiped()){
                             if(do_equp_unquip(active_inv, looted_obj)){
@@ -679,8 +692,8 @@ bool user_turn(object* u, screen s){
                         last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
 
-                        s.bag->hide();
-                        s.loot->hide();
+                        bag->hide();
+                        loot->hide();
                         s.mapa->clear();
                         s.mapa->update_card();
 
@@ -690,7 +703,7 @@ bool user_turn(object* u, screen s){
                         break;
 
                     case 't':
-                        looted_obj = active_inv == s.bag ? u : single_target;
+                        looted_obj = active_inv == bag ? u : single_target;
 
                         if(active_inv->is_current_equiped()){
                             if(do_equp_unquip(active_inv, looted_obj)){
@@ -707,8 +720,8 @@ bool user_turn(object* u, screen s){
                         last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
 
-                        s.bag->hide();
-                        s.loot->hide();
+                        bag->hide();
+                        loot->hide();
                         s.mapa->clear();
                         s.mapa->update_card();
 
@@ -719,7 +732,7 @@ bool user_turn(object* u, screen s){
 
                     case 'e':{
                         if(active_inv->size() == 0) break;
-                        object* tempor = active_inv == s.loot ? single_target : u;
+                        object* tempor = active_inv == loot ? single_target : u;
                         do_equp_unquip(active_inv, tempor);
                         active_inv->print();
                         break;
@@ -728,28 +741,28 @@ bool user_turn(object* u, screen s){
                     case 'z':{
                         if(active_inv->size() == 0) break;
 
-                        if(active_inv == s.loot){
+                        if(active_inv == loot){
                             u->inventory.insert(u->inventory.cend(), single_target->inventory.begin(), single_target->inventory.end());
                             single_target->inventory.clear();
-                            s.bag->build_content(u);
-                            s.loot->delete_content();
+                            bag->build_content(u);
+                            loot->delete_content();
                         }
                         else{
                             single_target->inventory.insert(single_target->inventory.cend(), u->inventory.begin(), u->inventory.end());
                             u->inventory.clear();
-                            s.loot->build_content(single_target);
-                            s.bag->delete_content();
+                            loot->build_content(single_target);
+                            bag->delete_content();
                         }
 
-                        s.loot->print();
-                        s.bag->print();
+                        loot->print();
+                        bag->print();
                         break;
                     }
 
                     case 'f':{
                         if(active_inv->size() == 0) break;
                                                 
-                        if(active_inv == s.loot){
+                        if(active_inv == loot){
                             if(active_inv->is_current_equiped()){
                                 if(do_equp_unquip(active_inv, single_target)){
                                     u->pick_up_item(single_target->inventory.back());
@@ -778,19 +791,19 @@ bool user_turn(object* u, screen s){
                             }
                         }
 
-                        s.bag->build_content(u);
-                        s.bag->print();
+                        bag->build_content(u);
+                        bag->print();
 
-                        s.loot->build_content(single_target);
-                        s.loot->print();
+                        loot->build_content(single_target);
+                        loot->print();
                         break;
                     }
 
                     case 'q':
-                        s.bag->hide();
-                        s.bag->delete_content();
-                        s.loot->hide();
-                        s.loot->delete_content();
+                        bag->hide();
+                        bag->delete_content();
+                        loot->hide();
+                        loot->delete_content();
                         stat = STAY;
                         break;
                 }
@@ -810,8 +823,8 @@ bool user_turn(object* u, screen s){
                         break;
 
                     case 'f':
-                        s.observe_menu->build_content(single_target);
-                        s.observe_menu->print();
+                        observe_menu->build_content(single_target);
+                        observe_menu->print();
                         stat = CHOOSE_STATE_FOR_OBERVATION;
                         break;
 
@@ -826,12 +839,12 @@ bool user_turn(object* u, screen s){
             case CHOOSE_STATE_FOR_OBERVATION:{
                 switch (temp) {
                     case 'f':
-                        s.observe_menu->hide();
+                        observe_menu->hide();
 
                         observed_state =
-                            s.observe_menu->get_selected_index() == 0 ?
-                                &s.observe_menu->get_selected_value().owner->stat :
-                                &s.observe_menu->get_selected_value().content.it->stat;
+                            observe_menu->get_selected_index() == 0 ?
+                                &observe_menu->get_selected_value().owner->stat :
+                                &observe_menu->get_selected_value().content.it->stat;
 
                         effect_screen = create_log_effects(observed_state);
                         effect_screen->print();
@@ -841,16 +854,16 @@ bool user_turn(object* u, screen s){
                         break;
 
                     case 'q':
-                        s.observe_menu->hide();
+                        observe_menu->hide();
                         stat = OBSERVATION;
                         break;
 
                     case 's':
-                        s.observe_menu->up();
+                        observe_menu->up();
                         break;
 
                     case 'w':
-                        s.observe_menu->down();
+                        observe_menu->down();
                         break;
                 }
             }
@@ -864,7 +877,7 @@ bool user_turn(object* u, screen s){
                         property_screen->hide();
                         delete property_screen;
 
-                        s.observe_menu->print();
+                        observe_menu->print();
                         stat = CHOOSE_STATE_FOR_OBERVATION;
                         break;
                 }
@@ -888,8 +901,8 @@ done:
     u->graph_state = original_color;
     s.mapa->clear();
     s.mapa->update_card();
-    s.common_menu->hide();
-    s.common_menu->delete_content();
+    common_menu->hide();
+    common_menu->delete_content();
     
     search_targets(nullptr, s, 0);
 

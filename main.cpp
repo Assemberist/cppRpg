@@ -17,13 +17,8 @@ const char* test_card = "*************  *   **** **   ****      ****  *   **** *
 // * *      *
 // **********
 
-#ifndef DONT_LOG_ACTIONS
 log* object::l;
-#endif
-
-#ifndef DONT_LOG_STATE
 log* state::l;
-#endif
 
 int main(){
     initscr();
@@ -36,24 +31,13 @@ int main(){
 
     screen s;
 
-#if !defined (DONT_LOG_ACTIONS) || !defined (DONT_LOG_STATE)
-    s.common_log = new log(10, 50, 0, 11);
-#endif
-
-#ifndef DONT_LOG_ACTIONS
+    s.common_log = new text_log(10, 50, 0, 11);
     object::l = s.common_log;
-#endif
-
-#ifndef DONT_LOG_STATE
     state::l = s.common_log;
-#endif
 
-    s.bag = new inventory(10, 50, 0, 11);
-    s.loot = new inventory(10, 50, 0, 63);
-    s.common_menu = new spell_menu(3, 50, 12, 0);
     s.mapa = new za_mapo(10, 10, 0, 0);
-    s.observe_menu = new inventory_with_owner(10, 50, 0, 11);
 
+    setup_user_ifc();
     refresh();
 
     object* objs[] = {
@@ -82,10 +66,8 @@ int main(){
     if(!game_loop(objs, *objs, s)){
         timeout(-1);
 
-    #if !defined (DONT_LOG_ACTIONS) || !defined (DONT_LOG_STATE)
         s.common_log->newline("Game ower\n");
         s.common_log->print();
-    #endif
 
         getch();
     }

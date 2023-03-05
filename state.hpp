@@ -40,9 +40,7 @@ struct state{
     map<property_t, int32_t> propertyes;
     map<effect_def, effect> effects;
 
-#ifndef DONT_LOG_STATE
     static log* l;
-#endif
 
     void act(effect_def type, effect e);
     void calculate();

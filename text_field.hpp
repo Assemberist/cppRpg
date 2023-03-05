@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <ncurses.h>
 #include <string.h>
 
@@ -20,15 +21,34 @@ public:
 };
 
 
-class log : public text_field{
+class log{
 public:
-    log(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
+    virtual void newline(const char* src) = 0;
+};
+
+class text_log : public text_field, public log{
+public:
+    text_log(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
 
     void print();
     void newline(const char* src);
     void clear();
 
-    ~log();
+    ~text_log();
+};
+
+class file_log : public log{
+    FILE* log_file;
+    const char* log_name;
+    size_t index;
+
+public:
+    file_log(const char* file);
+
+    void newline(const char* src);
+    void nextFile();
+
+    ~file_log();
 };
 
 template<typename T> class menu : public text_field{
