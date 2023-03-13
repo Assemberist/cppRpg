@@ -7,10 +7,6 @@
 #endif
 
 void state::act(effect_def type, effect e){
-    // all calculation should be changed due to new flags implemented into effect definition.
-
-    size_t num = 0;
-
     switch(type.type){
         case CRUSH_ATTACK:{
             if(effects.find({false, false, DEAD}) != effects.end()){

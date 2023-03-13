@@ -14,15 +14,6 @@ struct expirience{
 };
 
 class object{
-protected:
-    map<spell_t, spell> spells;
-
-    string name;
-
-    behavior_t behavior;
-
-    fraction fract;
-
 public:
     state stat;
 
@@ -41,6 +32,16 @@ public:
     // The code is crutch for execution act_throw() in user_ifc.
     item* item_to_use;
 
+protected:
+    map<spell_t, spell> spells;
+
+    string name;
+
+    behavior_t behavior;
+
+    fraction fract;
+
+public:
     object(int8_t _X, int8_t _Y, string _name) : X(_X), Y(_Y), name(_name), behavior(BHV_ATTACK) {}
 
     virtual char get_type() = 0;
@@ -68,4 +69,6 @@ public:
     bool is_alive();
     bool check_enemy(object* target);
     spell_t choose_attack_spells(object* target);
+    
+    virtual ~object();
 };

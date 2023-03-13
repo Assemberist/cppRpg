@@ -27,19 +27,18 @@ enum object_state{
     LOOT,
     LOOKUP,
     SPELL_SHOP,
-    SPELL_HELP,
+    //SPELL_HELP,
     OPEN_INVENTORY,
     LOOT_INVENTORY
 };
 
 text_log* create_log_effects(state* stat){
     char buffer[70];
-    size_t amount = stat->effects.size();
 
     text_log* new_log = new text_log(10, 70, 1, 12);
 
     for(auto i = stat->effects.begin(); i != stat->effects.end(); i++){
-        sprintf(buffer, "%30s Tim %4d Val %4d\n\0",
+        sprintf(buffer, "%30s Tim %4d Val %4d\n",
             effect_names[i->first.type],
             i->second.timed.time,
             i->second.timed.amount
@@ -53,12 +52,11 @@ text_log* create_log_effects(state* stat){
 
 text_log* create_log_properties(state* stat){
     char buffer[50];
-    size_t amount = stat->effects.size();
 
     text_log* new_log = new text_log(10, 50, 12, 12);
 
     for(auto i = stat->propertyes.begin(); i != stat->propertyes.end(); i++){
-        sprintf(buffer, "%30s Val %4d\n\0",
+        sprintf(buffer, "%30s Val %4d\n",
             property_names[i->first],
             i->second
         );
@@ -194,7 +192,7 @@ bool user_turn(object* u, screen s){
 
                     case 'o':
                         u->graph_state = GREEN_STABILE;
-                        search_targets(NULL, s, NULL);
+                        search_targets(NULL, s, 0);
                         single_target = search_targets(u, s, INT_MAX);
                         last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
@@ -255,6 +253,9 @@ bool user_turn(object* u, screen s){
                                 single_target->graph_state = RED_INVERT;
                                 s.mapa->update_card();
                                 break;
+
+                            default:
+                                break;
                         }
                         common_menu->hide();
                         stat = CHOOSE_TARGET;
@@ -275,10 +276,10 @@ bool user_turn(object* u, screen s){
                         common_menu->up();
                         break;
 
-                    case 'h':
+                    /*case 'h':
                         // spell help
                         // put hint about choosed spell
-                        stat = SPELL_HELP;
+                        stat = SPELL_HELP;*/
                 }
             }
             break;
@@ -308,6 +309,9 @@ bool user_turn(object* u, screen s){
 
                                 case OPEN_INVENTORY:
                                     bag->print();
+
+				default:
+				    break;
                             }
 
                             break;
@@ -347,14 +351,15 @@ bool user_turn(object* u, screen s){
                         switch(temp){
                             case 'f':
                                 search_targets(nullptr, s, 0);
-                                while(single_target = search_targets(tar, s, 2)){
+                                goto link_0;
+                                while(single_target){
                                     single_target->stat.act({0,1,FIRE_DAMAGE}, {0, 0, 25});
                                     single_target->stat.act({0,1,MAGIC_ATTACK}, {0, 0, 5});
+                                link_0:
+                                    single_target = search_targets(tar, s, 2);
                                 }
 
-                            #if !defined(DONT_LOG_ACTIONS) || !defined(DONT_LOG_STATE)
                                 s.common_log->print();
-                            #endif
 
                                 goto done;
 
@@ -433,6 +438,10 @@ bool user_turn(object* u, screen s){
                         break;
                     }
                     break;
+
+
+                    default:
+                        break;
                 }
                 break;
             }
@@ -516,7 +525,7 @@ bool user_turn(object* u, screen s){
             }
             break;
 
-            case SPELL_HELP:
+            /*case SPELL_HELP:
                 switch(temp){
                     case 'q':
                         // clean hint
@@ -524,7 +533,7 @@ bool user_turn(object* u, screen s){
                         // stat = CHOOSE_SPELL : SPELL_SHOP;
                         10;
                 }
-                break;
+                break;*/
 
             case LOOT:{
                 switch(temp){

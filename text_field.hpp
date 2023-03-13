@@ -6,8 +6,8 @@
 
 class text_field{
 protected:
-    short count;
-    short current;
+    uint16_t count;
+    uint16_t current;
     char** strings;
     WINDOW* win;
 
@@ -17,7 +17,7 @@ public:
     void hide();
     virtual void print() = 0;
 
-    ~text_field();
+    virtual ~text_field();
 };
 
 
@@ -74,9 +74,9 @@ public:
         }
     }
 
-    short get_selected_index(){ return current; }
+    uint16_t get_selected_index(){ return current; }
     T get_selected_value(){ return content[current]; }
-    short size(){ return count; }
+    uint16_t size(){ return count; }
 
     void delete_content(){
         delete[] content;

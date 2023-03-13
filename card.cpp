@@ -1,7 +1,7 @@
 #include "card.hpp"
 #include <cstddef>
 
-za_mapo::za_mapo (size_t _rows, size_t _length, size_t pos_y, size_t pos_x) {
+za_mapo::za_mapo (uint8_t _rows, uint8_t _length, uint8_t pos_y, uint8_t pos_x) {
     mapa = new char[_rows * _length + 1];
     win = newwin(_rows, _length, pos_y, pos_x);
     rows = _rows;

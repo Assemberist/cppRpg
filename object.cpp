@@ -1,4 +1,5 @@
 #include "object.hpp"
+#include <cstdint>
 
 bool in_range(object* user, object* target, size_t range){
     return (abs(user->X, target->X) <= range && abs(user->Y, target->Y) <= range ? true : false);
@@ -34,6 +35,8 @@ bool object::check_enemy(object* target){
                     return true;
             }
     }
+
+    return true;
 }
 
 spell_t object::choose_attack_spells(object* target){
@@ -94,8 +97,8 @@ void object::act(effect_def def, effect e){
             effect part = {
                 .timed = {
                     false,
-                    e.timed.time >> 1,
-                    rand() % e.timed.amount
+                    static_cast<int16_t>(e.timed.time >> 1),
+                    static_cast<int16_t>(rand() % e.timed.amount)
                 }
             };
 
@@ -105,7 +108,7 @@ void object::act(effect_def def, effect e){
             if(!e.timed.amount) {
                 while(i--)
                     if(equipment[i].info.type_name != NOTHING_ITEM)
-                        equipment[i].stat.act(def, {false, e.timed.time >> 1, 0});
+                        equipment[i].stat.act(def, {false, static_cast<int16_t>(e.timed.time >> 1), 0});
 
                 break;
             }
@@ -157,3 +160,5 @@ void object::put_item(vector<item>::iterator it, object* target){
     target->inventory.push_back(*it);
     inventory.erase(it);
 }
+
+object::~object(){}

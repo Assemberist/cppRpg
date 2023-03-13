@@ -37,7 +37,7 @@ enum effect_bhf{
 };
 
 struct state{
-    map<property_t, int32_t> propertyes;
+    map<property_t, int16_t> propertyes;
     map<effect_def, effect> effects;
 
     static log* l;
@@ -49,10 +49,10 @@ struct state{
     bool there_is_effect(effect_t type);
     bool there_is_effect(effect_def type);
 
-    int32_t* get_property(property_t type);
+    int16_t* get_property(property_t type);
     bool there_is_property(property_t type);
 
-    bool request_property(property_t prop, size_t value);
+    bool request_property(property_t prop, int16_t value);
 };
 
 effect_bhf get_effect_behavior(effect_def def);

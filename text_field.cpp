@@ -45,7 +45,7 @@ void text_log::print(){
         for(int i=row; i<count; i++)
             wprintw(win, strings[i]);
 
-    for(int i=0; i<row; i++)
+    for(size_t i=0; i<row; i++)
         wprintw(win, strings[i]);
 
     wrefresh(win);
@@ -86,7 +86,7 @@ void file_log::nextFile(){
         fclose(log_file);
 
     char buffer[strlen(log_name)+9];
-    sprintf(buffer, "%s_%d.txt", log_name, index);
+    sprintf(buffer, "%s_%ld.txt", log_name, index);
     log_file = fopen(buffer, "w");
     index = index == 999 ? 0 : index + 1;
 }

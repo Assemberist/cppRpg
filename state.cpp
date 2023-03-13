@@ -6,7 +6,7 @@ void state::calculate(){
 
 }
 
-bool state::request_property(property_t prop, size_t value){
+bool state::request_property(property_t prop, int16_t value){
     auto i = propertyes.find(prop);
     if(i == propertyes.end())
         return false;
@@ -24,7 +24,7 @@ effect* state::get_effect(effect_def type){
     return (i != effects.end() ? &i->second : NULL);
 }
 
-int32_t* state::get_property(property_t type){
+int16_t* state::get_property(property_t type){
     auto i = propertyes.find(type);
     return (i != propertyes.end() ? &i->second : NULL);
 }
