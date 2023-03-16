@@ -51,3 +51,15 @@ public:
     void print();
     bool is_current_equiped();
 };
+
+void print_help_for_stay(text_log* help);
+void print_help_for_spell_choose(text_log* help);
+void print_help_for_spell_target_choose_single(text_log* help);
+void print_help_for_spell_target_choose_ranged(text_log* help);
+void print_help_for_observation_card(text_log* help);
+void print_help_for_observation_objects(text_log* help);
+void print_help_for_observation_state(text_log* help);
+void print_help_for_loot(text_log* help);
+void print_help_for_inventory(text_log* help);
+void print_help_for_loot_inventory(text_log* help);
+void print_help_for_item_using(text_log* help);

@@ -9,12 +9,16 @@ static spell_menu* common_menu;
 static inventory* bag;
 static inventory* loot;
 static inventory_with_owner* observe_menu;
+static text_log* manual;
 
 void setup_user_ifc(){
     common_menu = new spell_menu(3, 50, 12, 0);
     bag = new inventory(10, 50, 0, 11);
     loot = new inventory(10, 50, 0, 63);
     observe_menu = new inventory_with_owner(10, 50, 0, 11);
+    manual = new text_log(12, 40, 12, 63);
+    refresh();
+    print_help_for_stay(manual);
 }
 
 enum object_state{
@@ -176,6 +180,7 @@ bool user_turn(object* u, screen s){
                     case 'f':{
                         common_menu->build_content(u);
                         common_menu->print();
+                        print_help_for_spell_choose(manual);
                         stat = CHOOSE_SPELL;
                     }
                     break;
@@ -186,6 +191,7 @@ bool user_turn(object* u, screen s){
                         bag->activate(0);
                         bag->print();
                         u->graph_state = GREEN_STABILE;
+                        print_help_for_inventory(manual);
                         stat = OPEN_INVENTORY;
                     }
                     break;
@@ -196,6 +202,7 @@ bool user_turn(object* u, screen s){
                         single_target = search_targets(u, s, INT_MAX);
                         last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
+                        print_help_for_observation_card(manual);
                         stat = OBSERVATION;
                         break;
 
@@ -207,6 +214,7 @@ bool user_turn(object* u, screen s){
                                 loot->activate(0);
                                 loot->print();
                                 u->graph_state = GREEN_STABILE;
+                                print_help_for_loot(manual);
                                 stat = LOOT;
                             }
                             else{
@@ -238,12 +246,14 @@ bool user_turn(object* u, screen s){
                                 tar->graph_state = HIDE;
                                 s.mapa->free_move(tar, 's');
                                 s.mapa->draw_range(tar, 3);
+                                print_help_for_spell_target_choose_ranged(manual);
                                 break;
 
                             case PUNCH:
                                 single_target = search_targets(u, s, 1);
                                 last_color = single_target->graph_state;
                                 single_target->graph_state = RED_INVERT;
+                                print_help_for_spell_target_choose_single(manual);
                                 s.mapa->update_card();
                                 break;
 
@@ -251,6 +261,7 @@ bool user_turn(object* u, screen s){
                                 single_target = search_targets(u, s, 5);
                                 last_color = single_target->graph_state;
                                 single_target->graph_state = RED_INVERT;
+                                print_help_for_spell_target_choose_single(manual);
                                 s.mapa->update_card();
                                 break;
 
@@ -258,11 +269,13 @@ bool user_turn(object* u, screen s){
                                 break;
                         }
                         common_menu->hide();
+                        
                         stat = CHOOSE_TARGET;
                         break;
 
                     case 'q':
                         choosed_spell = NOTHING_SPELL;
+                        print_help_for_stay(manual);
                         stat = STAY;
                         common_menu->delete_content();
                         common_menu->hide();
@@ -301,17 +314,20 @@ bool user_turn(object* u, screen s){
 
                             switch(last_state){
                                 case LOOT:
+                                    print_help_for_loot(manual);
                                     loot->print();
                                     break;
                                 
                                 case LOOT_INVENTORY:
+                                    print_help_for_loot_inventory(manual);
                                     loot->print();
 
                                 case OPEN_INVENTORY:
+                                    print_help_for_inventory(manual);
                                     bag->print();
 
-				default:
-				    break;
+                                default:
+                                    break;
                             }
 
                             break;
@@ -364,6 +380,7 @@ bool user_turn(object* u, screen s){
                                 goto done;
 
                             case 'r':
+                                print_help_for_spell_choose(manual);
                                 stat = CHOOSE_SPELL;
                                 s.mapa->clear();
                                 u->graph_state = GREEN_ON;
@@ -425,6 +442,7 @@ bool user_turn(object* u, screen s){
                                 goto done;
 
                             case 'q':
+                                print_help_for_spell_choose(manual);
                                 stat = CHOOSE_SPELL;
                                 s.mapa->clear();
                                 u->graph_state = GREEN_ON;
@@ -484,6 +502,7 @@ bool user_turn(object* u, screen s){
 
                         choosed_spell = NOTHING_SPELL;
                         last_state = OPEN_INVENTORY;
+                        print_help_for_item_using(manual);
                         stat = CHOOSE_TARGET_FOR_ITEM;
                         break;
                     }
@@ -511,6 +530,7 @@ bool user_turn(object* u, screen s){
 
                         choosed_spell = THROW;
                         last_state = OPEN_INVENTORY;
+                        print_help_for_spell_target_choose_single(manual);
                         stat = CHOOSE_TARGET;
                         break;
                     }
@@ -519,6 +539,7 @@ bool user_turn(object* u, screen s){
                         bag->hide();
                         bag->delete_content();
                         u->graph_state = GREEN_ON;
+                        print_help_for_stay(manual);
                         stat = STAY;
                         break;
                 }
@@ -541,6 +562,7 @@ bool user_turn(object* u, screen s){
                         loot->hide();
                         loot->delete_content();
                         u->graph_state = GREEN_ON;
+                        print_help_for_stay(manual);
                         stat = STAY;
                         break;
 
@@ -602,6 +624,7 @@ bool user_turn(object* u, screen s){
 
                         choosed_spell = NOTHING_SPELL;
                         last_state = LOOT;
+                        print_help_for_item_using(manual);
                         stat = CHOOSE_TARGET_FOR_ITEM;
                         break;
                     }
@@ -629,6 +652,7 @@ bool user_turn(object* u, screen s){
 
                         choosed_spell = THROW;
                         last_state = LOOT;
+                        print_help_for_spell_target_choose_single(manual);
                         stat = CHOOSE_TARGET;
                         break;
                     }
@@ -638,6 +662,7 @@ bool user_turn(object* u, screen s){
                         bag->deactivate();
                         bag->print();
                         active_inv = loot;
+                        print_help_for_loot_inventory(manual);
                         stat = LOOT_INVENTORY;
                         break;
                     }
@@ -658,6 +683,7 @@ bool user_turn(object* u, screen s){
                     case 'i':
                         bag->hide();
                         bag->delete_content();
+                        print_help_for_loot(manual);
                         stat = LOOT;
                         break;
 
@@ -708,6 +734,7 @@ bool user_turn(object* u, screen s){
 
                         choosed_spell = NOTHING_SPELL;
                         last_state = LOOT_INVENTORY;
+                        print_help_for_item_using(manual);
                         stat = CHOOSE_TARGET_FOR_ITEM;
                         break;
 
@@ -736,6 +763,7 @@ bool user_turn(object* u, screen s){
 
                         choosed_spell = THROW;
                         last_state = LOOT_INVENTORY;
+                        print_help_for_spell_target_choose_single(manual);
                         stat = CHOOSE_TARGET;
                         break;
 
@@ -813,6 +841,7 @@ bool user_turn(object* u, screen s){
                         bag->delete_content();
                         loot->hide();
                         loot->delete_content();
+                        print_help_for_stay(manual);
                         stat = STAY;
                         break;
                 }
@@ -834,11 +863,13 @@ bool user_turn(object* u, screen s){
                     case 'f':
                         observe_menu->build_content(single_target);
                         observe_menu->print();
+                        print_help_for_observation_objects(manual);
                         stat = CHOOSE_STATE_FOR_OBERVATION;
                         break;
 
                     case 'q':
                         single_target->graph_state = GREEN_ON;
+                        print_help_for_stay(manual);
                         stat = STAY;
                         break;
                 }
@@ -859,11 +890,13 @@ bool user_turn(object* u, screen s){
                         effect_screen->print();
                         property_screen = create_log_properties(observed_state);
                         property_screen->print();
+                        print_help_for_observation_state(manual);
                         stat = LOOKUP;
                         break;
 
                     case 'q':
                         observe_menu->hide();
+                        print_help_for_observation_card(manual);
                         stat = OBSERVATION;
                         break;
 
@@ -887,6 +920,7 @@ bool user_turn(object* u, screen s){
                         delete property_screen;
 
                         observe_menu->print();
+                        print_help_for_observation_objects(manual);
                         stat = CHOOSE_STATE_FOR_OBERVATION;
                         break;
                 }

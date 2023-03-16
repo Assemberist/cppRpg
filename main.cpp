@@ -38,7 +38,6 @@ int main(){
     s.mapa = new za_mapo(10, 10, 0, 0);
 
     setup_user_ifc();
-    refresh();
 
     object* objs[] = {
         new mage(3, 1, string("Maga")),

@@ -128,3 +128,120 @@ void inventory_with_owner::print(){
 }
 
 bool inventory_with_owner::is_current_equiped(){ return content[current].content.is_equiped; }
+
+//--------------------------------------------------------------------------------------------//
+//   Filling of help log                                                                      //
+//____________________________________________________________________________________________//
+
+void print_help_for_stay(text_log* help){
+    help->clear();
+    help->newline("<space>: end game\n");
+    help->newline("<movement keys>: move\n");
+    help->newline("i: open inventory\n");
+    help->newline("f: use spell\n");
+    help->newline("o: look up");
+    help->print();
+}
+
+void print_help_for_spell_choose(text_log* help){
+    help->clear();
+    help->newline("<space>: end game\n");
+    help->newline("w: up\n");
+    help->newline("s: down\n");
+    help->newline("f: choose target for spell\n");
+    help->newline("q: back to moving");
+    help->print();
+}
+
+void print_help_for_spell_target_choose_single(text_log* help){
+    help->clear();
+    help->newline("<space>: end game\n");
+    help->newline("s: next allowed target\n");
+    help->newline("f: use spell\n");
+    help->newline("q: choose other spell");
+    help->print();
+}
+
+void print_help_for_spell_target_choose_ranged(text_log* help){
+    help->clear();
+    help->newline("<space>: end game\n");
+    help->newline("<movement keys>: move range\n");
+    help->newline("f: use spell\n");
+    help->newline("q: choose other spell");
+    help->print();
+}
+
+void print_help_for_observation_card(text_log* help){
+    help->clear();
+    help->newline("<space>: end game\n");
+    help->newline("s: next allowed target\n");
+    help->newline("f: look the object\n");
+    help->newline("q: back to moving");
+    help->print();
+}
+
+void print_help_for_observation_objects(text_log* help){
+    help->clear();
+    help->newline("<space>: end game\n");
+    help->newline("w: up\n");
+    help->newline("s: down\n");
+    help->newline("f: look state of the object\n");
+    help->newline("q: choose other object");
+    help->print();
+}
+
+void print_help_for_observation_state(text_log* help){
+    help->clear();
+    help->newline("<space>: end game\n");
+    help->newline("q: choose other object");
+    help->print();
+}
+
+void print_help_for_loot(text_log* help){
+    help->clear();
+    help->newline("<space>: end game\n");
+    help->newline("w: up\n");
+    help->newline("s: down\n");
+    help->newline("f: take choosed item\n");
+    help->newline("t: take and throw choosed item\n");
+    help->newline("e: try to un/equip choosed item\n");
+    help->newline("z: take all\n");
+    help->newline("i: open inventory\n");
+    help->newline("q: back to moving");
+    help->print();
+}
+
+void print_help_for_inventory(text_log* help){
+    help->clear();
+    help->newline("<space>: end game\n");
+    help->newline("w: up\n");
+    help->newline("s: down\n");
+    help->newline("t: take and throw choosed object\n");
+    help->newline("e: try to un/equip choosed item\n");
+    help->newline("q: close inventory");
+    help->print();
+}
+
+void print_help_for_loot_inventory(text_log* help){
+    help->clear();
+    help->newline("<space>: end game\n");
+    help->newline("w: up\n");
+    help->newline("s: down\n");
+    help->newline("a: focus on inventory\n");
+    help->newline("d: focus on loot\n");
+    help->newline("f: take choosed item\n");
+    help->newline("t: take and throw choosed item\n");
+    help->newline("e: try to un/equip choosed item\n");
+    help->newline("z: take all\n");
+    help->newline("i: close inventory\n");
+    help->newline("q: back to moving");
+    help->print();
+}
+
+void print_help_for_item_using(text_log* help){
+    help->clear();
+    help->newline("<space>: end game\n");
+    help->newline("f: use item on choosed object\n");
+    help->newline("q: choose other item");
+    help->print();
+}
