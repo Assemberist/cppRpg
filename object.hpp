@@ -38,8 +38,12 @@ protected:
     string name;
 
     behavior_t behavior;
-
     fraction fract;
+
+    struct target_l{
+        object* target;
+        target_l* next;
+    } targets;
 
 public:
     object(int8_t _X, int8_t _Y, string _name) : X(_X), Y(_Y), name(_name), behavior(BHV_ATTACK) {}
