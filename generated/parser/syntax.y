@@ -74,7 +74,8 @@ property: QUOTE EFFECT QUOTE;
 expr: item
     | NUMBER
     | expr indents op indents item
-    | expr indents op indents NUMBER;
+    | expr indents op indents NUMBER
+    | BRACE_OPEN expr BRACE_CLOSE;
 
 matan: expr indents sign
      | expr indents THEN;
