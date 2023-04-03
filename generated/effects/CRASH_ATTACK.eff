@@ -1,23 +1,22 @@
 if found DEAD(P) exit :Stop punch the dead body!
 
-if found PHYSIC_IMMUNITY exit :Physic attacks had no effect.
+if found PHYSIC_IMMUNITY(P) exit :Physic attacks had no effect.
 
 if notfound 'HEALTH' exit :It is can not be killed or broken.
 
 if found PHYSIC_PROTECT
-    if PHYSIC_PROTECT >= then exit :The armory too strong to deal a damage.
-    else this -- PHYSIC_PROTECT :Attacked object have physic resistance.
+    if PHYSIC_PROTECT(PS+) >= this then exit :The armory too strong to deal a damage.
+    else this -- PHYSIC_PROTECT; :Attacked object have physic resistance.
 
 if found PHYSIC_WEAKNESS
-    this ++ PHYSIC_WEAKNESS :Attacked object have physic weakness.
+    this ++ PHYSIC_WEAKNESS; :Attacked object have physic weakness.
 
 if found FRIZED
     if 'HEALTH' < this * 2 then
-        put DEAD(P, 0) :It was splitted open.
+        put (P) DEAD(0) :It was splitted open.
         exit
 
-_NO_EFFECT
-    if 'HEALTH' > then 'HEALTH' -- :got %value of physic damage.\n
-    else
-        'HEALTH' = 0
-        DEAD(0, 0) :was killed.\n
+if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : of physic damage.\n
+else
+    'HEALTH' = 0;
+    put DEAD(0 0) :was killed.\n

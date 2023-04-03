@@ -1,32 +1,48 @@
 %{
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 #include "y.tab.h"
+
+bool term = false;
+#define yyterminate() return (term = !term) ? END : YY_NULL
 
 extern char high_buffer[512];
 
 %}
-
 %%
 if              return IF;
-then            return THEN;
-notfound        return NOTFOUND;
 found           return FOUND;
-this            return THIS;
 exit            return EXIT;
-<               return LESS;
+put             return PUT;
+set             return SET;
+delete          return DELETE;
+then            return THEN;
+this            return THIS;
+notfound        return NOTFOUND;
+else            return ELSE;
+\<              return LESS;
 >               return MORE;
-=               return EQ;
-<=              return EQ_L;
+'               return QUOTE;
+==              return EQ;
+=               return ASSUM;
+\<=             return EQ_L;
 >=              return EQ_M;
 !=              return NONEQ;
-<<              return MUCHLESS;
+\<\<            return MUCHLESS;
 >>              return MUCHMORE;
-++              return SUMM;
+\+              return PLUS;
+\-              return MINUS;
+\*              return MUL;
+\/              return DIV;
+\+\+            return SUMM;
 --              return SUB;
 \.value         return GET_VALUE;
+;               return FINAL;
+\(              return BRACE_OPEN;
+\)              return BRACE_CLOSE;
 \.time          return GET_TIME;
-[A-Z]+          strcpy(high_buffer, yytext); return EFFECT;
+[A-Z_]+         strcpy(high_buffer, yytext); return EFFECT;
 :[^\n]+         strcpy(high_buffer, yytext+1); return OUTPUT;
 [0-9]+          yylval.num=atoi(yytext); return NUMBER;
 \(\)            return MARK_PURE;
@@ -35,7 +51,7 @@ exit            return EXIT;
 \(PS\)          return MARK_PARMSHARED;
 \(S\)           return MARK_SHARED;
 \(S\+\)         return MARK_ANY_SHARED;
-'               return QUOTE;
+\(PS\+\)        return MARK_ANY;
 (\t|\ \ \ \ )   return TAB;
 [ \t]           return INDENT;
 \n              return NEWLINE;
