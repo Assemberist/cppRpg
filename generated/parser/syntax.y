@@ -1,11 +1,15 @@
 %{
-#include <stdio.h>
-#include <string.h>
 #include <stdint.h>
+#include "effect_sup.h"
 
-char* high_buffer[512];
 size_t tabs = 0;
 size_t oldTabs = 0;
+
+effect_stack e_stack;
+e_stack.current = 0;
+
+main_buffer m_buff;
+m_buff.tail = m_buff.buffer;
 
 void yyerror(const char *str)
 {
@@ -27,20 +31,18 @@ int main()
 %}
 
 %union {
+    item_t mark_t;
     int num;
     char* ch;
 }
 
 %token IF THEN FOUND NOTFOUND ELSE END
 %token EXIT PUT SET DELETE
-%token LESS MORE EQ EQ_L EQ_M NONEQ MUCHMORE MUCHLESS
-%token SUMM SUB
-%token PLUS MINUS DIV MUL ASSUM
+%token SUMM SUB ASSUM
 %token INDENT NEWLINE TAB FINAL QUOTE BRACE_OPEN BRACE_CLOSE
-%token MARK_ANY_PERMANENT MARK_PERMANENT MARK_ANY_SHARED MARK_PARMSHARED MARK_PURE MARK_SHARED MARK_ANY
+%token MARK
 %token THIS GET_TIME GET_VALUE
-%token <num> NUMBER
-%token <ch> EFFECT OUTPUT
+%token <ch> EFFECT OUTPUT NUMBER OP SIGN
 
 %%
 logic: sentences END;
@@ -66,18 +68,18 @@ item: effect
     | THIS
     | property;
 
-effect: EFFECT
-      | EFFECT mark;
+effect: EFFECT { effectFound(&e_stack, $1, EFF_PURE); }
+      | EFFECT MARK { effectFound(&e_stack, $1, $2); };
 
 property: QUOTE EFFECT QUOTE;
 
 expr: item
     | NUMBER
-    | expr indents op indents item
-    | expr indents op indents NUMBER
+    | expr indents OP indents item
+    | expr indents OP indents NUMBER
     | BRACE_OPEN expr BRACE_CLOSE;
 
-matan: expr indents sign
+matan: expr indents SIGN
      | expr indents THEN;
 
 action  : set_value
@@ -92,8 +94,8 @@ set_value: SET indents item indents matan
 
 put_effect: PUT indents effect BRACE_OPEN NUMBER BRACE_CLOSE
           | PUT indents effect BRACE_OPEN NUMBER indents NUMBER BRACE_CLOSE
-          | PUT indents mark indents effect BRACE_OPEN NUMBER BRACE_CLOSE
-          | PUT indents mark indents effect BRACE_OPEN NUMBER indents NUMBER BRACE_CLOSE;
+          | PUT indents MARK indents effect BRACE_OPEN NUMBER BRACE_CLOSE
+          | PUT indents MARK indents effect BRACE_OPEN NUMBER indents NUMBER BRACE_CLOSE;
 
 delete_effect: DELETE indents effect;
 comment : OUTPUT
@@ -101,11 +103,7 @@ comment : OUTPUT
 
 indents: INDENT | indents INDENT;
 tabs: TAB | tabs TAB;
-mark: MARK_ANY_PERMANENT | MARK_PERMANENT | MARK_ANY_SHARED | MARK_PARMSHARED | MARK_PURE | MARK_SHARED | MARK_ANY;
 field: GET_VALUE | GET_TIME;
 item_mod: SUB | SUMM | ASSUM
-
-sign: LESS | MORE | EQ | EQ_L | EQ_M | NONEQ | MUCHMORE | MUCHLESS;
-op: PLUS| MINUS | DIV | MUL;
 
 %%

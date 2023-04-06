@@ -1,13 +1,10 @@
 %{
-#include <stdio.h>
-#include <string.h>
-#include <stdbool.h>
+#include "effect_sup.h"
 #include "y.tab.h"
 
 bool term = false;
 #define yyterminate() return (term = !term) ? END : YY_NULL
-
-extern char high_buffer[512];
+#define returnMark(A) yylval.mark_t=(A); return MARK;
 
 %}
 %%
@@ -21,38 +18,33 @@ then            return THEN;
 this            return THIS;
 notfound        return NOTFOUND;
 else            return ELSE;
-\<              return LESS;
->               return MORE;
-'               return QUOTE;
-==              return EQ;
-=               return ASSUM;
-\<=             return EQ_L;
->=              return EQ_M;
-!=              return NONEQ;
-\<\<            return MUCHLESS;
->>              return MUCHMORE;
-\+              return PLUS;
-\-              return MINUS;
-\*              return MUL;
-\/              return DIV;
-\+\+            return SUMM;
---              return SUB;
 \.value         return GET_VALUE;
-;               return FINAL;
-\(              return BRACE_OPEN;
-\)              return BRACE_CLOSE;
 \.time          return GET_TIME;
-[A-Z_]+         strcpy(high_buffer, yytext); return EFFECT;
-:[^\n]+         strcpy(high_buffer, yytext+1); return OUTPUT;
-[0-9]+          yylval.num=atoi(yytext); return NUMBER;
-\(\)            return MARK_PURE;
-\(P\)           return MARK_PERMANENT;
-\(P\+\)         return MARK_ANY_PERMANENT;
-\(PS\)          return MARK_PARMSHARED;
-\(S\)           return MARK_SHARED;
-\(S\+\)         return MARK_ANY_SHARED;
-\(PS\+\)        return MARK_ANY;
+
 (\t|\ \ \ \ )   return TAB;
 [ \t]           return INDENT;
 \n              return NEWLINE;
+'               return QUOTE;
+;               return FINAL;
+\(              return BRACE_OPEN;
+\)              return BRACE_CLOSE;
+
+\+\+            return SUMM;
+--              return SUB;
+=               return ASSUM;
+
+(\<|>|==|\<=|>=|!=|\<\<|>>)     yylval.ch=strdup(yytext); return SIGN;
+[\+\-\*\/]                      yylval.ch=strdup(yytext); return OP;
+
+[A-Z_]+         yylval.ch=strdup(yytext); return EFFECT;
+:[^\n%]+        yylval.ch=strdup(yytext); return OUTPUT;
+[0-9]+          yylval.ch=strdup(yytext); return NUMBER;
+
+\(\)            returnMark(EFF_PURE);
+\(P\)           returnMark(EFF_PERMANENT);
+\(P\+\)         returnMark(EFF_PERMANENT_ANY);
+\(PS\)          returnMark(EFF_PERMASHARED);
+\(S\)           returnMark(EFF_SHARED);
+\(S\+\)         returnMark(EFF_SHARED_ANY);
+\(PS\+\)        returnMark(EFF_ANY);
 %%
