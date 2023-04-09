@@ -75,18 +75,15 @@ enum effect_t{
     MANA_RESTORE,
     FIRE_DAMAGE,
     ELECTRIC_DAMAGE,
-    ICE_DAMAGE
-};
+    ICE_DAMAGE,
 
-extern const char* effect_names[51];
-
-enum property_t{
+// propertyes
     HEALTH,
     MANA,
     STRENGTH
 };
 
-extern const char* property_names[3];
+extern const char* effect_names[];
 
 enum fraction{
     HUMANITY,

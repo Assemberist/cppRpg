@@ -1,6 +1,6 @@
 #include "object_defs.hpp"
 
-const char* effect_names[51] = {
+const char* effect_names[] = {
     "PHYSIC IMMUNITY",
     "MAGIC IMMUNITY",
     "POISON IMMUNITY",
@@ -56,10 +56,8 @@ const char* effect_names[51] = {
     "MANA RESTORE",
     "FIRE DAMAGE",
     "ELECTRIC DAMAGE",
-    "ICE DAMAGE"
-};
+    "ICE DAMAGE",
 
-const char* property_names[3] = {
     "HEALTH",
     "MANA",
     "STRENGTH"
