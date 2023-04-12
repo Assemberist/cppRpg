@@ -5,11 +5,9 @@
 size_t tabs = 0;
 size_t oldTabs = 0;
 
-effect_stack e_stack;
-e_stack.current = 0;
+effect_s current_effect;
 
-main_buffer m_buff;
-m_buff.tail = m_buff.buffer;
+char m_buff[2048];
 
 void yyerror(const char *str)
 {
@@ -23,7 +21,7 @@ int yywrap()
 
 int main()
 {
-        high_buffer[0] = '\0';
+        m_buff[0] = '\0';
         yyparse();
         puts("Done");
 }
@@ -39,39 +37,40 @@ int main()
 %token IF THEN FOUND NOTFOUND ELSE END
 %token EXIT PUT SET DELETE
 %token SUMM SUB ASSUM
-%token INDENT NEWLINE TAB FINAL QUOTE BRACE_OPEN BRACE_CLOSE
-%token MARK
+%token INDENT NEWLINE TAB FINAL QUOTE BRACE_OPEN BRACE_CLOSE COMMENT_BREAK
+%token <mark_t> MARK
 %token THIS GET_TIME GET_VALUE
 %token <ch> EFFECT OUTPUT NUMBER OP SIGN
 
 %%
-logic: sentences END;
+logic: sentences END { checkTabs(0, oldTabs);};
 
 sentences:
         | sentences sentence
-        | sentences NEWLINE;
+        | sentences NEWLINE { checkTabs(tabs, oldTabs); oldTabs = tabs; tabs = 0; };
 
 sentence: single_expression
         | tabs single_expression;
 
-single_expression   : action
-                    | condition indents action
-                    | condition;
+single_expression   : action { printf("ACTION\n"); }
+                    | condition indents action { printf(" ACTION }\n"); }
+                    | condition { puts(""); };
 
-condition   : IF indents FOUND indents item
-            | IF indents NOTFOUND indents item
-            | IF indents matan indents matan
-            | ELSE;
+condition   : IF indents FOUND indents item { checkTabs(tabs, oldTabs); impl_found(); }
+            | IF indents NOTFOUND indents item { checkTabs(tabs, oldTabs); impl_notfound(); }
+            | IF indents matan indents matan { checkTabs(tabs, oldTabs); impl_matan(); }
+            | ELSE { checkTabs(tabs, oldTabs); impl_else(); };
 
 item: effect
     | effect field
     | THIS
+    | THIS field
     | property;
 
-effect: EFFECT { effectFound(&e_stack, $1, EFF_PURE); }
-      | EFFECT MARK { effectFound(&e_stack, $1, $2); };
+effect: EFFECT { current_effect = (effect_s){$1, EFF_PURE}; }
+      | EFFECT MARK { current_effect = (effect_s){$1, $2}; };
 
-property: QUOTE EFFECT QUOTE;
+property: QUOTE EFFECT QUOTE { current_effect = (effect_s){$2, EFF_PROPERTY}; };
 
 expr: item
     | NUMBER
@@ -79,7 +78,7 @@ expr: item
     | expr indents OP indents NUMBER
     | BRACE_OPEN expr BRACE_CLOSE;
 
-matan: expr indents SIGN
+matan: expr indents SIGN {}
      | expr indents THEN;
 
 action  : set_value
@@ -99,10 +98,10 @@ put_effect: PUT indents effect BRACE_OPEN NUMBER BRACE_CLOSE
 
 delete_effect: DELETE indents effect;
 comment : OUTPUT
-        | OUTPUT '%' item;
+        | OUTPUT COMMENT_BREAK item;
 
 indents: INDENT | indents INDENT;
-tabs: TAB | tabs TAB;
+tabs: TAB {tabs++;} | tabs TAB {tabs++;};
 field: GET_VALUE | GET_TIME;
 item_mod: SUB | SUMM | ASSUM
 

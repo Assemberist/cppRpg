@@ -18,18 +18,12 @@ typedef enum item_t{
 } item_t;
 
 typedef struct expr_part{
-    item_t mark;
     char* name;
+    item_t mark;
 } effect_s;
 
-typedef struct effect_stack{
-    effect_s effects[20];
-    size_t current;
-} effect_stack;
-
-typedef struct main_buffer{
-    char buffer[512];
-    char* tail;
-} main_buffer;
-
-void effectFound(effect_stack* stack, char* name, item_t mark);
+void impl_found();
+void impl_notfound();
+void impl_matan();
+void impl_else();
+void checkTabs(size_t, size_t);

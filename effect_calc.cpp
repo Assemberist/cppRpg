@@ -2,7 +2,11 @@
 
 #ifdef DONT_LOG_STATE
     #define log_msg(A, B)
+    #define log_construct(...)
 #else
+    char buff[1024];
+
+    #define log_construct sprintf
     #define log_msg(A, B) if((A)){(A)->newline(B);}
 #endif
 
@@ -46,11 +50,8 @@ void state::act(effect_def type, effect e){
                 }
                 
                 if(j->second > e.timed.amount){
-                #ifndef DONT_LOG_STATE
-                    char buff[1024];
-                    sprintf(buff, "Received %4d of physic damage.\n", e.timed.amount);
+                    log_construct(buff, "Received %4d of physic damage.\n", e.timed.amount);
                     log_msg(state::l, buff);
-                #endif
                     j->second -= e.timed.amount;
                 }
                 else{
@@ -94,11 +95,9 @@ void state::act(effect_def type, effect e){
             }
 
             if(j != propertyes.end()){
-            #ifndef DONT_LOG_STATE
-                char buff[1024];
-                sprintf(buff, "Received %d of magic damage.\n", e.timed.amount);
+                log_construct(buff, "Received %d of magic damage.\n", e.timed.amount);
                 log_msg(state::l, buff);
-            #endif
+
                 if(j->second <= e.timed.amount){
                     log_msg(state::l, "This attack was letal.\n");
                     j->second = 0;
@@ -149,11 +148,9 @@ void state::act(effect_def type, effect e){
             }
 
             if(j != propertyes.end()){
-            #ifndef DONT_LOG_STATE
-                char buff[1024];
-                sprintf(buff, "Received %d of electric damage.\n", e.timed.amount);
+                log_construct(buff, "Received %d of electric damage.\n", e.timed.amount);
                 log_msg(state::l, buff);
-            #endif
+
                 if(j->second <= e.timed.amount){
                     log_msg(state::l, "This attack was letal.\n");
                     j->second = 0;
@@ -205,11 +202,9 @@ void state::act(effect_def type, effect e){
 
 
             if(j != propertyes.end()){
-            #ifndef DONT_LOG_STATE
-                char buff[1024];
-                sprintf(buff, "Received %d of fire damage.\n", e.timed.amount);
+                log_construct(buff, "Received %d of fire damage.\n", e.timed.amount);
                 log_msg(state::l, buff);
-            #endif
+
                 if(j->second <= e.timed.amount){
                     log_msg(state::l, "It was burned.\n");
                     j->second = 0;

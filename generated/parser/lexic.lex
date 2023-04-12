@@ -25,6 +25,7 @@ else            return ELSE;
 [ \t]           return INDENT;
 \n              return NEWLINE;
 '               return QUOTE;
+%               return COMMENT_BREAK;
 ;               return FINAL;
 \(              return BRACE_OPEN;
 \)              return BRACE_CLOSE;

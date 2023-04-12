@@ -4,7 +4,7 @@ run:
 build:
 	flex lexic.lex
 	yacc -d syntax.y
-	gcc lex.yy.c y.tab.c -o effect_reader
+	gcc lex.yy.c y.tab.c effect_sup.c -o effect_reader
 
 
 all: clean build run
