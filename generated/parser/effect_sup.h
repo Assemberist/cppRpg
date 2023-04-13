@@ -27,3 +27,6 @@ void impl_notfound();
 void impl_matan();
 void impl_else();
 void checkTabs(size_t, size_t);
+
+void build_expr(char* op);
+void add_braces();

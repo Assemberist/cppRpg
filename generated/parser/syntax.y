@@ -63,7 +63,7 @@ condition   : IF indents FOUND indents item { checkTabs(tabs, oldTabs); impl_fou
 
 item: effect
     | effect field
-    | THIS
+    | THIS { current_effect = (effect_s){"CRUSH_ATTACK_TEST", EFF_PURE}; }
     | THIS field
     | property;
 
@@ -72,11 +72,11 @@ effect: EFFECT { current_effect = (effect_s){$1, EFF_PURE}; }
 
 property: QUOTE EFFECT QUOTE { current_effect = (effect_s){$2, EFF_PROPERTY}; };
 
-expr: item
-    | NUMBER
-    | expr indents OP indents item
-    | expr indents OP indents NUMBER
-    | BRACE_OPEN expr BRACE_CLOSE;
+expr: item { build_expr(NULL); }
+    | NUMBER { current_effect = {$1. EFF_NUMBER}; build_expr(NULL); }
+    | expr indents OP indents item { build_expr($3); }
+    | expr indents OP indents NUMBER { build_expr($3); }
+    | BRACE_OPEN expr BRACE_CLOSE { add_braces(); };
 
 matan: expr indents SIGN {}
      | expr indents THEN;

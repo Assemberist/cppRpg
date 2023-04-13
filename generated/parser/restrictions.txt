@@ -1,0 +1,8 @@
+1.  "if not/found"-constructions binds generated c++ variables vith values. Every effect or property should be found
+    before it will be used.
+2.  All effects are suitable for mark will be used in expressions.
+3.  Don't use "_ANY"-marks (marks with '+') with effects in left part of set-instruction.
+4.  Field .value of effect is used in expressions implicitly when an effect is calculating. Field .time should be
+    updated explicitly.
+5.  "This" cannot be used with any mark.
+6.  Part of effects can be missed when mark "_ANY" is used.

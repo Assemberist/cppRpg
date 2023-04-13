@@ -1,4 +1,5 @@
 #include "effect_sup.h"
+#include <stdio.h>
 
 extern size_t tabs;
 extern effect_s current_effect;
@@ -11,7 +12,7 @@ void putTab(size_t size){
     small_buffer[4*size] = '\0';
 }
 
-char* single_effect(char c){
+void build_search(char c){
     putTab(tabs);
     switch (current_effect.mark) {
         case EFF_PURE:
@@ -48,7 +49,6 @@ char* single_effect(char c){
     }
 
     char* tail = m_buff + strlen(m_buff);
-    //strcat(small_buffer, "    ");
 
     switch(current_effect.mark){
         case EFF_PURE:
@@ -81,19 +81,30 @@ char* single_effect(char c){
             break;
 
         default:
-            return NULL;
+            break;
     }
 }
 
 void impl_found(){
-    // single_effect(' ');
+    // build_search(' ');
     // printf(m_buff);
     printf("find %s{", current_effect.name);
 }
 void impl_notfound(){ 
-    // single_effect('!');
+    // build_search('!');
     // printf(small_buffer);
     printf("neg_find %s{", current_effect.name);
+}
+
+void add_braces(){}
+
+void build_expr(char* op){
+    char* expr_end = strlen();
+
+    switch(current_effect.mark){
+        case EFF_PROPERTY:
+        
+    }
 }
 
 void impl_matan(){
