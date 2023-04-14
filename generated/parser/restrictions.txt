@@ -1,3 +1,5 @@
+Rules:
+
 1.  "if not/found"-constructions binds generated c++ variables vith values. Every effect or property should be found
     before it will be used.
 2.  All effects are suitable for mark will be used in expressions.
@@ -6,3 +8,9 @@
     updated explicitly.
 5.  "This" cannot be used with any mark.
 6.  Part of effects can be missed when mark "_ANY" is used.
+7.  fields of effects not realysed yet.
+8.  The compiler response only integer numbers.
+
+Possible improvements:
+1.  Implement mark "_ALL"
+2.  Avoid additional checks of effects (marks "_ANY" allow do not have one-three).

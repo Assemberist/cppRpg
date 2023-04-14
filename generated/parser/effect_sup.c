@@ -1,5 +1,4 @@
 #include "effect_sup.h"
-#include <stdio.h>
 
 extern size_t tabs;
 extern effect_s current_effect;
@@ -92,23 +91,63 @@ void impl_found(){
 }
 void impl_notfound(){ 
     // build_search('!');
-    // printf(small_buffer);
+    // printf(m_buff);
     printf("neg_find %s{", current_effect.name);
 }
 
-void add_braces(){}
+void add_braces(){
+    m_buff[0] = '(';
+    strcpy(small_buffer, m_buff);
+    strcpy(m_buff+1, small_buffer);
+    strcat(m_buff, ")");
+}
 
 void build_expr(char* op){
-    char* expr_end = strlen();
+    char* end = m_buff + strlen(m_buff);
+    if(op) *(end++) = *op;
 
     switch(current_effect.mark){
+        case EFF_THIS:
+            strcpy(end, "e->second.value");
+            break;
+
+        case EFF_PURE:
+            sprintf(end, "it_%s->second.value", current_effect.name);
+            break;
+
+        case EFF_PERMANENT:
         case EFF_PROPERTY:
-        
+            sprintf(end, "it_%s_P->second", current_effect.name);
+            break;
+
+        case EFF_SHARED:
+            sprintf(end, "it_%s_S->second.value", current_effect.name);
+            break;
+
+        case EFF_PERMASHARED:
+            sprintf(end, "it_%s_PS->second", current_effect.name);
+            break;
+
+        case EFF_NUMBER:
+            strcpy(end, current_effect.name);
+            break;
+
+        case EFF_SHARED_ANY:
+            sprintf(end, "((it_%s_S->second.value == effects.end() ? 0 : it_%s_S->second.value) + (it_%s_PS->second == effects_perm.end() ? 0 : it_%s_PS->second))", current_effect.name, current_effect.name, current_effect.name, current_effect.name);
+            break;
+
+        case EFF_PERMANENT_ANY:
+            sprintf(end, "((it_%s_P->second == effects_perm.end() ? 0 : it_%s_P->second) + (it_%s_PS->second == effects_perm.end() ? 0 : it_%s_PS->second))", current_effect.name, current_effect.name, current_effect.name, current_effect.name);
+            break;
+
+        case EFF_ANY:
+            sprintf(end, "((it_%s->second.value == effects.end() ? 0 : it_%s->second.value) + (it_%s_S->second.value == effects.end() ? 0 : it_%s_S->second.value) + (it_%s_P->second == effects_perm.end() ? 0 : it_%s_P->second) + (it_%s_PS->second == effects_perm.end() ? 0 : it_%s_PS->second))", current_effect.name, current_effect.name, current_effect.name, current_effect.name, current_effect.name, current_effect.name, current_effect.name, current_effect.name);
+            break;
     }
 }
 
 void impl_matan(){
-    printf("matan{");
+    printf("if(%s){", m_buff);
 }
 
 void impl_else(){

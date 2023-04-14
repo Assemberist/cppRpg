@@ -56,14 +56,14 @@ single_expression   : action { printf("ACTION\n"); }
                     | condition indents action { printf(" ACTION }\n"); }
                     | condition { puts(""); };
 
-condition   : IF indents FOUND indents item { checkTabs(tabs, oldTabs); impl_found(); }
-            | IF indents NOTFOUND indents item { checkTabs(tabs, oldTabs); impl_notfound(); }
-            | IF indents matan indents matan { checkTabs(tabs, oldTabs); impl_matan(); }
+condition   : IF indents FOUND indents item { checkTabs(tabs, oldTabs); impl_found(); m_buff[0] = '\0'; }
+            | IF indents NOTFOUND indents item { checkTabs(tabs, oldTabs); impl_notfound(); m_buff[0] = '\0'; }
+            | IF indents matan indents matan { checkTabs(tabs, oldTabs); impl_matan(); m_buff[0] = '\0'; }
             | ELSE { checkTabs(tabs, oldTabs); impl_else(); };
 
 item: effect
     | effect field
-    | THIS { current_effect = (effect_s){"CRUSH_ATTACK_TEST", EFF_PURE}; }
+    | THIS { current_effect = (effect_s){NULL, EFF_THIS}; }
     | THIS field
     | property;
 
@@ -73,12 +73,12 @@ effect: EFFECT { current_effect = (effect_s){$1, EFF_PURE}; }
 property: QUOTE EFFECT QUOTE { current_effect = (effect_s){$2, EFF_PROPERTY}; };
 
 expr: item { build_expr(NULL); }
-    | NUMBER { current_effect = {$1. EFF_NUMBER}; build_expr(NULL); }
+    | NUMBER { current_effect = (effect_s){$1, EFF_NUMBER}; build_expr(NULL); }
     | expr indents OP indents item { build_expr($3); }
     | expr indents OP indents NUMBER { build_expr($3); }
     | BRACE_OPEN expr BRACE_CLOSE { add_braces(); };
 
-matan: expr indents SIGN {}
+matan: expr indents SIGN { strcat(m_buff, $3); }
      | expr indents THEN;
 
 action  : set_value
@@ -88,8 +88,8 @@ action  : set_value
         | comment
         | action indents comment;
 
-set_value: SET indents item indents matan
-         | item indents item_mod indents expr FINAL;
+set_value: SET indents item indents expr { m_buff[0] = '\0'; }
+         | item indents item_mod indents expr FINAL { m_buff[0] = '\0'; };
 
 put_effect: PUT indents effect BRACE_OPEN NUMBER BRACE_CLOSE
           | PUT indents effect BRACE_OPEN NUMBER indents NUMBER BRACE_CLOSE

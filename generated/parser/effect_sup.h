@@ -14,7 +14,8 @@ typedef enum item_t{
     EFF_PERMASHARED,
     EFF_ANY,
     EFF_PROPERTY,
-    EFF_NUMBER
+    EFF_NUMBER,
+    EFF_THIS
 } item_t;
 
 typedef struct expr_part{

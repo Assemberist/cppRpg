@@ -4,9 +4,9 @@ if found PHYSIC_IMMUNITY(P) exit :Physic attacks had no effect.
 
 if notfound 'HEALTH' exit :It is can not be killed or broken.
 
-if found PHYSIC_PROTECT
+if found PHYSIC_PROTECT(PS+)
     if PHYSIC_PROTECT(PS+) >= this then exit :The armory too strong to deal a damage.
-    else this -- PHYSIC_PROTECT; :Attacked object have physic resistance.
+    else this -- PHYSIC_PROTECT(PS+); :Attacked object have physic resistance.
 
 if found PHYSIC_WEAKNESS
     this ++ PHYSIC_WEAKNESS; :Attacked object have physic weakness.
