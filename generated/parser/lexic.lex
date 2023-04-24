@@ -38,7 +38,7 @@ else            return ELSE;
 [\+\-\*\/]                      yylval.ch=strdup(yytext); return OP;
 
 [A-Z_]+         yylval.ch=strdup(yytext); return EFFECT;
-:[^\n%]+        yylval.ch=strdup(yytext); return OUTPUT;
+:[^\n%]+        yylval.ch=strdup(yytext+1); return OUTPUT;
 [0-9]+          yylval.ch=strdup(yytext); return NUMBER;
 
 \(\)            returnMark(EFF_PURE);

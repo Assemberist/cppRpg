@@ -43,7 +43,7 @@ int main()
 %token <ch> EFFECT OUTPUT NUMBER OP SIGN
 
 %%
-logic: sentences END { checkTabs(0, oldTabs);};
+logic: sentences END { checkTabs(0, oldTabs); };
 
 sentences:
         | sentences sentence
@@ -52,9 +52,9 @@ sentences:
 sentence: single_expression
         | tabs single_expression;
 
-single_expression   : action { printf("ACTION\n"); }
-                    | condition indents action { printf(" ACTION }\n"); }
-                    | condition { puts(""); };
+single_expression   : action { put_comment(); printf("ACTION\n"); clean_buffers(); }
+                    | condition indents action { put_comment(); printf(" ACTION }\n"); clean_buffers(); }
+                    | condition { puts(""); clean_buffers(); };
 
 condition   : IF indents FOUND indents item { checkTabs(tabs, oldTabs); impl_found(); m_buff[0] = '\0'; }
             | IF indents NOTFOUND indents item { checkTabs(tabs, oldTabs); impl_notfound(); m_buff[0] = '\0'; }
@@ -97,8 +97,8 @@ put_effect: PUT indents effect BRACE_OPEN NUMBER BRACE_CLOSE
           | PUT indents MARK indents effect BRACE_OPEN NUMBER indents NUMBER BRACE_CLOSE;
 
 delete_effect: DELETE indents effect;
-comment : OUTPUT
-        | OUTPUT COMMENT_BREAK item;
+comment : OUTPUT { write_comment($1); }
+        | OUTPUT COMMENT_BREAK item { write_comment_and_item($1); };
 
 indents: INDENT | indents INDENT;
 tabs: TAB {tabs++;} | tabs TAB {tabs++;};

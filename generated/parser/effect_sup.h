@@ -31,3 +31,11 @@ void checkTabs(size_t, size_t);
 
 void build_expr(char* op);
 void add_braces();
+
+void write_comment(char* src);
+void write_comment_and_item(char* src);
+
+void move_comment(size_t tabs);
+void put_comment();
+
+void clean_buffers();

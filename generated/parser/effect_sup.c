@@ -5,6 +5,7 @@ extern effect_s current_effect;
 extern char m_buff[2048];
 
 char small_buffer[2048];
+char arg_buffer[1024];
 
 void putTab(size_t size){
     memset(small_buffer, ' ', 4*size);
@@ -85,14 +86,16 @@ void build_search(char c){
 }
 
 void impl_found(){
-    // build_search(' ');
-    // printf(m_buff);
-    printf("find %s{", current_effect.name);
+    build_search(' ');
+    printf(m_buff);
+    // printf("find %s{", current_effect.name);
+    clean_buffers();
 }
 void impl_notfound(){ 
-    // build_search('!');
-    // printf(m_buff);
-    printf("neg_find %s{", current_effect.name);
+    build_search('!');
+    printf(m_buff);
+    // printf("neg_find %s{", current_effect.name);
+    clean_buffers();
 }
 
 void add_braces(){
@@ -147,11 +150,14 @@ void build_expr(char* op){
 }
 
 void impl_matan(){
-    printf("if(%s){", m_buff);
+    // printf("if(%s){", m_buff);
+    printf("if(matan){");
+    clean_buffers();
 }
 
 void impl_else(){
     printf("else{");
+
 }
 
 void checkTabs(size_t tab, size_t oldTab){
@@ -164,4 +170,56 @@ void checkTabs(size_t tab, size_t oldTab){
     putTab(tab);
     if(oldTab > tabs) putchar('\n');
     printf(small_buffer);
+    small_buffer[0] = '\0';
+}
+
+// use construction of comments with log_construct() every times.
+// do not forget clear it.
+
+// tabs needed here
+void write_comment(char* src){ strcat(small_buffer, src); }
+
+void write_comment_and_item(char* src){
+    char* end = small_buffer + strlen(small_buffer);
+    sprintf(end, "%s%%d", src);
+
+    end = arg_buffer + strlen(arg_buffer);
+    if(arg_buffer[0]){
+        strcpy(end, ", ");
+        end += 2;
+    }
+
+    switch(current_effect.mark){
+        case EFF_PERMANENT:
+        case EFF_PROPERTY:
+            sprintf(arg_buffer, "it_%s_P->second", current_effect.name); return;
+
+        case EFF_PURE:
+            sprintf(arg_buffer, "it_%s->second.value", current_effect.name); return;
+
+        case EFF_SHARED:
+            sprintf(arg_buffer, "it_%s_S->second.value", current_effect.name); return;
+
+        case EFF_PERMASHARED:
+            sprintf(arg_buffer, "it_%s_PS->second", current_effect.name); return;
+
+        case EFF_THIS:
+            sprintf(arg_buffer, "e.value");
+
+        default: return;
+    }
+}
+
+void put_comment(){ 
+    if(small_buffer[0]){
+        if(arg_buffer[0]) printf("printf(\"%s\", %s);\n", small_buffer, arg_buffer);
+        else printf("printf(\"%s\");\n", small_buffer);
+    }
+}
+
+
+void clean_buffers(){
+    small_buffer[0] = '\0';
+    m_buff[0] = '\0';
+    arg_buffer[0] = '\0';
 }

@@ -1,16 +1,30 @@
 Rules:
 
-1.  "if not/found"-constructions binds generated c++ variables vith values. Every effect or property should be found
-    before it will be used.
+1.  "if not/found"-constructions binds generated c++ variables vith values.
+    Every effect or property should be found before it will be used.
 2.  All effects are suitable for mark will be used in expressions.
-3.  Don't use "_ANY"-marks (marks with '+') with effects in left part of set-instruction.
-4.  Field .value of effect is used in expressions implicitly when an effect is calculating. Field .time should be
+3.  Don't use "_ANY"-marks (marks with '+') with effects in left part of
+    set-instruction.
+4.  Field .value of effect is used in expressions implicitly when an effect is
+    calculating. Field .time should be
     updated explicitly.
 5.  "This" cannot be used with any mark.
 6.  Part of effects can be missed when mark "_ANY" is used.
 7.  fields of effects not realysed yet.
 8.  The compiler response only integer numbers.
+9.  Comments can not make output from effects with "_ANY" mark.
+
+10. All functions should clear small buffer after using. Because comments can
+    concat each-other. 
+
+11. THIS effect always have pure type because it is calculation for function act().
+12. Allowed types of effects: PURE, PERMANENT(_ANY), SHARED(_ANY), PERMASHARED(_ANY), THIS.
 
 Possible improvements:
 1.  Implement mark "_ALL"
-2.  Avoid additional checks of effects (marks "_ANY" allow do not have one-three).
+2.  Avoid additional checks of effects (marks "_ANY" allow do not have
+    one-three).
+3.  Find way of comment writing without log_construct if it is not needed. 
+4.  Optimize writing of text in effect_sup.c: too much duplicated text (it_%s),
+    too much finds of line end with strlen().
+5.  To fix tabulation (For comments and actions).
