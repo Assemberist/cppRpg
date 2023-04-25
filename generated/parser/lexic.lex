@@ -23,12 +23,8 @@ else            return ELSE;
 
 (\t|\ \ \ \ )   return TAB;
 [ \t]           return INDENT;
-\n              return NEWLINE;
-'               return QUOTE;
-%               return COMMENT_BREAK;
-;               return FINAL;
-\(              return BRACE_OPEN;
-\)              return BRACE_CLOSE;
+
+[\n'%;\(\)]     return yytext[0];
 
 \+\+            return SUMM;
 --              return SUB;

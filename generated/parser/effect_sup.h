@@ -38,4 +38,9 @@ void write_comment_and_item(char* src);
 void move_comment(size_t tabs);
 void put_comment();
 
+void impl_delete();
+void impl_set(effect_s eff, const char* op, size_t num);
+void impl_put_permanent(char* val, size_t tabs);
+void impl_put(char* val, char* time, size_t tabs);
+
 void clean_buffers();

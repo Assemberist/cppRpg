@@ -19,12 +19,14 @@ Rules:
 
 11. THIS effect always have pure type because it is calculation for function act().
 12. Allowed types of effects: PURE, PERMANENT(_ANY), SHARED(_ANY), PERMASHARED(_ANY), THIS.
+13. Set operation is permitted because item($3) will be lost due to expr($5) will be
+    calculated. Use second body as WA.
 
 Possible improvements:
 1.  Implement mark "_ALL"
 2.  Avoid additional checks of effects (marks "_ANY" allow do not have
     one-three).
-3.  Find way of comment writing without log_construct if it is not needed. 
 4.  Optimize writing of text in effect_sup.c: too much duplicated text (it_%s),
     too much finds of line end with strlen().
 5.  To fix tabulation (For comments and actions).
+6.  Set type of effect to "effect" token-group.

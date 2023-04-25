@@ -10,6 +10,4 @@ build:
 all: clean build run
 
 clean:
-	rm *.c
-	rm *.h
-	rm effect_reader
+	rm effect_reader lex.yy.c y.tab.h y.tab.c

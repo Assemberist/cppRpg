@@ -111,7 +111,7 @@ void build_expr(char* op){
 
     switch(current_effect.mark){
         case EFF_THIS:
-            strcpy(end, "e->second.value");
+            strcpy(end, "e.value");
             break;
 
         case EFF_PURE:
@@ -150,8 +150,8 @@ void build_expr(char* op){
 }
 
 void impl_matan(){
-    // printf("if(%s){", m_buff);
-    printf("if(matan){");
+    printf("if(%s){", m_buff);
+    // printf("if(matan){");
     clean_buffers();
 }
 
@@ -179,6 +179,28 @@ void checkTabs(size_t tab, size_t oldTab){
 // tabs needed here
 void write_comment(char* src){ strcat(small_buffer, src); }
 
+void put_sinle_effect_val(char* dest, effect_s* eff){
+    switch(eff->mark){
+        case EFF_PERMANENT:
+        case EFF_PROPERTY:
+            sprintf(dest, "it_%s_P->second", eff->name); return;
+
+        case EFF_PURE:
+            sprintf(dest, "it_%s->second.value", eff->name); return;
+
+        case EFF_SHARED:
+            sprintf(dest, "it_%s_S->second.value", eff->name); return;
+
+        case EFF_PERMASHARED:
+            sprintf(dest, "it_%s_PS->second", eff->name); return;
+
+        case EFF_THIS:
+            sprintf(dest, "e.value");
+
+        default: return;
+    }
+}
+
 void write_comment_and_item(char* src){
     char* end = small_buffer + strlen(small_buffer);
     sprintf(end, "%s%%d", src);
@@ -189,32 +211,45 @@ void write_comment_and_item(char* src){
         end += 2;
     }
 
-    switch(current_effect.mark){
-        case EFF_PERMANENT:
-        case EFF_PROPERTY:
-            sprintf(arg_buffer, "it_%s_P->second", current_effect.name); return;
-
-        case EFF_PURE:
-            sprintf(arg_buffer, "it_%s->second.value", current_effect.name); return;
-
-        case EFF_SHARED:
-            sprintf(arg_buffer, "it_%s_S->second.value", current_effect.name); return;
-
-        case EFF_PERMASHARED:
-            sprintf(arg_buffer, "it_%s_PS->second", current_effect.name); return;
-
-        case EFF_THIS:
-            sprintf(arg_buffer, "e.value");
-
-        default: return;
-    }
+    put_sinle_effect_val(end, &current_effect);
 }
 
 void put_comment(){ 
     if(small_buffer[0]){
-        if(arg_buffer[0]) printf("printf(\"%s\", %s);\n", small_buffer, arg_buffer);
+        if(arg_buffer[0]) printf("sprintf(buff, \"%s\", %s);\nprintf(buff);\n", small_buffer, arg_buffer);
         else printf("printf(\"%s\");\n", small_buffer);
     }
+}
+
+// todo
+void impl_delete(){
+
+}
+
+void impl_set(effect_s eff, const char* op, size_t tabs){
+    putTab(tabs);
+    char* end = small_buffer + tabs * 4;
+    put_sinle_effect_val(end, &eff);
+    strcat(end, op);
+    strcat(end, m_buff);
+    strcat(end, ";\n");
+    strcpy(m_buff, small_buffer);
+    printf(m_buff);
+    small_buffer[0] = '\0';
+}
+
+void impl_put_permanent(char* val, size_t tabs){
+    putTab(tabs);
+    char isShared = current_effect.mark == EFF_PERMASHARED ? '1' : '0';
+    sprintf(m_buff, "%seffects_perm.insert({{%c, %s}, {%s}});", small_buffer, isShared, current_effect.name, val);
+    small_buffer[0] = '\0';
+}
+
+void impl_put(char* val, char* time, size_t tabs){
+    putTab(tabs);
+    char isShared = current_effect.mark == EFF_SHARED ? '1' : '0';
+    sprintf(m_buff, "%seffects.insert({{%c, %s}, {%s, %s}});", small_buffer, isShared, current_effect.name, val, time);
+    small_buffer[0] = '\0';
 }
 
 
