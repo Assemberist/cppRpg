@@ -1,0 +1,14 @@
+#include "state.hpp"
+
+#ifdef DONT_LOG_STATE
+    #define log_msg(A, B)
+    #define log_construct(...)
+#else
+    char buff[1024];
+
+    #define log_construct sprintf
+    #define log_msg(A, B) if((A)){(A)->newline(B);}
+#endif
+
+void state::act(effect_def type, effect e){
+    switch(type.type){

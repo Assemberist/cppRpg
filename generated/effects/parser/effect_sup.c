@@ -111,11 +111,11 @@ void build_expr(char* op){
 
     switch(current_effect.mark){
         case EFF_THIS:
-            strcpy(end, "e.value");
+            strcpy(end, "e.amount");
             break;
 
         case EFF_PURE:
-            sprintf(end, "it_%s->second.value", current_effect.name);
+            sprintf(end, "it_%s->second.amount", current_effect.name);
             break;
 
         case EFF_PERMANENT:
@@ -124,7 +124,7 @@ void build_expr(char* op){
             break;
 
         case EFF_SHARED:
-            sprintf(end, "it_%s_S->second.value", current_effect.name);
+            sprintf(end, "it_%s_S->second.amount", current_effect.name);
             break;
 
         case EFF_PERMASHARED:
@@ -136,15 +136,15 @@ void build_expr(char* op){
             break;
 
         case EFF_SHARED_ANY:
-            sprintf(end, "((it_%s_S->second.value == effects.end() ? 0 : it_%s_S->second.value) + (it_%s_PS->second == effects_perm.end() ? 0 : it_%s_PS->second))", current_effect.name, current_effect.name, current_effect.name, current_effect.name);
+            sprintf(end, "((it_%s_S == effects.end() ? 0 : it_%s_S->second.amount) + (it_%s_PS == effects_perm.end() ? 0 : it_%s_PS->second))", current_effect.name, current_effect.name, current_effect.name, current_effect.name);
             break;
 
         case EFF_PERMANENT_ANY:
-            sprintf(end, "((it_%s_P->second == effects_perm.end() ? 0 : it_%s_P->second) + (it_%s_PS->second == effects_perm.end() ? 0 : it_%s_PS->second))", current_effect.name, current_effect.name, current_effect.name, current_effect.name);
+            sprintf(end, "((it_%s_P == effects_perm.end() ? 0 : it_%s_P->second) + (it_%s_PS == effects_perm.end() ? 0 : it_%s_PS->second))", current_effect.name, current_effect.name, current_effect.name, current_effect.name);
             break;
 
         case EFF_ANY:
-            sprintf(end, "((it_%s->second.value == effects.end() ? 0 : it_%s->second.value) + (it_%s_S->second.value == effects.end() ? 0 : it_%s_S->second.value) + (it_%s_P->second == effects_perm.end() ? 0 : it_%s_P->second) + (it_%s_PS->second == effects_perm.end() ? 0 : it_%s_PS->second))", current_effect.name, current_effect.name, current_effect.name, current_effect.name, current_effect.name, current_effect.name, current_effect.name, current_effect.name);
+            sprintf(end, "((it_%s == effects.end() ? 0 : it_%s->second.amount) + (it_%s_S == effects.end() ? 0 : it_%s_S->second.amount) + (it_%s_P == effects_perm.end() ? 0 : it_%s_P->second) + (it_%s_PS == effects_perm.end() ? 0 : it_%s_PS->second))", current_effect.name, current_effect.name, current_effect.name, current_effect.name, current_effect.name, current_effect.name, current_effect.name, current_effect.name);
             break;
     }
 }
@@ -186,16 +186,16 @@ void put_sinle_effect_val(char* dest, effect_s* eff){
             sprintf(dest, "it_%s_P->second", eff->name); return;
 
         case EFF_PURE:
-            sprintf(dest, "it_%s->second.value", eff->name); return;
+            sprintf(dest, "it_%s->second.amount", eff->name); return;
 
         case EFF_SHARED:
-            sprintf(dest, "it_%s_S->second.value", eff->name); return;
+            sprintf(dest, "it_%s_S->second.amount", eff->name); return;
 
         case EFF_PERMASHARED:
             sprintf(dest, "it_%s_PS->second", eff->name); return;
 
         case EFF_THIS:
-            sprintf(dest, "e.value");
+            sprintf(dest, "e.amount");
 
         default: return;
     }
@@ -216,8 +216,8 @@ void write_comment_and_item(char* src){
 
 void put_comment(){ 
     if(small_buffer[0]){
-        if(arg_buffer[0]) printf("sprintf(buff, \"%s\", %s);\nprintf(buff);\n", small_buffer, arg_buffer);
-        else printf("printf(\"%s\");\n", small_buffer);
+        if(arg_buffer[0]) printf("log_construct(buff, \"%s\", %s);\nlog_msg(state::l, buff);\n", small_buffer, arg_buffer);
+        else printf("log_msg(state::l, \"%s\");\n", small_buffer);
     }
 }
 

@@ -24,7 +24,6 @@ int main()
 {
         m_buff[0] = '\0';
         yyparse();
-        puts("Done");
 }
 
 %}
