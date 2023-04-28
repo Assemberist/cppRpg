@@ -1,0 +1,21 @@
+@startuml
+
+node "effects" {
+    [effect_reader]
+
+    node "parser" {
+        [lexic.lex] --> [effect_reader] : flex
+        [syntax.y] --> [effect_reader] : bison
+        [effect_sup.c] --> [effect_reader]
+        [effect_sup.h] --> [effect_reader]
+    }
+
+    [EFFECT.eff] .> [effect_reader]
+    [effect_reader] .> [EFFECT.part]
+
+    [head.stdpart] --> [effect_calc.cpp] : 1
+    [EFFECT.part] --> [effect_calc.cpp] : 2
+    [end.stdpart] --> [effect_calc.cpp] : 3
+}
+
+@enduml
