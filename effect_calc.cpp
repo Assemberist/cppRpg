@@ -13,50 +13,50 @@
 void state::act(effect_def type, effect e){
     switch(type.type){
         case CRUSH_ATTACK:{
-            if(effects.find({false, false, DEAD}) != effects.end()){
+            if(effects_perm.find({false, DEAD}) != effects_perm.end()){
                 log_msg(state::l, "Stop punch the dead body!\n");
                 return;
             }
 
-            if(effects.find({false, false, PHYSIC_IMMUNITY}) != effects.end()){
+            if(effects.find({false, PHYSIC_IMMUNITY}) != effects.end()){
                 log_msg(state::l, "Physic attacks had no effect.\n");
                 return;
             }
 
-            auto i = effects.find({false, false, PHYSIC_PROTECT});
-            auto j = propertyes.find(HEALTH);
+            auto i = effects.find({false, PHYSIC_PROTECT});
+            auto j = effects_perm.find({0, HEALTH});
             
             if(i != effects.end()){
                 log_msg(state::l, "Attacked object have physic resistance.\n");
-                if(i->second.timed.amount > e.timed.amount){
+                if(i->second.amount > e.amount){
                     log_msg(state::l, "The armory too strong to deal a damage.\n");
                     return;
                 }
-                e.timed.amount -= i->second.timed.amount;
+                e.amount -= i->second.amount;
             }
             
-            if((i = effects.find({false, false, PHYSIC_WEAKNESS})) != effects.end()){
+            if((i = effects.find({false, PHYSIC_WEAKNESS})) != effects.end()){
                 log_msg(state::l, "Attacked object have physic weakness.\n");
-                e.timed.amount += i->second.timed.amount;
+                e.amount += i->second.amount;
             }
 
-            if(j != propertyes.end()){
-                if((i = effects.find({false, false, FRIZED})) != effects.end()){
-                    if(j->second < e.timed.amount / 2){
+            if(j != effects_perm.end()){
+                if((i = effects.find({false, FRIZED})) != effects.end()){
+                    if(j->second < e.amount / 2){
                         log_msg(state::l, "It was splitted open.\n");
-                        effects.insert({{false, false, DEAD}, {0, 0, 0}});
+                        effects_perm.insert({{false, DEAD}, 0});
                         return;
                     }
                 }
                 
-                if(j->second > e.timed.amount){
-                    log_construct(buff, "Received %4d of physic damage.\n", e.timed.amount);
+                if(j->second > e.amount){
+                    log_construct(buff, "Received %4d of physic damage.\n", e.amount);
                     log_msg(state::l, buff);
-                    j->second -= e.timed.amount;
+                    j->second -= e.amount;
                 }
                 else{
                     log_msg(state::l, "It is killed.\n");
-                    effects.insert({{false, false, DEAD}, {0, 0, 0}});
+                    effects_perm.insert({{false, DEAD}, 0});
                 }
             }
             else{
@@ -67,44 +67,44 @@ void state::act(effect_def type, effect e){
         }
 
         case MAGIC_ATTACK:{
-            if(effects.find({false, false, DEAD}) != effects.end()){
+            if(effects_perm.find({false, DEAD}) != effects_perm.end()){
                 log_msg(state::l, "Attakc magic will not make he alive.\n");
                 return;
             }
 
-            if(effects.find({false, false, MAGIC_IMMUNITY}) != effects.end()){
+            if(effects.find({false, MAGIC_IMMUNITY}) != effects.end()){
                 log_msg(state::l, "Magic attack was not effect.\n");
                 return;
             }
 
-            auto i = effects.find({false, false, MAGIC_PROTECT});
-            auto j = propertyes.find(HEALTH);
+            auto i = effects_perm.find({false, MAGIC_PROTECT});
+            auto j = effects_perm.find({0, HEALTH});
 
-            if(i != effects.end()){
+            if(i != effects_perm.end()){
                 log_msg(state::l, "Antimagic aura decrease power of the magic.\n");
-                if(i->second.timed.amount >= e.timed.amount){
+                if(i->second >= e.amount){
                     log_msg(state::l, "The magic was destroyed.\n");
                     return;
                 }
-                e.timed.amount -= i->second.timed.amount;
+                e.amount -= i->second;
             }
 
-            if((i = effects.find({false, false, MAGIC_WEAKNESS})) != effects.end()){
+            if((i = effects_perm.find({false, MAGIC_WEAKNESS})) != effects_perm.end()){
                 log_msg(state::l, "Object have weakness before magic.\n");
-                e.timed.amount += i->second.timed.amount;
+                e.amount += i->second;
             }
 
-            if(j != propertyes.end()){
-                log_construct(buff, "Received %d of magic damage.\n", e.timed.amount);
+            if(j != effects_perm.end()){
+                log_construct(buff, "Received %d of magic damage.\n", e.amount);
                 log_msg(state::l, buff);
 
-                if(j->second <= e.timed.amount){
+                if(j->second <= e.amount){
                     log_msg(state::l, "This attack was letal.\n");
                     j->second = 0;
-                    effects.insert({{false, false, DEAD}, {0, 0, 0}});
+                    effects_perm.insert({{false, DEAD}, 0});
                 }
                 else{
-                    j->second -= e.timed.amount;
+                    j->second -= e.amount;
                 }
             }
             else{
@@ -115,49 +115,49 @@ void state::act(effect_def type, effect e){
         }
 
         case ELECTRIC_DAMAGE:{
-            if(effects.find({false, false, DEAD}) != effects.end()){
+            if(effects_perm.find({false, DEAD}) != effects_perm.end()){
                 log_msg(state::l, "Defibrilation had not effect.\n");
                 return;
             }
 
-            if(effects.find({false, false, DIELECTRIC}) != effects.end()){
+            if(effects.find({false, DIELECTRIC}) != effects.end()){
                 log_msg(state::l, "It is dielectric.\n");
                 return;
             }
 
-            auto i = effects.find({false, false, ELECTRIC_PROTECT});
-            auto j = propertyes.find(HEALTH);
+            auto i = effects.find({false, ELECTRIC_PROTECT});
+            auto j = effects_perm.find({0, HEALTH});
 
             if(i != effects.end()){
                 log_msg(state::l, "Smh dielectric decreased damage.\n");
-                if(i->second.timed.amount >= e.timed.amount){
+                if(i->second.amount >= e.amount){
                     log_msg(state::l, "Dielectric neutralise all damage.\n");
                     return;
                 }
-                e.timed.amount -= i->second.timed.amount;
+                e.amount -= i->second.amount;
             }
 
-            if((i = effects.find({false, false, ELECTRIC_WEAKNESS})) != effects.end()){
+            if((i = effects.find({false, ELECTRIC_WEAKNESS})) != effects.end()){
                 log_msg(state::l, "Object have weakness before electric.\n");
-                e.timed.amount += i->second.timed.amount;
+                e.amount += i->second.amount;
             }
 
-            if((i = effects.find({false, false, WET})) != effects.end()){
+            if((i = effects.find({false, WET})) != effects.end()){
                 log_msg(state::l, "Wet objects have weakeness before electric.\n");
-                e.timed.amount *= 1.5;
+                e.amount *= 1.5;
             }
 
-            if(j != propertyes.end()){
-                log_construct(buff, "Received %d of electric damage.\n", e.timed.amount);
+            if(j != effects_perm.end()){
+                log_construct(buff, "Received %d of electric damage.\n", e.amount);
                 log_msg(state::l, buff);
 
-                if(j->second <= e.timed.amount){
+                if(j->second <= e.amount){
                     log_msg(state::l, "This attack was letal.\n");
                     j->second = 0;
-                    effects.insert({{false, false, DEAD}, {0, 0, 0}});
+                    effects_perm.insert({{false, DEAD}, 0});
                 }
                 else{
-                    j->second -= e.timed.amount;
+                    j->second -= e.amount;
                 }
             }
             else{
@@ -168,50 +168,49 @@ void state::act(effect_def type, effect e){
         }
 
         case FIRE_DAMAGE:{
-            if(effects.find({false, false, DEAD}) != effects.end()){
+            if(effects_perm.find({false, DEAD}) != effects_perm.end()){
                 log_msg(state::l, "The fire will clean this object. Or not.\n");
                 return;
             }
 
-            if(effects.find({false, false, UNFLAMED}) != effects.end()){
+            if(effects.find({false, UNFLAMED}) != effects.end()){
                 log_msg(state::l, "It can not burns.\n");
                 return;
             }
 
-            auto i = effects.find({false, false, FIRE_PROTECT});
-            auto j = propertyes.find(HEALTH);
+            auto i = effects.find({false, FIRE_PROTECT});
+            auto j = effects_perm.find({0, HEALTH});
 
             if(i != effects.end()){
                 log_msg(state::l, "Fire goes weaker.\n");
-                if(i->second.timed.amount >= e.timed.amount){
+                if(i->second.amount >= e.amount){
                     log_msg(state::l, "Fire disappired.\n");
                     return;
                 }
-                e.timed.amount -= i->second.timed.amount;
+                e.amount -= i->second.amount;
             }
 
-            if((i = effects.find({false, false, WET})) != effects.end()){
+            if((i = effects.find({false, WET})) != effects.end()){
                 log_msg(state::l, "Wet objects whorse fireing.\n");
-                e.timed.amount /= 2;
+                e.amount /= 2;
             }
             
-            if((i = effects.find({false, false, FIRE_WEAKNESS})) != effects.end()){
+            if((i = effects.find({false, FIRE_WEAKNESS})) != effects.end()){
                 log_msg(state::l, "Object is burning very good.\n");
-                e.timed.amount += i->second.timed.amount;
+                e.amount += i->second.amount;
             }
 
-
-            if(j != propertyes.end()){
-                log_construct(buff, "Received %d of fire damage.\n", e.timed.amount);
+            if(j != effects_perm.end()){
+                log_construct(buff, "Received %d of fire damage.\n", e.amount);
                 log_msg(state::l, buff);
 
-                if(j->second <= e.timed.amount){
+                if(j->second <= e.amount){
                     log_msg(state::l, "It was burned.\n");
                     j->second = 0;
-                    effects.insert({{false, false, DEAD}, {0, 0, 0}});
+                    effects_perm.insert({{false, DEAD}, 0});
                 }
                 else{
-                    j->second -= e.timed.amount;
+                    j->second -= e.amount;
                 }
             }
             else{

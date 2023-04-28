@@ -1,5 +1,6 @@
 #include <climits>
 #include "items.hpp"
+#include "state.hpp"
 #include "user_ifc.hpp"
 #include "spell.hpp"
 #include "text_field.hpp"
@@ -44,8 +45,8 @@ text_log* create_log_effects(state* stat){
     for(auto i = stat->effects.begin(); i != stat->effects.end(); i++){
         sprintf(buffer, "%30s Tim %4d Val %4d\n",
             effect_names[i->first.type],
-            i->second.timed.time,
-            i->second.timed.amount
+            i->second.time,
+            i->second.amount
         );
 
         new_log->newline(buffer);
@@ -59,9 +60,9 @@ text_log* create_log_properties(state* stat){
 
     text_log* new_log = new text_log(10, 50, 12, 12);
 
-    for(auto i = stat->propertyes.begin(); i != stat->propertyes.end(); i++){
+    for(auto i = stat->effects_perm.begin(); i != stat->effects_perm.end(); i++){
         sprintf(buffer, "%30s Val %4d\n",
-            property_names[i->first],
+            effect_names[i->first.type],
             i->second
         );
 
@@ -339,7 +340,7 @@ bool user_turn(object* u, screen s){
                                     ; // execute spells
                             
                             for(auto i = item_to_use->stat.effects.begin(); i != item_to_use->stat.effects.end(); i++){
-                                if(get_effect_behavior(i->first) == SHARED){
+                                if(is_shared(i->first) == SHARED){
                                     effect_def e = i->first;
                                     e.is_shared = false;
                                     u->act(e, i->second);
@@ -369,8 +370,8 @@ bool user_turn(object* u, screen s){
                                 search_targets(nullptr, s, 0);
                                 goto link_0;
                                 while(single_target){
-                                    single_target->stat.act({0,1,FIRE_DAMAGE}, {0, 0, 25});
-                                    single_target->stat.act({0,1,MAGIC_ATTACK}, {0, 0, 5});
+                                    single_target->stat.act({1,FIRE_DAMAGE}, {0, 25});
+                                    single_target->stat.act({1,MAGIC_ATTACK}, {0, 5});
                                 link_0:
                                     single_target = search_targets(tar, s, 2);
                                 }

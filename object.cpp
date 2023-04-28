@@ -9,7 +9,7 @@ const char* object::get_name(){ return name.c_str(); }
 fraction object::get_fraction(){ return fract; }
 map<spell_t, spell>& object::get_spells(){ return spells; }
 
-bool object::is_alive(){ return !stat.there_is_effect(DEAD); }
+bool object::is_alive(){ return !stat.is_there_effect_perm(DEAD); }
 void object::set_behavior(behavior_t bhv){ behavior = bhv; }
 
 void object::put_spell (spell_t type, spell sp) { spells.insert({type, sp}); }
@@ -95,20 +95,17 @@ void object::act(effect_def def, effect e){
                 continue;
 
             effect part = {
-                .timed = {
-                    false,
-                    static_cast<int16_t>(e.timed.time >> 1),
-                    static_cast<int16_t>(rand() % e.timed.amount)
-                }
+                static_cast<int16_t>(e.time >> 1),
+                static_cast<int16_t>(rand() % e.amount)
             };
 
-            e.timed.amount -= part.timed.amount;
+            e.amount -= part.amount;
             equipment[i].stat.act(def, part);
 
-            if(!e.timed.amount) {
+            if(!e.amount) {
                 while(i--)
                     if(equipment[i].info.type_name != NOTHING_ITEM)
-                        equipment[i].stat.act(def, {false, static_cast<int16_t>(e.timed.time >> 1), 0});
+                        equipment[i].stat.act(def, {static_cast<int16_t>(e.time >> 1), 0});
 
                 break;
             }
@@ -124,12 +121,12 @@ bool object::equip(vector<item>::iterator it){
             equipment[j].info.type_name == NOTHING_ITEM){
                 equipment[j] = *it;
                 inventory.erase(it);
-                for(auto i = it->stat.effects.begin(); i != it->stat.effects.end(); i++){
-                    if(i->first.is_permanent && i->first.is_shared){
-                        auto eff = stat.effects.find(i->first);
-                        if(eff == stat.effects.end()) eff->second.large += i->second.large;
+                for(auto i = it->stat.effects_perm.begin(); i != it->stat.effects_perm.end(); i++){
+                    if(i->first.is_shared){
+                        auto eff = stat.effects_perm.find(i->first);
+                        if(eff == stat.effects_perm.end()) eff->second += i->second;
                         // permanent shared effects should have time = 1 and is_long = 0
-                        else stat.effects.insert(*i);
+                        else stat.effects_perm.insert(*i);
                     }
                 }
                 return true;
@@ -140,11 +137,10 @@ bool object::equip(vector<item>::iterator it){
 
 bool object::unequip(vector<item>::iterator it){
     // here can be check of possibilty to unequip item.
-    for(auto i = it->stat.effects.begin(); i != it->stat.effects.end(); i++){
-        if(i->first.is_permanent && i->first.is_shared){
-            auto eff = stat.effects.find(i->first);
-            if(eff->second.timed.time > 1) eff->second.large -= i->second.large;
-            else stat.effects.erase(eff);
+    for(auto i = it->stat.effects_perm.begin(); i != it->stat.effects_perm.end(); i++){
+        if(i->first.is_shared){
+            auto eff = stat.effects_perm.find(i->first);
+            eff->second -= i->second;
         }
     }
     inventory.end() - 1;

@@ -13,20 +13,15 @@
 using namespace std;
 
 struct effect_def{
-    bool is_permanent:1;
     bool is_shared:1;
-    effect_t type:14;
+    effect_t type:15;
 };
 
 bool operator<(const effect_def& a, const effect_def& b);
 
-union effect{
-    struct{
-        int16_t is_long:1;
-        int16_t time:15;
-        int16_t amount;
-    } timed;
-    int32_t large;
+struct effect{
+    int16_t time;
+    int16_t amount;
 };
 
 enum effect_bhf{
@@ -37,7 +32,7 @@ enum effect_bhf{
 };
 
 struct state{
-    map<property_t, int16_t> propertyes;
+    map<effect_def, int16_t> effects_perm;
     map<effect_def, effect> effects;
 
     static log* l;
@@ -48,11 +43,12 @@ struct state{
     effect* get_effect(effect_def type);
     bool there_is_effect(effect_t type);
     bool there_is_effect(effect_def type);
+    bool is_there_effect_perm(effect_t type);
 
-    int16_t* get_property(property_t type);
-    bool there_is_property(property_t type);
+    int16_t* get_effect_perm(effect_def type);
+    bool there_is_property(effect_def type);
 
-    bool request_property(property_t prop, int16_t value);
+    bool request_property(effect_def prop, int16_t value);
 };
 
-effect_bhf get_effect_behavior(effect_def def);
+bool is_shared(effect_def def);
