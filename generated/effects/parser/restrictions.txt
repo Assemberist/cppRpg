@@ -30,3 +30,6 @@ Possible improvements:
     too much finds of line end with strlen().
 5.  To fix tabulation (For comments and actions).
 6.  Set type of effect to "effect" token-group.
+
+Bug:
+1.  Can't correctly close braces (if-levels).

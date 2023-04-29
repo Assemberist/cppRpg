@@ -1,0 +1,17 @@
+if found DEAD(P) exit :Magic attack will not make he alive.
+
+if found MAGIC_IMMUNITY(P) exit :Magic attack was not effect.
+
+if notfound 'HEALTH' exit :It can't be killed or broken.
+
+if found MAGIC_PROTECT(P)
+    if MAGIC_PROTECT(P) >= this then exit :The magic was destroyed.
+    else this -- MAGIC_PROTECT(P); :Antimagic aura decrease power of the magic.
+
+if found MAGIC_WEAKNESS
+    this ++ MAGIC_WEAKNESS; :Object have weakness before magic.
+
+if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : damage by magic.\n
+else
+    'HEALTH' = 0;
+    put DEAD(0) :was killed.\n

@@ -19,4 +19,4 @@ if found FRIZED
 if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : of physic damage.\n
 else
     'HEALTH' = 0;
-    put DEAD(0 0) :was killed.\n
+    put DEAD(0) :was killed.\n

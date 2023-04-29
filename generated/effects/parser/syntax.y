@@ -37,7 +37,7 @@ int main()
 
 %token IF THEN FOUND NOTFOUND ELSE END
 %token EXIT PUT SET DELETE
-%token SUMM SUB ASSUM
+%token SUMM SUB ASSUM MOD_DIV MOD_MUL
 %token INDENT TAB
 %token <mark_t> MARK
 %token THIS GET_TIME GET_VALUE
@@ -108,6 +108,8 @@ tabs: TAB {tabs++;} | tabs TAB {tabs++;};
 field: GET_VALUE | GET_TIME;
 item_mod: SUB { help_effect = current_effect; $$ = "-="; }
         | SUMM { help_effect = current_effect; $$ = "+="; }
-        | ASSUM { help_effect = current_effect; $$ = "="; };
+        | ASSUM { help_effect = current_effect; $$ = "="; }
+        | MOD_DIV { help_effect = current_effect; $$ = "\\="; }
+        | MOD_MUL { help_effect = current_effect; $$ = "*="; };
 
 %%

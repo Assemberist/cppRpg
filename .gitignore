@@ -2,3 +2,4 @@ test
 *.txt
 obj/*
 diagram/*.png
+effect_calc.cpp

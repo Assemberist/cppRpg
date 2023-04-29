@@ -1,0 +1,23 @@
+if found DEAD(P) exit :The fire will clean this object. Or not.
+
+if found UNFLAMED(P) exit :It can not burns.
+
+if notfound 'HEALTH' exit :It can't be killed or broken.
+
+if found FIRE_PROTECT(P)
+    if FIRE_PROTECT(P) >= this then exit :Fire disappired.
+    else this -- FIRE_PROTECT(P); :Fire goes weaker.
+
+if found FIRE_WEAKNESS
+    this ++ FIRE_WEAKNESS; :Object have weakness before electric.
+
+if found WET
+    if this > WET then this -- WET; :Wet objects whorse fireing.
+    else
+        WET \= 2;
+        exit :Water destroyed the flame.
+
+if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : of fire damage.\n
+else
+    'HEALTH' = 0;
+    put DEAD(0) :was burned.\n

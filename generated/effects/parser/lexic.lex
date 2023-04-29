@@ -29,6 +29,8 @@ else            return ELSE;
 \+\+            return SUMM;
 --              return SUB;
 =               return ASSUM;
+\\=              return MOD_DIV;
+\*=              return MOD_MUL;
 
 (\<|>|==|\<=|>=|!=|\<\<|>>)     yylval.ch=strdup(yytext); return SIGN;
 [\+\-\*\/]                      yylval.ch=strdup(yytext); return OP;

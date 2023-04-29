@@ -1,0 +1,20 @@
+if found DEAD(P) exit :Defibrilation had no effect.
+
+if found DIELECTRIC(P) exit :Magic attack was not effect.
+
+if notfound 'HEALTH' exit :It can't be killed or broken.
+
+if found ELECTRIC_PROTECT(P)
+    if ELECTRIC_PROTECT(P) >= this then exit :Dielectric neutralise all damage.
+    else this -- ELECTRIC_PROTECT(P); :Smh dielectric decreased damage.
+
+if found ELECTRIC_WEAKNESS
+    this ++ ELECTRIC_WEAKNESS; :Object have weakness before electric.
+
+if found WET
+    this ++ WET; :Wet objects have weakeness before electric.
+
+if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : of electric damage.\n
+else
+    'HEALTH' = 0;
+    put DEAD(0) :was mortally shocked.\n
