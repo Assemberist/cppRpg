@@ -30,6 +30,8 @@ Possible improvements:
     too much finds of line end with strlen().
 5.  To fix tabulation (For comments and actions).
 6.  Set type of effect to "effect" token-group.
+7.  Add string_tree from alchimist project. It allow remove rule (1) and will simplify
+    code.
 
 Bug:
 1.  Can't correctly close braces (if-levels).
