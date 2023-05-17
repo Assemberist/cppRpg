@@ -59,10 +59,13 @@ single_expression   : action { put_comment(); printf(m_buff); clean_buffers(); }
                     | condition indents action { put_comment(); printf("%s}\n", m_buff); clean_buffers(); }
                     | condition { puts(""); clean_buffers(); };
 
-condition   : IF indents FOUND indents item { checkTabs(tabs, oldTabs); impl_found(); m_buff[0] = '\0'; }
-            | IF indents NOTFOUND indents item { checkTabs(tabs, oldTabs); impl_notfound(); m_buff[0] = '\0'; }
-            | IF indents matan indents matan { checkTabs(tabs, oldTabs); impl_matan(); m_buff[0] = '\0'; }
-            | ELSE { checkTabs(tabs, oldTabs); impl_else(); };
+condition   : IF { checkTabs(tabs, oldTabs); } indents condition_body { m_buff[0] = '\0'; }
+            | ELSE { checkTabs(tabs, oldTabs); impl_else(); m_buff[0] = '\0'; };
+
+condition_body: FOUND indents item { impl_found(); }
+              | NOTFOUND indents item { impl_notfound(); }
+              | matan indents matan { impl_matan(); }
+
 
 item: effect
     | effect field
@@ -109,7 +112,7 @@ field: GET_VALUE | GET_TIME;
 item_mod: SUB { help_effect = current_effect; $$ = "-="; }
         | SUMM { help_effect = current_effect; $$ = "+="; }
         | ASSUM { help_effect = current_effect; $$ = "="; }
-        | MOD_DIV { help_effect = current_effect; $$ = "\\="; }
+        | MOD_DIV { help_effect = current_effect; $$ = "/="; }
         | MOD_MUL { help_effect = current_effect; $$ = "*="; };
 
 %%

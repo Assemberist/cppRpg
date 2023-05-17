@@ -4,10 +4,8 @@ node "effects" {
     [effect_reader]
 
     node "parser" {
-        [lexic.lex] --> [effect_reader] : flex
-        [syntax.y] --> [effect_reader] : bison
-        [effect_sup.c] --> [effect_reader]
-        [effect_sup.h] --> [effect_reader]
+        [lexic.lex\nsyntax.y] --> [effect_reader] : flex\n+\nbison
+        [effect_sup.c\neffect_sup.h] --> [effect_reader] : gcc
     }
 
     [EFFECT.eff] .> [effect_reader]

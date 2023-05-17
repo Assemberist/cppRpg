@@ -1,10 +1,11 @@
 PARTS := $(patsubst %.eff,%.part,$(wildcard *.eff))
 
-build: parser ${PARTS}
+all: parser build
+
+build: ${PARTS}
 	./compact.sh
-	mv effect_calc.cpp ../..
-	
-%.part: %.eff effect_reader
+
+%.part: %.eff ./effect_reader
 	cat $< | ./effect_reader > $(basename $<).part
 
 parser: FORCE

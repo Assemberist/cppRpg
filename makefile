@@ -8,12 +8,17 @@ DIAG_SRC=$(DIAGS:.uml=.png)
 trace=$(trace1) $(trace2)
 
 debug: DBG :=-g
-debug: $(OBJS)
+debug: gen_effects $(OBJS)
 	g++ obj/*.o -o test -lncurses -lpanel -g
 
 build: DBG :=-O2
-build: $(OBJS)
+build: gen_effects $(OBJS)
 	g++ obj/*.o -o test -lncurses -lpanel -O2
+
+gen_effects: FORCE
+	cd generated && make effects
+
+FORCE:
 
 obj/spell.o: spell.cpp spell.hpp
 	g++ -c spell.cpp -o obj/spell.o $(DBG) $(trace) -Wall -Werror

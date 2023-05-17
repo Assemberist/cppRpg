@@ -14,7 +14,7 @@ if found FIRE_WEAKNESS
 if found WET
     if this > WET then this -- WET; :Wet objects whorse fireing.
     else
-        WET \= 2;
+        WET /= 2;
         exit :Water destroyed the flame.
 
 if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : of fire damage.\n
