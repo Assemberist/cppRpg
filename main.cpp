@@ -55,7 +55,7 @@ int main(){
         (*i)->graph_state = RED_STABILE;
 
     strcpy((char*)s.mapa->mapa, test_card);
-    s.mapa->objects = objs;
+    s.mapa->objects = (drawable_object**)objs;
 
     s.mapa->init_palitra();
     s.mapa->update_card();

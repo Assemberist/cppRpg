@@ -7,7 +7,7 @@
 class za_mapo{
 public:
     WINDOW* win;
-    object** objects;
+    drawable_object** objects;
 
     char* mapa;
     uint8_t rows;
@@ -19,15 +19,15 @@ public:
     void init_palitra();
     void update_card();
     void redraw();
-    void draw_range(object* target, int8_t range);
+    void draw_range(drawable_object* target, int8_t range);
     void clear();
 
-    void magnetic_search(object* from, object* to);
-    void magnetic_search_neg(object* from, object* to);
-    void indirect_moving(object* from);
+    void magnetic_search(drawable_object* from, drawable_object* to);
+    void magnetic_search_neg(drawable_object* from, drawable_object* to);
+    void indirect_moving(drawable_object* from);
 
-    char move(object* obj, char direction);
-    void free_move(object* target, char direction);
+    char move(drawable_object* obj, char direction);
+    void free_move(drawable_object* target, char direction);
 
-    object* get_object(object* obj, char direction);
+    drawable_object* get_object(drawable_object* obj, char direction);
 };

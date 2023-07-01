@@ -13,7 +13,23 @@ struct expirience{
     bool request(size_t amount);
 };
 
-class object{
+// Move the class to separate file
+class drawable_object{
+public:
+    uint8_t X;
+    uint8_t Y;
+
+    blink_t graph_state;
+
+    drawable_object(uint8_t _X, uint8_t _Y) : X(_X), Y(_Y) {}
+    virtual char get_type() = 0;
+
+    // card.cpp uses this but it is violation.
+    // it should be removed after it will be fixed.
+    virtual bool is_alive() = 0;
+};
+
+class object : public drawable_object{
 public:
     state stat;
 
@@ -23,11 +39,6 @@ public:
 
     vector<item> equipment;
     vector<item> inventory;
-    
-    uint8_t X;
-    uint8_t Y;
-
-    blink_t graph_state:4;
 
     // The code is crutch for execution act_throw() in user_ifc.
     item* item_to_use;
@@ -46,9 +57,8 @@ protected:
     } targets;
 
 public:
-    object(int8_t _X, int8_t _Y, string _name) : X(_X), Y(_Y), name(_name), behavior(BHV_ATTACK) {}
+    object(int8_t _X, int8_t _Y, string _name) : drawable_object(_X, _Y), name(_name), behavior(BHV_ATTACK) {}
 
-    virtual char get_type() = 0;
     const char* get_name();
     map<spell_t, spell>& get_spells();
     fraction get_fraction();

@@ -132,7 +132,7 @@ bool is_move_char(char direction){
 object* search_targets(object* obj, screen s, size_t range){
     static object** last_target = NULL;
 
-    if(!last_target) last_target = s.mapa->objects;
+    if(!last_target) last_target = (object**)s.mapa->objects;
 
     if(obj){
         while(*last_target){
@@ -209,7 +209,7 @@ bool user_turn(object* u, screen s){
 
                     default:
                         if(is_move_char(temp)){
-                            single_target = s.mapa->get_object(u, temp);
+                            single_target = (object*)s.mapa->get_object(u, temp);
                             if(single_target){
                                 loot->build_content(single_target);
                                 loot->activate(0);
@@ -238,7 +238,7 @@ bool user_turn(object* u, screen s){
 
                     case 'f':
                         choosed_spell = common_menu->get_selected_value()->first;
-                        clear_blinking(s.mapa->objects);
+                        clear_blinking((object**)s.mapa->objects);
                         u->graph_state = GREEN_STABILE;
                         s.mapa->clear();
                         switch (choosed_spell) {

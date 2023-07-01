@@ -16,7 +16,7 @@ void za_mapo::init_palitra () {
     init_pair(5, COLOR_BLACK, COLOR_GREEN);
 }
 
-char new_direction(int8_t* newX, int8_t* newY, char direction, object* obj){
+char new_direction(int8_t* newX, int8_t* newY, char direction, drawable_object* obj){
         switch(direction){
         case 'q':
             *newX = obj->X-1;
@@ -123,7 +123,7 @@ void za_mapo::update_card () {
     wrefresh(win);
 }
 
-void za_mapo::magnetic_search_neg(object* from, object* to){
+void za_mapo::magnetic_search_neg(drawable_object* from, drawable_object* to){
     if(from->Y < to->Y){ // down
         if(from->X == to->X && move(from, 'w')) return; // just down
         if(from->X < to->X){ // down and right
@@ -169,7 +169,7 @@ void za_mapo::magnetic_search_neg(object* from, object* to){
     else move(from, from->X < to->X ? 'a' : 'd');
 }
 
-void za_mapo::magnetic_search(object* from, object* to){
+void za_mapo::magnetic_search(drawable_object* from, drawable_object* to){
     if(from->Y < to->Y){ // down
         if(from->X == to->X && move(from, 'x')) return; // just down
         if(from->X < to->X){ // down and right
@@ -215,7 +215,7 @@ void za_mapo::magnetic_search(object* from, object* to){
     else move(from, from->X < to->X ? 'd' : 'a');
 }
 
-char za_mapo::move(object* obj, char direction){
+char za_mapo::move(drawable_object* obj, char direction){
     int8_t newX, newY;
 
     if(!new_direction(&newX, &newY, direction, obj)) return '\0';
@@ -233,7 +233,7 @@ char za_mapo::move(object* obj, char direction){
     return direction;
 }
 
-void za_mapo::indirect_moving(object* from){
+void za_mapo::indirect_moving(drawable_object* from){
     move(from, "qweasdzxc"[rand() % sizeof("qweasdzxc")]);
 }
 
@@ -244,7 +244,7 @@ za_mapo::~za_mapo(){
     delete[] mapa;
 }
 
-void za_mapo::free_move(object* obj, char direction){
+void za_mapo::free_move(drawable_object* obj, char direction){
     int8_t newX, newY;
 
     if(!new_direction(&newX, &newY, direction, obj)) return;
@@ -255,7 +255,7 @@ void za_mapo::free_move(object* obj, char direction){
             obj->Y = newY;}
 }
 
-void za_mapo::draw_range(object* target, int8_t range){
+void za_mapo::draw_range(drawable_object* target, int8_t range){
     redraw();
 
     int8_t fromX = target->X - range < 0 ? 0 : target->X - range+1;
@@ -280,7 +280,7 @@ void za_mapo::draw_range(object* target, int8_t range){
     wrefresh(win);
 }
 
-object* za_mapo::get_object(object* obj, char direction){
+drawable_object* za_mapo::get_object(drawable_object* obj, char direction){
     int8_t x = obj->X;
     int8_t y = obj->Y;
     new_direction(&x, &y, direction, obj);
