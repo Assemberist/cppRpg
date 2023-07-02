@@ -1,7 +1,6 @@
 #pragma once
 
 #include "items.hpp"
-#include "spell.hpp"
 
 #define abs(A, B) ((A) - (B) > 0 ? (A) - (B) : (B) - (A))
 

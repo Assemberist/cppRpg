@@ -1,7 +1,6 @@
 #pragma once
 
 #include "state.hpp"
-#include "spell.hpp"
 
 enum item_group{
     ARMORY_HEAD,

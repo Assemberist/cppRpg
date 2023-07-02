@@ -1,7 +1,3 @@
-#include "classes.hpp"
-#include "object.hpp"
-#include "object_defs.hpp"
-#include "text_field.hpp"
 #include "scene.hpp"
 
 const char* test_card = "*************  *   **** **   ****      ****  *   **** ******* *      **        ** *      ***********";

@@ -1,6 +1,5 @@
 #include "text_field.hpp"
 #include <cstdio>
-#include <cstring>
 
 //--------------------------------------------------------------------------------------------//
 //  Text field functions                                                                      //

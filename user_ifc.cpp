@@ -1,10 +1,5 @@
 #include <climits>
-#include "items.hpp"
-#include "state.hpp"
 #include "user_ifc.hpp"
-#include "spell.hpp"
-#include "text_field.hpp"
-#include "object_defs.hpp"
 
 static spell_menu* common_menu;
 static inventory* bag;
