@@ -252,6 +252,25 @@ void impl_put(char* val, char* time, size_t tabs){
     small_buffer[0] = '\0';
 }
 
+void impl_raise_flag(char* flag){
+    putTab(tabs);
+    printf("this->flags.is_%s = true;\n", flag);
+}
+
+void impl_clear_flag(char* flag){
+    putTab(tabs);
+    printf("this->flags.is_%s = false;\n", flag);    
+}
+
+void impl_if_flag(char* flag){
+    putTab(tabs);
+    printf("if(this->flags.is_%s){\n", flag);
+}
+
+void impl_if_flag_neg(char* flag){
+    putTab(tabs);
+    printf("if(!this->flags.is_%s){\n", flag);
+}
 
 void clean_buffers(){
     small_buffer[0] = '\0';

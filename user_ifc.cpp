@@ -367,6 +367,7 @@ bool user_turn(object* u, screen s){
                                 while(single_target){
                                     single_target->stat.act({1,FIRE_DAMAGE}, {0, 25});
                                     single_target->stat.act({1,MAGIC_ATTACK}, {0, 5});
+                                    if(!single_target->is_alive()) single_target->graph_state = GRAY_STABILE;
                                 link_0:
                                     single_target = search_targets(tar, s, 2);
                                 }
@@ -429,7 +430,9 @@ bool user_turn(object* u, screen s){
                                     looted_obj->inventory.erase(item_to_use);
                                 }
                                 action(u, single_target);
-                                single_target->graph_state = last_color;
+                                
+                                if(single_target->is_alive()) single_target->graph_state = last_color; 
+                                else single_target->graph_state = GRAY_STABILE;
 
                             #if !defined(DONT_LOG_ACTIONS) || !defined(DONT_LOG_STATE)
                                 s.common_log->print();

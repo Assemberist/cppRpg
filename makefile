@@ -35,10 +35,10 @@ obj/state.o: state.cpp state.hpp obj/object_defs.o obj/spell.o
 obj/items.o: items.cpp items.hpp obj/state.o
 	g++ -c items.cpp -o obj/items.o $(DBG) $(trace) -Wall -Werror
 
-obj/object.o: object.cpp object.hpp obj/text_field.o obj/state.o
+obj/object.o: object.cpp object.hpp obj/text_field.o obj/state.o drawable_object.hpp
 	g++ -c object.cpp -o obj/object.o $(DBG) $(trace) -Wall -Werror
 
-obj/card.o: object.hpp card.cpp card.hpp obj/object.o
+obj/card.o: object.hpp card.cpp card.hpp obj/object.o drawable_object.hpp
 	g++ -c card.cpp -o obj/card.o $(DBG) $(trace) -Wall -Werror
 
 obj/effect_calc.o: effect_calc.cpp obj/state.o

@@ -1,4 +1,4 @@
-if found DEAD(P) exit :Magic attack will not make he alive.
+if dead exit :Magic attack will not make he alive.
 
 if found MAGIC_IMMUNITY(P) exit :Magic attack was not effect.
 
@@ -14,4 +14,4 @@ if found MAGIC_WEAKNESS
 if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : damage by magic.\n
 else
     'HEALTH' = 0;
-    put DEAD(0) :was killed.\n
+    raise dead :was killed.\n

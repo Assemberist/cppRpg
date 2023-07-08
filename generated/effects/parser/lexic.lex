@@ -18,6 +18,9 @@ then            return THEN;
 this            return THIS;
 notfound        return NOTFOUND;
 else            return ELSE;
+raise           return RAISE;
+clear           return CLEAR;
+not             return NOT;
 \.value         return GET_VALUE;
 \.time          return GET_TIME;
 
@@ -36,6 +39,7 @@ else            return ELSE;
 [\+\-\*\/]                      yylval.ch=strdup(yytext); return OP;
 
 [A-Z_]+         yylval.ch=strdup(yytext); return EFFECT;
+[a-z_]+         yylval.ch=strdup(yytext); return FLAG;
 :[^\n%]+        yylval.ch=strdup(yytext+1); return OUTPUT;
 [0-9]+          yylval.ch=strdup(yytext); return NUMBER;
 

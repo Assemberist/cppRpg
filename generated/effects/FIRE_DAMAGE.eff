@@ -1,4 +1,4 @@
-if found DEAD(P) exit :The fire will clean this object. Or not.
+if dead exit :The fire will clean this object. Or not.
 
 if found UNFLAMED(P) exit :It can not burns.
 
@@ -20,4 +20,4 @@ if found WET
 if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : of fire damage.\n
 else
     'HEALTH' = 0;
-    put DEAD(0) :was burned.\n
+    raise dead :was burned.\n

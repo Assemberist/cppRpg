@@ -35,13 +35,13 @@ int main()
     const char* cchar;
 }
 
-%token IF THEN FOUND NOTFOUND ELSE END
+%token IF THEN FOUND NOTFOUND ELSE END RAISE CLEAR NOT
 %token EXIT PUT SET DELETE
 %token SUMM SUB ASSUM MOD_DIV MOD_MUL
 %token INDENT TAB
 %token <mark_t> MARK
 %token THIS GET_TIME GET_VALUE
-%token <ch> EFFECT OUTPUT NUMBER OP SIGN
+%token <ch> EFFECT OUTPUT NUMBER OP SIGN FLAG
 
 %type <cchar> item_mod
 
@@ -64,8 +64,9 @@ condition   : IF { checkTabs(tabs, oldTabs); } indents condition_body { m_buff[0
 
 condition_body: FOUND indents item { impl_found(); }
               | NOTFOUND indents item { impl_notfound(); }
-              | matan indents matan { impl_matan(); }
-
+              | FLAG { impl_if_flag($1); }
+              | NOT indents FLAG { impl_if_flag_neg($3); }
+              | matan indents matan { impl_matan(); };
 
 item: effect
     | effect field
@@ -92,7 +93,13 @@ action  : set_value
         | delete_effect { impl_delete(); }
         | EXIT { strcpy(m_buff, "return;\n"); }
         | comment
+        | raise_flag
+        | clear_flag
         | action indents comment;
+
+raise_flag: RAISE indents FLAG { impl_raise_flag($3); };
+
+clear_flag: CLEAR indents FLAG { impl_clear_flag($3); };
 
 set_value: SET indents item indents expr { impl_set(help_effect, "=", tabs); m_buff[0] = '\0'; }
          | item indents item_mod indents expr ';' { impl_set(help_effect, $3, tabs); m_buff[0] = '\0'; };

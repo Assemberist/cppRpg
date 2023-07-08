@@ -1,4 +1,4 @@
-if found DEAD(P) exit :Stop punch the dead body!
+if dead exit :Stop punch the dead body!
 
 if found PHYSIC_IMMUNITY(P) exit :Physic attacks had no effect.
 
@@ -13,10 +13,10 @@ if found PHYSIC_WEAKNESS
 
 if found FRIZED
     if 'HEALTH' < this * 2 then
-        put (P) DEAD(0) :It was splitted open.
+        raise dead :It was splitted open.
         exit
 
 if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : of physic damage.\n
 else
     'HEALTH' = 0;
-    put DEAD(0) :was killed.\n
+    raise dead :was killed.\n

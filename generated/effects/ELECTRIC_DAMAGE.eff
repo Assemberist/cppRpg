@@ -1,4 +1,4 @@
-if found DEAD(P) exit :Defibrilation had no effect.
+if dead exit :Defibrilation had no effect.
 
 if found DIELECTRIC(P) exit :Magic attack was not effect.
 
@@ -17,4 +17,4 @@ if found WET
 if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : of electric damage.\n
 else
     'HEALTH' = 0;
-    put DEAD(0) :was mortally shocked.\n
+    raise dead :was mortally shocked.\n

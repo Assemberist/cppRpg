@@ -62,53 +62,52 @@ void za_mapo::redraw(){
     int color;
 
     for(int i = 0; objects[i]; i++){
-        if(!objects[i]->is_alive() && objects[i]->graph_state != RED_INVERT)
-            color = 0;
+        switch(objects[i]->graph_state){
+            case GRAY_STABILE:
+                color = 0;
+                break;
 
-        else{
-            switch(objects[i]->graph_state){
-                case HIDE:
-                    continue;
+            case HIDE:
+                continue;
 
-                case GREEN_ON:
-                    color = 4;
-                    objects[i]->graph_state = GREEN_OFF;
-                    break;
+            case GREEN_ON:
+                color = 4;
+                objects[i]->graph_state = GREEN_OFF;
+                break;
 
-                case GREEN_OFF:
-                    color = 2;
-                    objects[i]->graph_state = GREEN_ON;
-                    break;
+            case GREEN_OFF:
+                color = 2;
+                objects[i]->graph_state = GREEN_ON;
+                break;
 
-                case RED_ON:
-                    color = 4;
-                    objects[i]->graph_state = RED_OFF;
-                    break;
+            case RED_ON:
+                color = 4;
+                objects[i]->graph_state = RED_OFF;
+                break;
 
-                case RED_OFF:
-                    color = 1;
-                    objects[i]->graph_state = RED_ON;
-                    break;
-                
-                case GREEN_STABILE:
-                    color = 2;
-                    break;
+            case RED_OFF:
+                color = 1;
+                objects[i]->graph_state = RED_ON;
+                break;
+            
+            case GREEN_STABILE:
+                color = 2;
+                break;
 
-                case RED_STABILE:
-                    color = 1;
-                    break;
+            case RED_STABILE:
+                color = 1;
+                break;
 
-                case RED_INVERT:
-                    color = 3;
-                    break;
+            case RED_INVERT:
+                color = 3;
+                break;
 
-                case GREEN_INVERT:
-                    color = 5;
-                    break;
- 
-                default:
-                    break;
-            }
+            case GREEN_INVERT:
+                color = 5;
+                break;
+
+            default:
+                break;
         }
 
         wattron(win, COLOR_PAIR(color));

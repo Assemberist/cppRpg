@@ -43,4 +43,9 @@ void impl_set(effect_s eff, const char* op, size_t num);
 void impl_put_permanent(char* val, size_t tabs);
 void impl_put(char* val, char* time, size_t tabs);
 
+void impl_raise_flag(char* flag);
+void impl_clear_flag(char* flag);
+void impl_if_flag(char* flag);
+void impl_if_flag_neg(char* flag);
+
 void clean_buffers();

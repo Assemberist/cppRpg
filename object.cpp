@@ -9,7 +9,7 @@ const char* object::get_name(){ return name.c_str(); }
 fraction object::get_fraction(){ return fract; }
 map<spell_t, spell>& object::get_spells(){ return spells; }
 
-bool object::is_alive(){ return !stat.is_there_effect_perm(DEAD); }
+bool object::is_alive(){ return !stat.flags.is_dead; }
 void object::set_behavior(behavior_t bhv){ behavior = bhv; }
 
 void object::put_spell (spell_t type, spell sp) { spells.insert({type, sp}); }
