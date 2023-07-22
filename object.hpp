@@ -34,6 +34,7 @@ protected:
 
     behavior_t behavior;
     fraction fract;
+    size_t proffession;
 
     struct target_l{
         object* target;
@@ -48,6 +49,10 @@ public:
     fraction get_fraction();
 
     virtual action_t turn() = 0;
+
+    size_t get_class();
+    void   set_class(size_t cl);
+    virtual size_t get_obj_type() = 0;
 
     void pick_up_item(item& it);
     bool equip(vector<item>::iterator it);

@@ -53,7 +53,7 @@ action_t mage::turn(){
 }
 
 
-warrior::warrior(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){}
+warrior::warrior(int8_t _X, int8_t _Y, string _name) : humanoid(_X, _Y, _name){}
 
 // todo just test. Not release
 action_t warrior::turn(){ return ACT_ATTACK; }

@@ -15,6 +15,9 @@ void object::set_behavior(behavior_t bhv){ behavior = bhv; }
 void object::put_spell (spell_t type, spell sp) { spells.insert({type, sp}); }
 void object::remove_spell(spell_t type){ spells.erase(type); }
 
+size_t object::get_class(){ return proffession; }
+void object::set_class(size_t cl){ proffession = cl; }
+
 bool object::check_enemy(object* target){
     switch(fract){
         case HUMANITY:
