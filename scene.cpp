@@ -29,7 +29,7 @@ size_t range(object* obj1, object* obj2){
     return x*x + y*y;
 }
 
-bool game_loop(object** objs, object* gamer, screen s){
+bool game_loop(object** objs, object* gamer, screen& s){
     size_t obj_count = 0;
     while(objs[obj_count]) obj_count++;
 

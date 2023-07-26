@@ -1,11 +1,45 @@
 #include <climits>
 #include "user_ifc.hpp"
 
+log* object::l;
+log* state::l;
+
 static spell_menu* common_menu;
 static inventory* bag;
 static inventory* loot;
 static inventory_with_owner* observe_menu;
 static text_log* manual;
+
+void init_graphic(){
+    initscr();
+    cbreak();
+    noecho();
+    curs_set(0);
+    start_color();
+}
+
+screen::screen(char* card, drawable_object** objs){
+    common_log = new text_log(10, 50, 0, 11);
+    object::l = common_log;
+    state::l = common_log;
+
+    mapa = new za_mapo(10, 10, 0, 0);
+
+    setup_user_ifc();
+
+    strcpy((char*)mapa->mapa, card);
+    mapa->objects = (drawable_object**)objs;
+
+    mapa->init_palitra();
+    mapa->update_card();
+
+    timeout(500);
+}
+
+screen::~screen(){
+    timeout(-1);
+    endwin();
+}
 
 void setup_user_ifc(){
     common_menu = new spell_menu(3, 50, 12, 0);

@@ -7,6 +7,9 @@
 struct screen{
     za_mapo* mapa;
     text_log* common_log;
+
+    screen(char* card, drawable_object** objs);
+    ~screen();
 };
 
 object* search_targets(object* obj, screen s, size_t range);
