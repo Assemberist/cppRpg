@@ -1,7 +1,7 @@
 #pragma once
 
 #include "items.hpp"
-#include "drawable_object.hpp"
+#include "common/drawable_object.hpp"
 
 #define abs(A, B) ((A) - (B) > 0 ? (A) - (B) : (B) - (A))
 

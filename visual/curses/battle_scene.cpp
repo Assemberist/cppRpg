@@ -1,5 +1,5 @@
 #include <climits>
-#include "user_ifc.hpp"
+#include "battle_scene.hpp"
 
 log* object::l;
 log* state::l;
@@ -25,7 +25,13 @@ screen::screen(char* card, drawable_object** objs){
 
     mapa = new za_mapo(10, 10, 0, 0);
 
-    setup_user_ifc();
+    common_menu = new spell_menu(3, 50, 12, 0);
+    bag = new inventory(10, 50, 0, 11);
+    loot = new inventory(10, 50, 0, 63);
+    observe_menu = new inventory_with_owner(10, 50, 0, 11);
+    manual = new text_log(12, 40, 12, 63);
+    refresh();
+    print_help_for_stay(manual);
 
     strcpy((char*)mapa->mapa, card);
     mapa->objects = (drawable_object**)objs;
@@ -39,16 +45,6 @@ screen::screen(char* card, drawable_object** objs){
 screen::~screen(){
     timeout(-1);
     endwin();
-}
-
-void setup_user_ifc(){
-    common_menu = new spell_menu(3, 50, 12, 0);
-    bag = new inventory(10, 50, 0, 11);
-    loot = new inventory(10, 50, 0, 63);
-    observe_menu = new inventory_with_owner(10, 50, 0, 11);
-    manual = new text_log(12, 40, 12, 63);
-    refresh();
-    print_help_for_stay(manual);
 }
 
 enum object_state{

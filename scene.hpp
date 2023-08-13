@@ -1,6 +1,6 @@
 #pragma once
 
-#include "user_ifc.hpp"
+#include "visual/curses/battle_scene.hpp"
 #include <stdlib.h>
 
 void init_graphic();

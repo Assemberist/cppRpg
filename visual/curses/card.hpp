@@ -3,7 +3,7 @@
 #include <ncurses.h>
 #include <string.h>
 #include <stdlib.h>
-#include "drawable_object.hpp"
+#include "common/drawable_object.hpp"
 
 class za_mapo{
 public:

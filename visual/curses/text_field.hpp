@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <ncurses.h>
 #include <string.h>
+#include "common/log.hpp"
 
 class text_field{
 protected:
@@ -18,12 +19,6 @@ public:
     virtual void print() = 0;
 
     virtual ~text_field();
-};
-
-
-class log{
-public:
-    virtual void newline(const char* src) = 0;
 };
 
 class text_log : public text_field, public log{

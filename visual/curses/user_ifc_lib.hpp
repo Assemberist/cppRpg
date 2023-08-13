@@ -1,10 +1,19 @@
 #pragma once
 
 #include "card.hpp"
-#include "classes.hpp"
-#include "actions.hpp"
+#include "text_field.hpp"
+#include "../../classes.hpp"
+#include "../../actions.hpp"
 
 typedef std::pair<const spell_t, spell> spell_menu_content;
+
+struct screen{
+    za_mapo* mapa;
+    text_log* common_log;
+
+    screen(char* card, drawable_object** objs);
+    ~screen();
+};
 
 class spell_menu : public menu<spell_menu_content*>{
 public:

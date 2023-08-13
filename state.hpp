@@ -8,7 +8,7 @@
 #include "spell.hpp"
 #include "material.h"
 #include "object_defs.hpp"
-#include "text_field.hpp"
+#include "common/log.hpp"
 
 using namespace std;
 
