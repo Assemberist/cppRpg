@@ -6,7 +6,7 @@
 #include <map>
 
 #include "spell.hpp"
-#include "material.h"
+#include "material.hpp"
 #include "object_defs.hpp"
 #include "common/log.hpp"
 

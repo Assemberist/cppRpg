@@ -14,18 +14,17 @@ function ask(){
 #### Start of script                                                       ####
 ###############################################################################
 
-echo "1 - release, 2 - debug?"
-
-Opts=("1" "2")
 Build=()
 
+echo "Choose build type:"
+Opts=("release" "debug")
 select opt in "${Opts[@]}"
 do
     case $opt in
-        "1")
+        "release")
             Build+=('build')
             break ;;
-        "2")
+        "debug")
             Build+=('debug')
             break ;;
         *)
@@ -34,16 +33,27 @@ do
     esac
 done
 
-echo "Turn off action logs?"
-if [[ $(ask) == "1" ]]
+echo "Turn on action logs? [Y/n]"
+if [[ $(ask) == "n" ]]
 then
     Build+=('trace1="-D DONT_LOG_ACTIONS"')
 fi
 
-echo "Turn off state calculation logs"
-if [[ $(ask) == "1" ]]
+echo "Turn on state calculation logs? [Y/n]"
+if [[ $(ask) == "n" ]]
 then
     Build+=('trace2="-D DONT_LOG_STATE"')
 fi
+
+echo "Which graphic to use?"
+Opts=("ncurses (default)")
+select opt in "${Opts[@]}" 
+do
+    case $opt in
+        *)
+            Build+=('graphic=ncurses')
+            break ;;
+    esac
+done
 
 make "${Build[@]}"

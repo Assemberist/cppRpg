@@ -1,6 +1,6 @@
 #pragma once
 
-#include "object.hpp"
+#include "object/object.hpp"
 
 void do_action(object* obj, object* target, spell_t sp);
 

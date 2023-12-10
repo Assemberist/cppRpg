@@ -20,25 +20,25 @@ gen_effects: FORCE
 
 FORCE:
 
-obj/spell.o: spell.cpp spell.hpp
-	g++ -c spell.cpp -o obj/spell.o $(DBG) $(trace) -Wall -Werror
+obj/spell.o: object/spell.cpp object/spell.hpp
+	g++ -c object/spell.cpp -o obj/spell.o $(DBG) $(trace) -Wall -Werror
 
 obj/text_field.o: visual/curses/text_field.cpp visual/curses/text_field.hpp common/log.hpp
 	g++ -c visual/curses/text_field.cpp -o obj/text_field.o $(DBG) $(trace) -Wall -Werror
 
-obj/object_defs.o: object_defs.cpp object_defs.hpp
-	g++ -c object_defs.cpp -o obj/object_defs.o $(DBG) $(trace) -Wall -Werror
+obj/object_defs.o: object/object_defs.cpp object/object_defs.hpp
+	g++ -c object/object_defs.cpp -o obj/object_defs.o $(DBG) $(trace) -Wall -Werror
 
-obj/state.o: state.cpp state.hpp obj/object_defs.o obj/spell.o common/log.hpp
-	g++ -c state.cpp -o obj/state.o $(DBG) $(trace) -Wall -Werror
+obj/state.o: object/state.cpp object/state.hpp obj/object_defs.o obj/spell.o common/log.hpp
+	g++ -c object/state.cpp -o obj/state.o $(DBG) $(trace) -Wall -Werror
 
-obj/items.o: items.cpp items.hpp obj/state.o
-	g++ -c items.cpp -o obj/items.o $(DBG) $(trace) -Wall -Werror
+obj/items.o: object/items.cpp object/items.hpp obj/state.o
+	g++ -c object/items.cpp -o obj/items.o $(DBG) $(trace) -Wall -Werror
 
-obj/object.o: object.cpp object.hpp obj/state.o common/drawable_object.hpp
-	g++ -c object.cpp -o obj/object.o $(DBG) $(trace) -Wall -Werror
+obj/object.o: object/object.cpp object/object.hpp obj/state.o common/drawable_object.hpp
+	g++ -c object/object.cpp -o obj/object.o $(DBG) $(trace) -Wall -Werror
 
-obj/card.o: object.hpp visual/curses/card.cpp visual/curses/card.cpp obj/object.o common/drawable_object.hpp
+obj/card.o: object/object.hpp visual/curses/card.cpp visual/curses/card.cpp obj/object.o common/drawable_object.hpp
 	g++ -c visual/curses/card.cpp -o obj/card.o $(DBG) $(trace) -Wall -Werror
 
 obj/effect_calc.o: effect_calc.cpp obj/state.o

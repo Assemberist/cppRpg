@@ -1,4 +1,4 @@
-#include "state.hpp"
+#include "object/state.hpp"
 
 #ifdef DONT_LOG_STATE
     #define log_msg(A, B)
