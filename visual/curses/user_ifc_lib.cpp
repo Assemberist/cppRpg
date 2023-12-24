@@ -2,7 +2,8 @@
 
 spell_menu::spell_menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x)
     : menu<spell_menu_content*>(rows, cols, pos_y, pos_x)
-    { strings = (char**)spell_names; }
+    { capture = "Spells\n";
+      strings = (char**)spell_names; }
 
 void spell_menu::build_content(object* obj){
     delete_content();
@@ -18,10 +19,16 @@ void spell_menu::build_content(object* obj){
 
 void spell_menu::print(){
     wclear(win);
+
+    wattron(win, COLOR_PAIR(2));
+    wprintw(win, capture);
+    wattroff(win, COLOR_PAIR(2));
+
     for(int i = 0; i<count; i++){
         waddch(win, i == current ? '*' : ' ');
         wprintw(win, strings[content[i]->first]);
     }
+
     wrefresh(win);
 }
 
@@ -35,6 +42,7 @@ inventory::inventory(size_t rows, size_t cols, size_t pos_y, size_t pos_x)
     { strings = (char**)item_names; }
 
 void inventory::build_content(object* obj){
+    capture = obj->get_name();
     current = 0;
     count = 0;
     content = new inventory_content[obj->inventory.size() + obj->equipment.size()];
@@ -53,6 +61,11 @@ void inventory::build_content(object* obj){
 
 void inventory::print(){
     wclear(win);
+
+    wattron(win, COLOR_PAIR(2));
+    wprintw(win, capture);
+    wattroff(win, COLOR_PAIR(2));
+    waddch(win, '\n');
 
     if(count){
         for(size_t i = 0; i < count; i++){
@@ -87,6 +100,8 @@ inventory_with_owner::inventory_with_owner(size_t rows, size_t cols, size_t pos_
     { strings = (char**)item_names; }
 
 void inventory_with_owner::build_content(object* obj){
+    capture = obj->get_name();
+
     current = 0;
     count = 1;
     content = new inventory_content_2[obj->inventory.size() + obj->equipment.size() + 1];
@@ -107,6 +122,11 @@ void inventory_with_owner::build_content(object* obj){
 
 void inventory_with_owner::print(){
     wclear(win);
+
+    wattron(win, COLOR_PAIR(2));
+    wprintw(win, capture);
+    wattroff(win, COLOR_PAIR(2));
+    waddch(win, '\n');
 
     size_t i = 0;
     waddch(win, i == current ? '*' : ' ');

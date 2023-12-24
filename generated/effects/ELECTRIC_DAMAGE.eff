@@ -14,7 +14,7 @@ if found ELECTRIC_WEAKNESS
 if found WET
     this ++ WET; :Wet objects have weakeness before electric.
 
-if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : of electric damage.\n
+if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : of electric damage.
 else
     'HEALTH' = 0;
-    raise dead :was mortally shocked.\n
+    raise dead :was mortally shocked.

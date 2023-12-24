@@ -48,12 +48,14 @@ public:
 
 template<typename T> class menu : public text_field{
 protected:
+    const char* capture;
     T* content;
 public:
     menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x)
-        : text_field(rows, cols, pos_y, pos_x)
+        : text_field(rows+1, cols, pos_y, pos_x)
         { current = 0;
           count = 0;
+          capture = nullptr;
           content = nullptr; }
 
     void up(){
@@ -62,6 +64,9 @@ public:
             print();
         }
     }
+
+    void set_capture(char* src){ capture = src; }
+
     void down(){
         if(current){
             current--;

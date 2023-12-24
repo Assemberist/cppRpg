@@ -177,7 +177,10 @@ void checkTabs(size_t tab, size_t oldTab){
 // do not forget clear it.
 
 // tabs needed here
-void write_comment(char* src){ strcat(small_buffer, src); }
+void write_comment(char* src){
+    strcat(small_buffer, src);
+    strcat(small_buffer, "\\n");
+}
 
 void put_sinle_effect_val(char* dest, effect_s* eff){
     switch(eff->mark){

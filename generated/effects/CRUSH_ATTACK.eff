@@ -16,7 +16,7 @@ if found FRIZED
         raise dead :It was splitted open.
         exit
 
-if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : of physic damage.\n
+if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : of physic damage.
 else
     'HEALTH' = 0;
-    raise dead :was killed.\n
+    raise dead :was killed.

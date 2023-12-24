@@ -11,7 +11,7 @@ if found MAGIC_PROTECT(P)
 if found MAGIC_WEAKNESS
     this ++ MAGIC_WEAKNESS; :Object have weakness before magic.
 
-if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : damage by magic.\n
+if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : damage by magic.
 else
     'HEALTH' = 0;
-    raise dead :was killed.\n
+    raise dead :was killed.

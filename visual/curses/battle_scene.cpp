@@ -186,6 +186,7 @@ bool user_turn(object* u, screen s){
     vector<item>::iterator item_to_use;
 
     inventory* active_inv;
+    text_log* oneline_log;
     text_log* property_screen;
     text_log* effect_screen;
 
@@ -228,6 +229,9 @@ bool user_turn(object* u, screen s){
                         single_target = search_targets(u, s, INT_MAX);
                         last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
+                        oneline_log = new text_log(1, 50, 0, 63);
+                        oneline_log->newline(single_target->get_name());
+                        oneline_log->print();
                         print_help_for_observation_card(manual);
                         stat = OBSERVATION;
                         break;
@@ -886,10 +890,13 @@ bool user_turn(object* u, screen s){
                         while(!(single_target = search_targets(u, s, INT_MAX)));
                         last_color = single_target->graph_state;
                         single_target->graph_state = RED_INVERT;
+                        oneline_log->newline(single_target->get_name());
+                        oneline_log->print();
                         s.mapa->update_card();
                         break;
 
                     case 'f':
+                        oneline_log->hide();
                         observe_menu->build_content(single_target);
                         observe_menu->print();
                         print_help_for_observation_objects(manual);
@@ -897,6 +904,8 @@ bool user_turn(object* u, screen s){
                         break;
 
                     case 'q':
+                        oneline_log->hide();
+                        delete oneline_log;
                         single_target->graph_state = GREEN_ON;
                         print_help_for_stay(manual);
                         stat = STAY;
@@ -925,6 +934,7 @@ bool user_turn(object* u, screen s){
 
                     case 'q':
                         observe_menu->hide();
+                        oneline_log->print();
                         print_help_for_observation_card(manual);
                         stat = OBSERVATION;
                         break;

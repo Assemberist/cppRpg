@@ -17,7 +17,7 @@ if found WET
         WET /= 2;
         exit :Water destroyed the flame.
 
-if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : of fire damage.\n
+if 'HEALTH' > this then 'HEALTH' -- this; :got %this.value : of fire damage.
 else
     'HEALTH' = 0;
-    raise dead :was burned.\n
+    raise dead :was burned.
