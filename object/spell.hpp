@@ -3,36 +3,8 @@
 #include <cstdint>
 #include <cstddef>
 
-enum spell_t{
-    FIREBALL,
-    PUNCH,
-    LIGHTING,
-    THROW,
-    NOTHING_SPELL
-};
-
 struct spell{
     uint32_t level:7;
-};
-
-enum spell_direction{
-    OWNER,
-    NEAR_ENEMY,
-    NEAR_FRIEND,
-    OWNER_TARGET
-};
-
-enum spell_trigger{
-    EVERY_TURN,
-    BY_OWNER,
-    BEING_ATTACKED,
-    ANY_EFFECT
-};
-
-enum slot_type{
-    CHARGE,
-    BATTERY,
-    ENCHANCEMENT
 };
 
 struct spell_slot_config{
