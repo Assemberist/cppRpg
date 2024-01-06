@@ -13,10 +13,10 @@ compile(){
 }
 
 clean(){
-    cd parser
-        ./builder.sh clean
+    cd parser && make clean
     cd ..
     rm *.part
+    rm effect_calc.cpp
 }
 
 assemble(){
@@ -35,8 +35,7 @@ build(){
     need_assemble=false
 
     touch .tmp
-    cd parser
-    ./builder.sh build
+    cd parser && make
     cd ..
     
     #.tmp is second arg!!!
