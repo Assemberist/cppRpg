@@ -15,10 +15,9 @@ build: DBG :=-O2
 build: gen_effects $(OBJS)
 	g++ obj/*.o -o test -lncurses -lpanel -O2
 
-gen_effects: FORCE
-	cd generated && make effects
-
-FORCE:
+gen_effects:
+	cd generated/effects && ./builder.sh build
+	cp generated/effects/effect_calc.cpp .
 
 obj/spell.o: object/spell.cpp object/spell.hpp
 	g++ -c object/spell.cpp -o obj/spell.o $(DBG) $(trace) -Wall -Werror
@@ -68,4 +67,5 @@ diagram/%.png: diagram/%.uml
 	plantuml $<
 
 clean:
+	cd generated/effects && ./builder.sh clean
 	rm obj/*.o
