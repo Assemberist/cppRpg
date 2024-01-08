@@ -5,9 +5,9 @@
 #include <string>
 #include <map>
 
-#include "spell.hpp"
-#include "material.hpp"
-#include "object_defs.hpp"
+#include "enums/spell.hpp"
+#include "enums/material.hpp"
+#include "enums/effect.hpp"
 #include "common/log.hpp"
 
 using namespace std;

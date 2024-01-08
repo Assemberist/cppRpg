@@ -1,4 +1,4 @@
-OBJS=obj/spell.o obj/text_field.o obj/state.o obj/object.o obj/classes.o obj/items.o \
+OBJS=obj/text_field.o obj/state.o obj/object.o obj/classes.o obj/items.o \
 obj/actions.o obj/effect_calc.o obj/card.o obj/battle_scene.o obj/scene.o obj/main.o \
 obj/user_ifc_lib.o
 
@@ -8,27 +8,29 @@ DIAG_SRC=$(DIAGS:.uml=.png)
 trace=$(trace1) $(trace2)
 
 debug: DBG :=-g
-debug: gen_effects $(OBJS)
+debug: gen_effects gen_enums $(OBJS)
 	g++ obj/*.o -o test -lncurses -lpanel -g
 
 build: DBG :=-O2
-build: gen_effects $(OBJS)
+build: gen_effects gen_enums $(OBJS)
 	g++ obj/*.o -o test -lncurses -lpanel -O2
 
 gen_effects:
 	cd generated/effects && ./builder.sh build
 	cp generated/effects/effect_calc.cpp .
 
-obj/spell.o: object/spell.cpp object/spell.hpp
-	g++ -c object/spell.cpp -o obj/spell.o $(DBG) $(trace) -Wall -Werror
+gen_enums:
+	cd generated/enums && ./builder.sh build
+
+obj/spell.hpp:  generated/enums/spell.hpp \
+				generated/enums/spell_trigger.hpp \
+				generated/enums/spell_direction.hpp \
+				generated/enums/slot_type.hpp
 
 obj/text_field.o: visual/curses/text_field.cpp visual/curses/text_field.hpp common/log.hpp
 	g++ -c visual/curses/text_field.cpp -o obj/text_field.o $(DBG) $(trace) -Wall -Werror
 
-obj/object_defs.o: object/object_defs.cpp object/object_defs.hpp
-	g++ -c object/object_defs.cpp -o obj/object_defs.o $(DBG) $(trace) -Wall -Werror
-
-obj/state.o: object/state.cpp object/state.hpp obj/object_defs.o obj/spell.o common/log.hpp
+obj/state.o: object/state.cpp object/state.hpp obj/spell.hpp common/log.hpp
 	g++ -c object/state.cpp -o obj/state.o $(DBG) $(trace) -Wall -Werror
 
 obj/items.o: object/items.cpp object/items.hpp obj/state.o

@@ -16,13 +16,15 @@ FILE* header;
 FILE* source;
 
 void create_enum(){
-    fprintf(header, "typedef enum %s_t {\n", name);
+    fprintf(header, "#pragma once\n\n");
+    fprintf(header, "enum %s_t {\n", name);
     size_t i = 0;
     while(values[i+1] < current_value){
         fprintf(header, "\t%s,\n", values[i]);
         i++;
     }
-    fprintf(header, "\t%s\n} %s_t;\n\n", values[i], name);
+    fprintf(header, "\t%s\n};\n\n", values[i]);
+    fprintf(header, "const char* get_enum_name(%s_t val);\n", name);
 }
 
 char* replace_(char* src){

@@ -2,8 +2,7 @@
 
 spell_menu::spell_menu(size_t rows, size_t cols, size_t pos_y, size_t pos_x)
     : menu<spell_menu_content*>(rows, cols, pos_y, pos_x)
-    { capture = "Spells\n";
-      strings = (char**)spell_names; }
+    { capture = "Spells\n"; }
 
 void spell_menu::build_content(object* obj){
     delete_content();
@@ -24,11 +23,14 @@ void spell_menu::print(){
     wprintw(win, capture);
     wattroff(win, COLOR_PAIR(2));
 
-    for(int i = 0; i<count; i++){
+    for(int i = 0; i<count-1; i++){
         waddch(win, i == current ? '*' : ' ');
-        wprintw(win, strings[content[i]->first]);
+        wprintw(win, get_enum_name(content[i]->first));
+        waddch(win, '\n');
     }
 
+    waddch(win, count-1 == current ? '*' : ' ');
+    wprintw(win, get_enum_name(content[count-1]->first));
     wrefresh(win);
 }
 
@@ -38,8 +40,7 @@ void spell_menu::print(){
 
 inventory::inventory(size_t rows, size_t cols, size_t pos_y, size_t pos_x)
     : menu<inventory_content>(rows, cols, pos_y, pos_x),
-      isActive(false)
-    { strings = (char**)item_names; }
+      isActive(false) { }
 
 void inventory::build_content(object* obj){
     capture = obj->get_name();
@@ -74,10 +75,13 @@ void inventory::print(){
 
             if(isActive)
                 waddch(win, i == current ? '*' : ' ');
-            wprintw(win, strings[content[i].it->info.type_name]);
+            wprintw(win, get_enum_name(content[i].it->info.type_name));
         
             if(content[i].is_equiped)
                 wattroff(win, COLOR_PAIR(2));
+
+            if(i < (size_t)(count-1))
+                waddch(win, '\n');
         }
     }
     else wprintw(win, "[inventory is empty]");
@@ -96,8 +100,7 @@ bool inventory::is_current_equiped(){ return content[current].is_equiped; }
 
 inventory_with_owner::inventory_with_owner(size_t rows, size_t cols, size_t pos_y, size_t pos_x)
     : menu<inventory_content_2>(rows, cols, pos_y, pos_x),
-      isActive(false)
-    { strings = (char**)item_names; }
+      isActive(false) { }
 
 void inventory_with_owner::build_content(object* obj){
     capture = obj->get_name();
@@ -138,10 +141,13 @@ void inventory_with_owner::print(){
             wattron(win, COLOR_PAIR(2));
 
         waddch(win, i == current ? '*' : ' ');
-        wprintw(win, strings[content[i].content.it->info.type_name]);
+        wprintw(win, get_enum_name(content[i].content.it->info.type_name));
     
         if(content[i].content.is_equiped)
             wattroff(win, COLOR_PAIR(2));
+
+        if(i < (size_t)(count-1))
+            waddch(win, '\n');
     }
 
     wrefresh(win);
@@ -186,7 +192,7 @@ void print_help_for_spell_target_choose_ranged(text_log* help){
     help->clear();
     help->newline("<space>: end game\n");
     help->newline("<movement keys>: move range\n");
-    help->newline("f: use spell\n");
+    help->newline("r: use spell\n");
     help->newline("q: choose other spell");
     help->print();
 }

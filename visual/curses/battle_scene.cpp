@@ -69,7 +69,7 @@ text_log* create_log_effects(state* stat){
 
     for(auto i = stat->effects.begin(); i != stat->effects.end(); i++){
         sprintf(buffer, "%30s Tim %4d Val %4d\n",
-            effect_names[i->first.type],
+            get_enum_name(i->first.type),
             i->second.time,
             i->second.amount
         );
@@ -87,7 +87,7 @@ text_log* create_log_properties(state* stat){
 
     for(auto i = stat->effects_perm.begin(); i != stat->effects_perm.end(); i++){
         sprintf(buffer, "%30s Val %4d\n",
-            effect_names[i->first.type],
+            get_enum_name(i->first.type),
             i->second
         );
 

@@ -3,6 +3,10 @@
 #include "items.hpp"
 #include "common/drawable_object.hpp"
 
+#include "enums/action.hpp"
+#include "enums/behavior.hpp"
+#include "enums/fraction.hpp"
+
 #define abs(A, B) ((A) - (B) > 0 ? (A) - (B) : (B) - (A))
 
 struct expirience{
@@ -33,7 +37,7 @@ protected:
     string name;
 
     behavior_t behavior;
-    fraction fract;
+    fraction_t fract;
 
     struct target_l{
         object* target;
@@ -45,7 +49,7 @@ public:
 
     const char* get_name();
     map<spell_t, spell>& get_spells();
-    fraction get_fraction();
+    fraction_t get_fraction();
 
     virtual action_t turn() = 0;
 
@@ -56,7 +60,7 @@ public:
     void put_item(vector<item>::iterator it, object* target);
 
     void act(effect_def, effect);
-    void trigger(spell_trigger trigger, object* target);
+    void trigger(spell_trigger_t trigger, object* target);
 
     void put_spell(spell_t type, spell spell);
     void remove_spell(spell_t type);

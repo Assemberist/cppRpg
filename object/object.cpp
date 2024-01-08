@@ -6,7 +6,7 @@ bool in_range(object* user, object* target, size_t range){
 }
 
 const char* object::get_name(){ return name.c_str(); }
-fraction object::get_fraction(){ return fract; }
+fraction_t object::get_fraction(){ return fract; }
 map<spell_t, spell>& object::get_spells(){ return spells; }
 
 bool object::is_alive(){ return !stat.flags.is_dead; }
@@ -68,7 +68,7 @@ spell_t object::choose_attack_spells(object* target){
     return NOTHING_SPELL;
 }
 
-void object::trigger(spell_trigger trigger, object* target){
+void object::trigger(spell_trigger_t trigger, object* target){
     // send triggers to equipment.
 }
 

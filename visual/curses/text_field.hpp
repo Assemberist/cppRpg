@@ -9,7 +9,6 @@ class text_field{
 protected:
     uint16_t count;
     uint16_t current;
-    char** strings;
     WINDOW* win;
 
 public:
@@ -22,6 +21,7 @@ public:
 };
 
 class text_log : public text_field, public log{
+    char** strings;
 public:
     text_log(size_t rows, size_t cols, size_t pos_y, size_t pos_x);
 
