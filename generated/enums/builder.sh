@@ -2,7 +2,6 @@
 
 clean(){
     rm *.cpp
-    rm *.hpp
     rm enum_parser
 }
 
@@ -15,9 +14,9 @@ exist(){
 }
 
 compile_enum(){
-    target=${1%%.en}
+    target=${1%%.hpp}
     cat sources/$1 | ./enum_reader $target
-    gcc -c $target.cpp -o obj/$target.o
+    gcc -c $target.cpp -o obj/$target.o -I sources
 }
 
 build(){
@@ -33,7 +32,7 @@ build(){
 
     else
         for file in $(ls sources); do
-            target=${file%%.en}.hpp
+            target=${file%%.hpp}.cpp
             if ( ! $(exist $target) || $(first_jounger sources/$file $target) ); then
                 compile_enum $file
             fi

@@ -8,24 +8,9 @@ void yyerror(const char *str){ fprintf(stderr,"ошибка: %s\n",str);}
 int yywrap(){ return 1; }
 
 char* name;
-char prefix[32];
-char values[2048][128];
-char (*current_value)[128] = values;
+char value[2048];
 
-FILE* header;
 FILE* source;
-
-void create_enum(){
-    fprintf(header, "#pragma once\n\n");
-    fprintf(header, "enum %s_t {\n", name);
-    size_t i = 0;
-    while(values[i+1] < current_value){
-        fprintf(header, "\t%s,\n", values[i]);
-        i++;
-    }
-    fprintf(header, "\t%s\n};\n\n", values[i]);
-    fprintf(header, "const char* get_enum_name(%s_t val);\n", name);
-}
 
 char* replace_(char* src){
     char* ptr = src;
@@ -37,55 +22,45 @@ char* replace_(char* src){
     return ptr;
 }
 
-void create_output_fun(){
-    fprintf(source, "#include \"%s.hpp\"\n\n", name);
-    fprintf(source, "const char* get_enum_name(%s_t val){\n\tswitch(val){\n", name);
-    size_t i = 0;
-    while(values[i] < current_value){
-        fprintf(source, "\t\tcase %s: ", values[i]);
-        fprintf(source, "return \"%s\";\n", replace_(values[i]));
-        i++;
-    }
-    fputs("\t\tdefault: return \"\";\n\t}\n}", source);
+void put_literal(){
+    fprintf(source, "\t\tcase %s: ", value);
+    fprintf(source, "return \"%s\";\n", replace_(value));
 }
 
 int main(int argc, char** argv){
-    memset(prefix, 0, 32);
-    memset(values, 0, 2048*128);
+    memset(value, 0, 2048);
 
     name = argv[1];
     char buffer[256];
 
     strcpy(buffer, name);
-    strcat(buffer, ".hpp");
-    header = fopen(buffer, "w");
-
-    strcpy(buffer + strlen(name), ".cpp");
+    strcat(buffer, ".cpp");
     source = fopen(buffer, "w");
 
+    fprintf(source, "#include \"%s.hpp\"\n\n", name);
+    fprintf(source, "const char* get_enum_name(%s_t val){\n\tswitch(val){\n", name);
+
     yyparse();
+
+    fputs("\t\tdefault: return \"\";\n\t}\n}", source);
 }
 
 %}
 
-%union {
-    char* ch;
-}
-
-%token INDENT END
-%token <ch> VALUE PREFIX
+%token SOME START INDENT LITERAL COMMA END
 
 %%
-logic: sentences END { create_enum(); create_output_fun(); };
+logic: trash START INDENT values END trash;
 
-sentences:
-        | sentences sentence
-        | sentences indents;
+trash:
+     | SOME
+     | trash SOME;
 
-indents: INDENT
-       | indents INDENT;
+values: literal
+      | values literal
+      | values INDENT;
 
-sentence: VALUE { current_value++; }
-        | PREFIX;
+literal: LITERAL { put_literal(); }
+       | LITERAL COMMA { put_literal(); };
 
 %%
