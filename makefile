@@ -22,10 +22,10 @@ gen_effects:
 gen_enums:
 	cd generated/enums && ./builder.sh build
 
-obj/spell.hpp:  generated/enums/spell.hpp \
-				generated/enums/spell_trigger.hpp \
-				generated/enums/spell_direction.hpp \
-				generated/enums/slot_type.hpp
+obj/spell.hpp:  enums/spell.hpp \
+				enums/spell_trigger.hpp \
+				enums/spell_direction.hpp \
+				enums/slot_type.hpp
 
 obj/text_field.o: visual/curses/text_field.cpp visual/curses/text_field.hpp common/log.hpp
 	g++ -c visual/curses/text_field.cpp -o obj/text_field.o $(DBG) $(trace) -Wall -Werror
