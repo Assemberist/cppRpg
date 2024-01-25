@@ -8,15 +8,19 @@ DIAG_SRC=$(DIAGS:.uml=.png)
 trace=$(trace1) $(trace2)
 
 debug: DBG :=-g
-debug: gen_effects gen_enums $(OBJS)
+debug: gen_enums $(OBJS)
 	g++ obj/*.o -o test -lncurses -lpanel -g
 
 build: DBG :=-O2
-build: gen_effects gen_enums $(OBJS)
+build: gen_enums $(OBJS)
 	g++ obj/*.o -o test -lncurses -lpanel -O2
 
-gen_effects:
+FORCE:
+
+generated/effects/effect_calc.cpp: FORCE
 	cd generated/effects && ./builder.sh build
+
+effect_calc.cpp: generated/effects/effect_calc.cpp
 	cp generated/effects/effect_calc.cpp .
 
 gen_enums:
