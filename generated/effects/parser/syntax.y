@@ -20,10 +20,12 @@ int yywrap()
         return 1;
 }
 
-int main()
+int main(int argc, char** argv)
 {
+        printf("case %s:{\n", argv[1]);
         m_buff[0] = '\0';
         yyparse();
+        puts("} break;\n");
 }
 
 %}

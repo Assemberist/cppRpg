@@ -18,13 +18,13 @@ build: gen_enums $(OBJS)
 FORCE:
 
 generated/effects/effect_calc.cpp: FORCE
-	cd generated/effects && ./builder.sh build
+	cd generated/effects && make
 
 effect_calc.cpp: generated/effects/effect_calc.cpp
 	cp generated/effects/effect_calc.cpp .
 
 gen_enums:
-	cd generated/enums && ./builder.sh build
+	cd generated/enums && make
 
 obj/spell.hpp: 	enums/spell.hpp \
 			enums/spell_trigger.hpp \
@@ -74,5 +74,6 @@ diagram/%.png: diagram/%.uml
 	plantuml $<
 
 clean:
-	cd generated/effects && ./builder.sh clean
+	cd generated/effects && make clean
+	cd generated/enums && make clean
 	rm obj/*.o
