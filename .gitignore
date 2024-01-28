@@ -1,5 +1,5 @@
 test
 *.txt
-obj/*
+src/obj/*
 diagram/*.png
 effect_calc.cpp
