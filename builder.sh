@@ -56,4 +56,6 @@ do
     esac
 done
 
+cd src
 make "${Build[@]}"
+cp test ..
