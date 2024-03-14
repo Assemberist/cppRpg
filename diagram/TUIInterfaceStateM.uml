@@ -1,5 +1,4 @@
 @startuml
-
 usecase moving as "moving
 --
 movement keys - move"
@@ -18,7 +17,7 @@ usecase open_inventory as "open_inventory
 --
 e - un/equip item"
 
-(moving) --> (choose spell) : 'f'
+(moving) --> (choose spell\n+spell info) : 'f'
 
 (moving) --> (loot) : move to object
 (loot) --> (moving) : 'q'
@@ -38,22 +37,13 @@ e - un/equip item"
 (open_inventory) --> (choose target for spell) : 't' - throw
 (choose target for item) --> (open_inventory) : 'q'
 
-(moving) --> (spell shop) : 'p'
-(spell shop) --> (moving) : 'q'
-
-(choose spell) --> (spell help) : 'h'
-(spell help) --> (choose spell) : 'q'
-
-(spell shop) --> (spell help) : 'h'
-(spell help) --> (spell shop) : 'q'
-
 (choose target for item) --> (moving) : 'f' - use item
 
-(choose spell) --> (choose target for spell) : 'f'
-(choose target for spell) --> (choose spell) : 'q/r'
+(choose spell\n+spell info) --> (choose target for spell) : 'f'
+(choose target for spell) --> (choose spell\n+spell info) : 'q/r'
 (choose target for spell) --> (moving) : 'f' - use spell
 
-(choose spell) --> (moving) : 'q'
+(choose spell\n+spell info) --> (moving) : 'q'
 
 (moving) --> (observe) : 'o'
 (observe) --> (choose object for obervation) : 'f'
