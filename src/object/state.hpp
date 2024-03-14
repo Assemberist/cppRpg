@@ -35,11 +35,9 @@ struct flag_reg{
     uint64_t is_dead:1;
 };
 
-struct state{
+struct state : public logger_of_shit<state>{
     map<effect_def, int16_t> effects_perm;
     map<effect_def, effect> effects;
-
-    static log* l;
 
     flag_reg flags;
 

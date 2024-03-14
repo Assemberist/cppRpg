@@ -219,8 +219,8 @@ void write_comment_and_item(char* src){
 
 void put_comment(){ 
     if(small_buffer[0]){
-        if(arg_buffer[0]) printf("log_construct(buff, \"%s\", %s);\nlog_msg(state::l, buff);\n", small_buffer, arg_buffer);
-        else printf("log_msg(state::l, \"%s\");\n", small_buffer);
+        if(arg_buffer[0]) printf("log_construct(buff, \"%s\", %s);\nstate::newline(buff);\n", small_buffer, arg_buffer);
+        else printf("state::newline(\"%s\");\n", small_buffer);
     }
 }
 

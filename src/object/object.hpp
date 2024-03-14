@@ -17,13 +17,11 @@ struct expirience{
     bool request(size_t amount);
 };
 
-class object : public drawable_object{
+class object : public drawable_object, public logger_of_shit<object>{
 public:
     state stat;
 
     expirience exp;
-
-    static log* l;
 
     vector<item> equipment;
     vector<item> inventory;
@@ -38,11 +36,6 @@ protected:
 
     behavior_t behavior;
     fraction_t fract;
-
-    struct target_l{
-        object* target;
-        target_l* next;
-    } targets;
 
 public:
     object(int8_t _X, int8_t _Y, string _name) : drawable_object(_X, _Y), name(_name), behavior(BHV_ATTACK) {}

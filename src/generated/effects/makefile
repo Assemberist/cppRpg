@@ -1,4 +1,4 @@
-effect_calc.cpp: effect_reader $(patsubst sources/%.eff,%.part, $(wildcard sources/*.eff))
+effect_calc.cpp: effect_reader $(patsubst sources/%.eff,%.part, $(wildcard sources/*.eff)) $(wildcard *.stdpart)
 	cat head.stdpart *.part end.stdpart > effect_calc.cpp
 
 %.part: sources/%.eff

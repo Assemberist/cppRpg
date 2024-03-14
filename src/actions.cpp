@@ -31,7 +31,7 @@ void act_punch(object* obj, object* target){
     else{
         char arr[50];
         sprintf(arr, "%s can't punch.\n", obj->get_name());
-        log_msg(object::l, arr);
+        object::newline(arr);
     }
 }
 
@@ -42,7 +42,7 @@ void act_lighting(object* obj, object* target){
         obj->exp.add(15);
     }
     else{
-        log_msg(object::l, "Not enough mana.\n");
+        object::newline("Not enough mana.\n");
     }
 }
 
@@ -53,7 +53,7 @@ void act_fireball(object* obj, object* target){
 
 void act_throw(object* obj, object* target){
     if(obj == target) {
-        log_msg(object::l, "You throw and catch item. But why?\n");
+        object::newline("You throw and catch item. But why?\n");
         return;
     }
     target->act({1,CRUSH_ATTACK}, {0, 20});

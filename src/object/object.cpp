@@ -91,7 +91,7 @@ void object::act(effect_def def, effect e){
 
         size_t i;
         for(i = equipment.size(); i--;){
-            if(equipment[i].info.type_name == NOTHING_ITEM)
+            if(equipment[i].type_name == NOTHING_ITEM)
                 continue;
 
             effect part = {
@@ -104,7 +104,7 @@ void object::act(effect_def def, effect e){
 
             if(!e.amount) {
                 while(i--)
-                    if(equipment[i].info.type_name != NOTHING_ITEM)
+                    if(equipment[i].type_name != NOTHING_ITEM)
                         equipment[i].stat.act(def, {static_cast<int16_t>(e.time >> 1), 0});
 
                 break;
@@ -117,8 +117,8 @@ void object::act(effect_def def, effect e){
 bool object::equip(vector<item>::iterator it){
     // find correct slot
     for(int j=equipment.size(); j--;)
-        if( equipment[j].info.group == it->info.group &&
-            equipment[j].info.type_name == NOTHING_ITEM){
+        if( equipment[j].group == it->group &&
+            equipment[j].type_name == NOTHING_ITEM){
                 equipment[j] = *it;
                 inventory.erase(it);
                 for(auto i = it->stat.effects_perm.begin(); i != it->stat.effects_perm.end(); i++){
@@ -145,7 +145,7 @@ bool object::unequip(vector<item>::iterator it){
     }
     inventory.end() - 1;
     inventory.push_back(*it);
-    it->info.type_name = NOTHING_ITEM;
+    it->type_name = NOTHING_ITEM;
     return true;
 }
 

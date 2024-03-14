@@ -48,7 +48,7 @@ void inventory::build_content(object* obj){
     count = 0;
     content = new inventory_content[obj->inventory.size() + obj->equipment.size()];
     for(auto i = obj->equipment.begin(); i != obj->equipment.end(); i++){
-        if(i->info.type_name == NOTHING_ITEM) continue;
+        if(i->type_name == NOTHING_ITEM) continue;
         content[count].is_equiped = true;
         content[count].it = i;
         count++;
@@ -75,7 +75,7 @@ void inventory::print(){
 
             if(isActive)
                 waddch(win, i == current ? '*' : ' ');
-            wprintw(win, get_enum_name(content[i].it->info.type_name));
+            wprintw(win, get_enum_name(content[i].it->type_name));
         
             if(content[i].is_equiped)
                 wattroff(win, COLOR_PAIR(2));
@@ -111,7 +111,7 @@ void inventory_with_owner::build_content(object* obj){
     content[0].owner = obj;
 
     for(auto i = obj->equipment.begin(); i != obj->equipment.end(); i++){
-        if(i->info.type_name == NOTHING_ITEM) continue;
+        if(i->type_name == NOTHING_ITEM) continue;
         content[count].content.is_equiped = true;
         content[count].content.it = i;
         count++;
@@ -141,7 +141,7 @@ void inventory_with_owner::print(){
             wattron(win, COLOR_PAIR(2));
 
         waddch(win, i == current ? '*' : ' ');
-        wprintw(win, get_enum_name(content[i].content.it->info.type_name));
+        wprintw(win, get_enum_name(content[i].content.it->type_name));
     
         if(content[i].content.is_equiped)
             wattroff(win, COLOR_PAIR(2));

@@ -1,9 +1,6 @@
 #include <climits>
 #include "battle_scene.hpp"
 
-log* object::l;
-log* state::l;
-
 static spell_menu* common_menu;
 static inventory* bag;
 static inventory* loot;
@@ -20,8 +17,8 @@ void init_graphic(){
 
 screen::screen(char* card, drawable_object** objs){
     common_log = new text_log(10, 50, 0, 11);
-    object::l = common_log;
-    state::l = common_log;
+    object::set_log(common_log);
+    state::set_log(common_log);
 
     mapa = new za_mapo(10, 10, 0, 0);
 
@@ -328,7 +325,7 @@ bool user_turn(object* u, screen s){
             break;
 
             case CHOOSE_TARGET_FOR_ITEM:{
-                if(is_item_for_single_target(item_to_use->info.type_name)){
+                if(is_item_for_single_target(item_to_use->type_name)){
                     switch(temp){
                         case 's':
                             single_target->graph_state = last_color;
