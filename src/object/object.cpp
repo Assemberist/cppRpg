@@ -11,6 +11,7 @@ map<spell_t, spell>& object::get_spells(){ return spells; }
 
 bool object::is_alive(){ return !stat.flags.is_dead; }
 void object::set_behavior(behavior_t bhv){ behavior = bhv; }
+void object::set_group_membership(object_group* group){ membership = group; }
 
 void object::put_spell (spell_t type, spell sp) { spells.insert({type, sp}); }
 void object::remove_spell(spell_t type){ spells.erase(type); }
@@ -34,6 +35,9 @@ bool object::check_enemy(object* target){
                 default:
                     return true;
             }
+
+        default:
+            return false;
     }
 
     return true;
@@ -86,8 +90,8 @@ bool expirience::request(size_t amount){
 }
 
 void object::act(effect_def def, effect e){
-    if(def.is_shared){
-        def.is_shared = false;
+    if(def.is_shared()){
+        def.shared = false;
 
         size_t i;
         for(i = equipment.size(); i--;){
@@ -122,7 +126,7 @@ bool object::equip(vector<item>::iterator it){
                 equipment[j] = *it;
                 inventory.erase(it);
                 for(auto i = it->stat.effects_perm.begin(); i != it->stat.effects_perm.end(); i++){
-                    if(i->first.is_shared){
+                    if(i->first.is_shared()){
                         auto eff = stat.effects_perm.find(i->first);
                         if(eff == stat.effects_perm.end()) eff->second += i->second;
                         // permanent shared effects should have time = 1 and is_long = 0
@@ -138,7 +142,7 @@ bool object::equip(vector<item>::iterator it){
 bool object::unequip(vector<item>::iterator it){
     // here can be check of possibilty to unequip item.
     for(auto i = it->stat.effects_perm.begin(); i != it->stat.effects_perm.end(); i++){
-        if(i->first.is_shared){
+        if(i->first.is_shared()){
             auto eff = stat.effects_perm.find(i->first);
             eff->second -= i->second;
         }

@@ -3,7 +3,17 @@
 bool operator<(const effect_def& a, const effect_def& b){ return a.type < b.type; }
 
 void state::calculate(){
+    for(auto i = effects.begin(); i != effects.end(); i++){
+        if(i->first.is_active())
+            act({0, i->first.type}, {0, i->second.amount});
 
+        if(i->second.time == 0) effects.erase(i);
+        else i->second.time--;
+    }
+
+    for(auto i = effects_perm.begin(); i != effects_perm.end(); i++)
+        if(i->first.is_active())
+            act({0, i->first.type}, {0, i->second.amount});
 }
 
 bool state::request_property(effect_def prop, int16_t value){
@@ -33,10 +43,10 @@ bool state::there_is_effect(effect_t type){
     effect_def def;
     def.type = type;
 
-    def.is_shared = false;
+    def.shared = false;
     if(effects.find(def) != effects.end()) return true;
 
-    def.is_shared = true;
+    def.shared = true;
     return (effects.find(def) != effects.end());
 }
 
@@ -44,10 +54,10 @@ bool state::is_there_effect_perm(effect_t type){
     effect_def def;
     def.type = type;
 
-    def.is_shared = false;
+    def.shared = false;
     if(effects_perm.find(def) != effects_perm.end()) return true;
 
-    def.is_shared = true;
+    def.shared = true;
     return (effects_perm.find(def) != effects_perm.end());
 }
 
@@ -55,4 +65,5 @@ bool state::there_is_effect(effect_def type){
     return (effects.find(type) != effects.end());
 }
 
-bool is_shared(effect_def def){ return def.is_shared; }
+bool effect_def::is_shared(){ return shared; }
+bool effect_def::is_active(){ return type >= FIRING; }

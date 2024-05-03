@@ -366,9 +366,9 @@ bool user_turn(object* u, screen s){
                                     ; // execute spells
                             
                             for(auto i = item_to_use->stat.effects.begin(); i != item_to_use->stat.effects.end(); i++){
-                                if(is_shared(i->first) == SHARED){
+                                if(i->first.is_shared()){
                                     effect_def e = i->first;
-                                    e.is_shared = false;
+                                    e.shared = false;
                                     u->act(e, i->second);
                                 }
                             }

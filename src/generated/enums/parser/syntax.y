@@ -47,7 +47,7 @@ int main(int argc, char** argv){
 
 %}
 
-%token SOME START INDENT LITERAL COMMA END
+%token SOME START INDENT LITERAL COMMENT COMMA END
 
 %%
 logic: trash START INDENT values END trash;
@@ -58,9 +58,10 @@ trash:
 
 values: literal
       | values literal
+      | values COMMENT
       | values INDENT;
 
 literal: LITERAL { put_literal(); }
-       | LITERAL COMMA { put_literal(); };
+       | LITERAL COMMA { put_literal(); }
 
 %%

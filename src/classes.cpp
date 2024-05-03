@@ -3,6 +3,8 @@
 humanoid::humanoid(int8_t _X, int8_t _Y, string _name) : object(_X, _Y, _name){
     equipment.push_back({ARMORY_HEAD, NOTHING_ITEM, NULL, state()});
     equipment.push_back({ARMORY_HAND, NOTHING_ITEM, NULL, state()});
+    equipment.push_back({ARMORY_HAND, NOTHING_ITEM, NULL, state()});
+    equipment.push_back({ARMORY_FOOT, NOTHING_ITEM, NULL, state()});
     equipment.push_back({ARMORY_FOOT, NOTHING_ITEM, NULL, state()});
     equipment.push_back({CLOTH_BODY, NOTHING_ITEM, NULL, state()});
     equipment.push_back({CLOTH_FOOT, NOTHING_ITEM, NULL, state()});
@@ -20,7 +22,7 @@ mage::mage(int8_t _X, int8_t _Y, string _name) : humanoid(_X, _Y, _name){
     stat.effects_perm.insert({{0, HEALTH}, 20});
     stat.effects_perm.insert({{0, MANA}, 50});
     stat.effects_perm.insert({{0, STRENGTH}, 10});
-    stat.effects_perm.insert({{0, MANA_RESTORE}, 2});
+    stat.effects_perm.insert({{0, MANA_REGENERATION}, 2});
 
     spells.insert({FIREBALL, {1}});
     spells.insert({PUNCH, {1}});

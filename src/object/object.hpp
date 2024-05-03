@@ -17,6 +17,8 @@ struct expirience{
     bool request(size_t amount);
 };
 
+class object_group;
+
 class object : public drawable_object, public logger_of_shit<object>{
 public:
     state stat;
@@ -36,6 +38,8 @@ protected:
 
     behavior_t behavior;
     fraction_t fract;
+
+    object_group* membership;
 
 public:
     object(int8_t _X, int8_t _Y, string _name) : drawable_object(_X, _Y), name(_name), behavior(BHV_ATTACK) {}
@@ -58,6 +62,7 @@ public:
     void put_spell(spell_t type, spell spell);
     void remove_spell(spell_t type);
 
+    void set_group_membership(object_group* group);
 
     void set_behavior(behavior_t bhv);
 

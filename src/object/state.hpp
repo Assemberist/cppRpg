@@ -13,8 +13,11 @@
 using namespace std;
 
 struct effect_def{
-    bool is_shared:1;
+    bool shared:1;
     effect_t type:15;
+
+    bool is_shared();
+    bool is_active();
 };
 
 bool operator<(const effect_def& a, const effect_def& b);
@@ -54,5 +57,3 @@ struct state : public logger_of_shit<state>{
 
     bool request_property(effect_def prop, int16_t value);
 };
-
-bool is_shared(effect_def def);

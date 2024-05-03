@@ -1,6 +1,7 @@
 #pragma once
 
 enum effect_t {
+	// passive effects
 	PHYSIC_IMMUNITY,
 	MAGIC_IMMUNITY,
 	POISON_IMMUNITY,
@@ -31,13 +32,29 @@ enum effect_t {
 	FLYING,
 	CORROSION,
 	SHOCKED,
-	FIRING,
 	WET,
 	STUNNED,
 	FRIZED,
 	SPLITTED_OPEN,
 	DEAD,
-	REGENERATION,
+	SPOKE,
+	TREMBLING,
+	FEAR,
+	PANIC,
+	AROUSUAL,
+	GIVE_UP,
+	ANGRY,
+	FURY,
+	EUPHORYA,
+	GIPNOSIS,
+	STRESS,
+	// parmeters (permanent and passive)
+	HEALTH,
+	MANA,
+	STRENGTH,
+	// active effects
+	FIRING,
+	HEALTH_REGENERATION,
 	POISONED,
 	MANA_REGENERATION,
 	ACID_ATTACK,
@@ -45,15 +62,10 @@ enum effect_t {
 	SLASH_ATTACK,
 	COLUSH_ATTACK,
 	MAGIC_ATTACK,
-	HEAL,
 	POISON_DAMAGE,
-	MANA_RESTORE,
 	FIRE_DAMAGE,
 	ELECTRIC_DAMAGE,
-	ICE_DAMAGE,
-	HEALTH,
-	MANA,
-	STRENGTH
+	ICE_DAMAGE
 };
 
 const char* get_enum_name(effect_t val);

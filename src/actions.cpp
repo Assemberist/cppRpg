@@ -59,6 +59,6 @@ void act_throw(object* obj, object* target){
     target->act({1,CRUSH_ATTACK}, {0, 20});
 
     for(auto i = obj->item_to_use->stat.effects.begin(); i != obj->item_to_use->stat.effects.end(); i++)
-        if(is_shared(i->first) == SHARED)
+        if(i->first.is_shared())
             target->act(i->first, i->second);
 }
